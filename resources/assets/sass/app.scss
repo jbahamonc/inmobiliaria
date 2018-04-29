@@ -1,14 +1,17 @@
-
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// Color
+@import "./components/color-variables";
 
 // Variables
 @import "variables";
 
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// Reset
+@import "./components/normalize";
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
+// components
+@import "./components/global";
+@import "./components/sidenav";
+@import "./components/navbar";
+@import "./components/grid";
+@import "./components/slider";
+
+

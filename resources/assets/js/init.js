@@ -1,4 +1,5 @@
 $(function (){
     $(".sidenav").sideNav();
-    $('.slider').slider();
+    $('.slider').slider({indicators: false});
+    $('select').material_select();
 });

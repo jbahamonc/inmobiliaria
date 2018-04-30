@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(5);
-var isBuffer = __webpack_require__(19);
+var bind = __webpack_require__(4);
+var isBuffer = __webpack_require__(16);
 
 /*global toString:true*/
 
@@ -377,27 +377,28 @@ module.exports = {
 /* 1 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
 
 
 /***/ }),
@@ -408,7 +409,7 @@ module.exports = g;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(21);
+var normalizeHeaderName = __webpack_require__(19);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -424,10 +425,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -502,11 +503,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
-/* 3 */,
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10877,7 +10877,7 @@ return jQuery;
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10895,209 +10895,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(22);
-var buildURL = __webpack_require__(24);
-var parseHeaders = __webpack_require__(25);
-var isURLSameOrigin = __webpack_require__(26);
-var createError = __webpack_require__(8);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(27);
+var settle = __webpack_require__(20);
+var buildURL = __webpack_require__(22);
+var parseHeaders = __webpack_require__(23);
+var isURLSameOrigin = __webpack_require__(24);
+var createError = __webpack_require__(6);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(25);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -11194,7 +11004,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(28);
+      var cookies = __webpack_require__(26);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -11272,13 +11082,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(23);
+var enhanceError = __webpack_require__(21);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -11297,7 +11107,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11309,7 +11119,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11335,15 +11145,15 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(12);
-module.exports = __webpack_require__(43);
+__webpack_require__(10);
+module.exports = __webpack_require__(47);
 
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -11353,25 +11163,28 @@ module.exports = __webpack_require__(43);
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(13);
-__webpack_require__(56);
-__webpack_require__(57);
-__webpack_require__(58);
-__webpack_require__(59);
-__webpack_require__(60);
-__webpack_require__(63);
-__webpack_require__(65);
-__webpack_require__(67);
-__webpack_require__(69);
+__webpack_require__(11);
+__webpack_require__(34);
+__webpack_require__(35);
+__webpack_require__(36);
+__webpack_require__(37);
+__webpack_require__(39);
+__webpack_require__(42);
+__webpack_require__(43);
+__webpack_require__(54);
+__webpack_require__(53);
+__webpack_require__(44);
+__webpack_require__(45);
+__webpack_require__(52);
 
-__webpack_require__(51);
+__webpack_require__(46);
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(14);
+window._ = __webpack_require__(12);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11380,7 +11193,7 @@ window._ = __webpack_require__(14);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(4);
+  window.$ = window.jQuery = __webpack_require__(3);
 
   //require('bootstrap-sass');
 } catch (e) {}
@@ -11391,7 +11204,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(17);
+window.axios = __webpack_require__(14);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -11427,7 +11240,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 14 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -28537,53 +28350,51 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(1)(module)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(15);
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 16 */,
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(18);
-
-/***/ }),
-/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(5);
-var Axios = __webpack_require__(20);
+var bind = __webpack_require__(4);
+var Axios = __webpack_require__(17);
 var defaults = __webpack_require__(2);
 
 /**
@@ -28617,15 +28428,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(10);
-axios.CancelToken = __webpack_require__(34);
-axios.isCancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(8);
+axios.CancelToken = __webpack_require__(32);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(35);
+axios.spread = __webpack_require__(33);
 
 module.exports = axios;
 
@@ -28634,7 +28445,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 19 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /*!
@@ -28661,7 +28472,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 20 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28669,8 +28480,8 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(29);
-var dispatchRequest = __webpack_require__(30);
+var InterceptorManager = __webpack_require__(27);
+var dispatchRequest = __webpack_require__(28);
 
 /**
  * Create a new instance of Axios
@@ -28747,7 +28558,197 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 21 */
+/* 18 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28766,13 +28767,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(8);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -28799,7 +28800,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28827,7 +28828,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28900,7 +28901,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 25 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28960,7 +28961,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29035,7 +29036,7 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29078,7 +29079,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 28 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29138,7 +29139,7 @@ module.exports = (
 
 
 /***/ }),
-/* 29 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29197,18 +29198,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(31);
-var isCancel = __webpack_require__(9);
+var transformData = __webpack_require__(29);
+var isCancel = __webpack_require__(7);
 var defaults = __webpack_require__(2);
-var isAbsoluteURL = __webpack_require__(32);
-var combineURLs = __webpack_require__(33);
+var isAbsoluteURL = __webpack_require__(30);
+var combineURLs = __webpack_require__(31);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -29290,7 +29291,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29317,7 +29318,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29338,7 +29339,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29359,13 +29360,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 34 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(10);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -29423,7 +29424,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 35 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29457,40 +29458,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */
-/***/ (function(module, exports) {
-
-$(function () {
-    $(".sidenav").sideNav();
-    $('.slider').slider();
-});
-
-/***/ }),
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {// Required for Meteor package, the use of window prevents export by Meteor
@@ -29663,10 +29631,10 @@ if (Vel) {
 } else {
   Materialize.Vel = Vel;
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 57 */
+/* 35 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -30027,7 +29995,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 })(jQuery, Materialize.Vel);
 
 /***/ }),
-/* 58 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -30662,17 +30630,17 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
     }), b;
   }(window.jQuery || window.Zepto || window, window, document);
 }));
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 59 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 (function (factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4), __webpack_require__(68)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -30708,1931 +30676,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-!function (a, b, c, d) {
-  "use strict";
-  function k(a, b, c) {
-    return setTimeout(q(a, c), b);
-  }function l(a, b, c) {
-    return Array.isArray(a) ? (m(a, c[b], c), !0) : !1;
-  }function m(a, b, c) {
-    var e;if (a) if (a.forEach) a.forEach(b, c);else if (a.length !== d) for (e = 0; e < a.length;) {
-      b.call(c, a[e], e, a), e++;
-    } else for (e in a) {
-      a.hasOwnProperty(e) && b.call(c, a[e], e, a);
-    }
-  }function n(a, b, c) {
-    for (var e = Object.keys(b), f = 0; f < e.length;) {
-      (!c || c && a[e[f]] === d) && (a[e[f]] = b[e[f]]), f++;
-    }return a;
-  }function o(a, b) {
-    return n(a, b, !0);
-  }function p(a, b, c) {
-    var e,
-        d = b.prototype;e = a.prototype = Object.create(d), e.constructor = a, e._super = d, c && n(e, c);
-  }function q(a, b) {
-    return function () {
-      return a.apply(b, arguments);
-    };
-  }function r(a, b) {
-    return (typeof a === "undefined" ? "undefined" : _typeof(a)) == g ? a.apply(b ? b[0] || d : d, b) : a;
-  }function s(a, b) {
-    return a === d ? b : a;
-  }function t(a, b, c) {
-    m(x(b), function (b) {
-      a.addEventListener(b, c, !1);
-    });
-  }function u(a, b, c) {
-    m(x(b), function (b) {
-      a.removeEventListener(b, c, !1);
-    });
-  }function v(a, b) {
-    for (; a;) {
-      if (a == b) return !0;a = a.parentNode;
-    }return !1;
-  }function w(a, b) {
-    return a.indexOf(b) > -1;
-  }function x(a) {
-    return a.trim().split(/\s+/g);
-  }function y(a, b, c) {
-    if (a.indexOf && !c) return a.indexOf(b);for (var d = 0; d < a.length;) {
-      if (c && a[d][c] == b || !c && a[d] === b) return d;d++;
-    }return -1;
-  }function z(a) {
-    return Array.prototype.slice.call(a, 0);
-  }function A(a, b, c) {
-    for (var d = [], e = [], f = 0; f < a.length;) {
-      var g = b ? a[f][b] : a[f];y(e, g) < 0 && d.push(a[f]), e[f] = g, f++;
-    }return c && (d = b ? d.sort(function (a, c) {
-      return a[b] > c[b];
-    }) : d.sort()), d;
-  }function B(a, b) {
-    for (var c, f, g = b[0].toUpperCase() + b.slice(1), h = 0; h < e.length;) {
-      if (c = e[h], f = c ? c + g : b, f in a) return f;h++;
-    }return d;
-  }function D() {
-    return C++;
-  }function E(a) {
-    var b = a.ownerDocument;return b.defaultView || b.parentWindow;
-  }function ab(a, b) {
-    var c = this;this.manager = a, this.callback = b, this.element = a.element, this.target = a.options.inputTarget, this.domHandler = function (b) {
-      r(a.options.enable, [a]) && c.handler(b);
-    }, this.init();
-  }function bb(a) {
-    var b,
-        c = a.options.inputClass;return b = c ? c : H ? wb : I ? Eb : G ? Gb : rb, new b(a, cb);
-  }function cb(a, b, c) {
-    var d = c.pointers.length,
-        e = c.changedPointers.length,
-        f = b & O && 0 === d - e,
-        g = b & (Q | R) && 0 === d - e;c.isFirst = !!f, c.isFinal = !!g, f && (a.session = {}), c.eventType = b, db(a, c), a.emit("hammer.input", c), a.recognize(c), a.session.prevInput = c;
-  }function db(a, b) {
-    var c = a.session,
-        d = b.pointers,
-        e = d.length;c.firstInput || (c.firstInput = gb(b)), e > 1 && !c.firstMultiple ? c.firstMultiple = gb(b) : 1 === e && (c.firstMultiple = !1);var f = c.firstInput,
-        g = c.firstMultiple,
-        h = g ? g.center : f.center,
-        i = b.center = hb(d);b.timeStamp = j(), b.deltaTime = b.timeStamp - f.timeStamp, b.angle = lb(h, i), b.distance = kb(h, i), eb(c, b), b.offsetDirection = jb(b.deltaX, b.deltaY), b.scale = g ? nb(g.pointers, d) : 1, b.rotation = g ? mb(g.pointers, d) : 0, fb(c, b);var k = a.element;v(b.srcEvent.target, k) && (k = b.srcEvent.target), b.target = k;
-  }function eb(a, b) {
-    var c = b.center,
-        d = a.offsetDelta || {},
-        e = a.prevDelta || {},
-        f = a.prevInput || {};(b.eventType === O || f.eventType === Q) && (e = a.prevDelta = { x: f.deltaX || 0, y: f.deltaY || 0 }, d = a.offsetDelta = { x: c.x, y: c.y }), b.deltaX = e.x + (c.x - d.x), b.deltaY = e.y + (c.y - d.y);
-  }function fb(a, b) {
-    var f,
-        g,
-        h,
-        j,
-        c = a.lastInterval || b,
-        e = b.timeStamp - c.timeStamp;if (b.eventType != R && (e > N || c.velocity === d)) {
-      var k = c.deltaX - b.deltaX,
-          l = c.deltaY - b.deltaY,
-          m = ib(e, k, l);g = m.x, h = m.y, f = i(m.x) > i(m.y) ? m.x : m.y, j = jb(k, l), a.lastInterval = b;
-    } else f = c.velocity, g = c.velocityX, h = c.velocityY, j = c.direction;b.velocity = f, b.velocityX = g, b.velocityY = h, b.direction = j;
-  }function gb(a) {
-    for (var b = [], c = 0; c < a.pointers.length;) {
-      b[c] = { clientX: h(a.pointers[c].clientX), clientY: h(a.pointers[c].clientY) }, c++;
-    }return { timeStamp: j(), pointers: b, center: hb(b), deltaX: a.deltaX, deltaY: a.deltaY };
-  }function hb(a) {
-    var b = a.length;if (1 === b) return { x: h(a[0].clientX), y: h(a[0].clientY) };for (var c = 0, d = 0, e = 0; b > e;) {
-      c += a[e].clientX, d += a[e].clientY, e++;
-    }return { x: h(c / b), y: h(d / b) };
-  }function ib(a, b, c) {
-    return { x: b / a || 0, y: c / a || 0 };
-  }function jb(a, b) {
-    return a === b ? S : i(a) >= i(b) ? a > 0 ? T : U : b > 0 ? V : W;
-  }function kb(a, b, c) {
-    c || (c = $);var d = b[c[0]] - a[c[0]],
-        e = b[c[1]] - a[c[1]];return Math.sqrt(d * d + e * e);
-  }function lb(a, b, c) {
-    c || (c = $);var d = b[c[0]] - a[c[0]],
-        e = b[c[1]] - a[c[1]];return 180 * Math.atan2(e, d) / Math.PI;
-  }function mb(a, b) {
-    return lb(b[1], b[0], _) - lb(a[1], a[0], _);
-  }function nb(a, b) {
-    return kb(b[0], b[1], _) / kb(a[0], a[1], _);
-  }function rb() {
-    this.evEl = pb, this.evWin = qb, this.allow = !0, this.pressed = !1, ab.apply(this, arguments);
-  }function wb() {
-    this.evEl = ub, this.evWin = vb, ab.apply(this, arguments), this.store = this.manager.session.pointerEvents = [];
-  }function Ab() {
-    this.evTarget = yb, this.evWin = zb, this.started = !1, ab.apply(this, arguments);
-  }function Bb(a, b) {
-    var c = z(a.touches),
-        d = z(a.changedTouches);return b & (Q | R) && (c = A(c.concat(d), "identifier", !0)), [c, d];
-  }function Eb() {
-    this.evTarget = Db, this.targetIds = {}, ab.apply(this, arguments);
-  }function Fb(a, b) {
-    var c = z(a.touches),
-        d = this.targetIds;if (b & (O | P) && 1 === c.length) return d[c[0].identifier] = !0, [c, c];var e,
-        f,
-        g = z(a.changedTouches),
-        h = [],
-        i = this.target;if (f = c.filter(function (a) {
-      return v(a.target, i);
-    }), b === O) for (e = 0; e < f.length;) {
-      d[f[e].identifier] = !0, e++;
-    }for (e = 0; e < g.length;) {
-      d[g[e].identifier] && h.push(g[e]), b & (Q | R) && delete d[g[e].identifier], e++;
-    }return h.length ? [A(f.concat(h), "identifier", !0), h] : void 0;
-  }function Gb() {
-    ab.apply(this, arguments);var a = q(this.handler, this);this.touch = new Eb(this.manager, a), this.mouse = new rb(this.manager, a);
-  }function Pb(a, b) {
-    this.manager = a, this.set(b);
-  }function Qb(a) {
-    if (w(a, Mb)) return Mb;var b = w(a, Nb),
-        c = w(a, Ob);return b && c ? Nb + " " + Ob : b || c ? b ? Nb : Ob : w(a, Lb) ? Lb : Kb;
-  }function Yb(a) {
-    this.id = D(), this.manager = null, this.options = o(a || {}, this.defaults), this.options.enable = s(this.options.enable, !0), this.state = Rb, this.simultaneous = {}, this.requireFail = [];
-  }function Zb(a) {
-    return a & Wb ? "cancel" : a & Ub ? "end" : a & Tb ? "move" : a & Sb ? "start" : "";
-  }function $b(a) {
-    return a == W ? "down" : a == V ? "up" : a == T ? "left" : a == U ? "right" : "";
-  }function _b(a, b) {
-    var c = b.manager;return c ? c.get(a) : a;
-  }function ac() {
-    Yb.apply(this, arguments);
-  }function bc() {
-    ac.apply(this, arguments), this.pX = null, this.pY = null;
-  }function cc() {
-    ac.apply(this, arguments);
-  }function dc() {
-    Yb.apply(this, arguments), this._timer = null, this._input = null;
-  }function ec() {
-    ac.apply(this, arguments);
-  }function fc() {
-    ac.apply(this, arguments);
-  }function gc() {
-    Yb.apply(this, arguments), this.pTime = !1, this.pCenter = !1, this._timer = null, this._input = null, this.count = 0;
-  }function hc(a, b) {
-    return b = b || {}, b.recognizers = s(b.recognizers, hc.defaults.preset), new kc(a, b);
-  }function kc(a, b) {
-    b = b || {}, this.options = o(b, hc.defaults), this.options.inputTarget = this.options.inputTarget || a, this.handlers = {}, this.session = {}, this.recognizers = [], this.element = a, this.input = bb(this), this.touchAction = new Pb(this, this.options.touchAction), lc(this, !0), m(b.recognizers, function (a) {
-      var b = this.add(new a[0](a[1]));a[2] && b.recognizeWith(a[2]), a[3] && b.requireFailure(a[3]);
-    }, this);
-  }function lc(a, b) {
-    var c = a.element;m(a.options.cssProps, function (a, d) {
-      c.style[B(c.style, d)] = b ? a : "";
-    });
-  }function mc(a, c) {
-    var d = b.createEvent("Event");d.initEvent(a, !0, !0), d.gesture = c, c.target.dispatchEvent(d);
-  }var e = ["", "webkit", "moz", "MS", "ms", "o"],
-      f = b.createElement("div"),
-      g = "function",
-      h = Math.round,
-      i = Math.abs,
-      j = Date.now,
-      C = 1,
-      F = /mobile|tablet|ip(ad|hone|od)|android/i,
-      G = "ontouchstart" in a,
-      H = B(a, "PointerEvent") !== d,
-      I = G && F.test(navigator.userAgent),
-      J = "touch",
-      K = "pen",
-      L = "mouse",
-      M = "kinect",
-      N = 25,
-      O = 1,
-      P = 2,
-      Q = 4,
-      R = 8,
-      S = 1,
-      T = 2,
-      U = 4,
-      V = 8,
-      W = 16,
-      X = T | U,
-      Y = V | W,
-      Z = X | Y,
-      $ = ["x", "y"],
-      _ = ["clientX", "clientY"];ab.prototype = { handler: function handler() {}, init: function init() {
-      this.evEl && t(this.element, this.evEl, this.domHandler), this.evTarget && t(this.target, this.evTarget, this.domHandler), this.evWin && t(E(this.element), this.evWin, this.domHandler);
-    }, destroy: function destroy() {
-      this.evEl && u(this.element, this.evEl, this.domHandler), this.evTarget && u(this.target, this.evTarget, this.domHandler), this.evWin && u(E(this.element), this.evWin, this.domHandler);
-    } };var ob = { mousedown: O, mousemove: P, mouseup: Q },
-      pb = "mousedown",
-      qb = "mousemove mouseup";p(rb, ab, { handler: function handler(a) {
-      var b = ob[a.type];b & O && 0 === a.button && (this.pressed = !0), b & P && 1 !== a.which && (b = Q), this.pressed && this.allow && (b & Q && (this.pressed = !1), this.callback(this.manager, b, { pointers: [a], changedPointers: [a], pointerType: L, srcEvent: a }));
-    } });var sb = { pointerdown: O, pointermove: P, pointerup: Q, pointercancel: R, pointerout: R },
-      tb = { 2: J, 3: K, 4: L, 5: M },
-      ub = "pointerdown",
-      vb = "pointermove pointerup pointercancel";a.MSPointerEvent && (ub = "MSPointerDown", vb = "MSPointerMove MSPointerUp MSPointerCancel"), p(wb, ab, { handler: function handler(a) {
-      var b = this.store,
-          c = !1,
-          d = a.type.toLowerCase().replace("ms", ""),
-          e = sb[d],
-          f = tb[a.pointerType] || a.pointerType,
-          g = f == J,
-          h = y(b, a.pointerId, "pointerId");e & O && (0 === a.button || g) ? 0 > h && (b.push(a), h = b.length - 1) : e & (Q | R) && (c = !0), 0 > h || (b[h] = a, this.callback(this.manager, e, { pointers: b, changedPointers: [a], pointerType: f, srcEvent: a }), c && b.splice(h, 1));
-    } });var xb = { touchstart: O, touchmove: P, touchend: Q, touchcancel: R },
-      yb = "touchstart",
-      zb = "touchstart touchmove touchend touchcancel";p(Ab, ab, { handler: function handler(a) {
-      var b = xb[a.type];if (b === O && (this.started = !0), this.started) {
-        var c = Bb.call(this, a, b);b & (Q | R) && 0 === c[0].length - c[1].length && (this.started = !1), this.callback(this.manager, b, { pointers: c[0], changedPointers: c[1], pointerType: J, srcEvent: a });
-      }
-    } });var Cb = { touchstart: O, touchmove: P, touchend: Q, touchcancel: R },
-      Db = "touchstart touchmove touchend touchcancel";p(Eb, ab, { handler: function handler(a) {
-      var b = Cb[a.type],
-          c = Fb.call(this, a, b);c && this.callback(this.manager, b, { pointers: c[0], changedPointers: c[1], pointerType: J, srcEvent: a });
-    } }), p(Gb, ab, { handler: function handler(a, b, c) {
-      var d = c.pointerType == J,
-          e = c.pointerType == L;if (d) this.mouse.allow = !1;else if (e && !this.mouse.allow) return;b & (Q | R) && (this.mouse.allow = !0), this.callback(a, b, c);
-    }, destroy: function destroy() {
-      this.touch.destroy(), this.mouse.destroy();
-    } });var Hb = B(f.style, "touchAction"),
-      Ib = Hb !== d,
-      Jb = "compute",
-      Kb = "auto",
-      Lb = "manipulation",
-      Mb = "none",
-      Nb = "pan-x",
-      Ob = "pan-y";Pb.prototype = { set: function set(a) {
-      a == Jb && (a = this.compute()), Ib && (this.manager.element.style[Hb] = a), this.actions = a.toLowerCase().trim();
-    }, update: function update() {
-      this.set(this.manager.options.touchAction);
-    }, compute: function compute() {
-      var a = [];return m(this.manager.recognizers, function (b) {
-        r(b.options.enable, [b]) && (a = a.concat(b.getTouchAction()));
-      }), Qb(a.join(" "));
-    }, preventDefaults: function preventDefaults(a) {
-      if (!Ib) {
-        var b = a.srcEvent,
-            c = a.offsetDirection;if (this.manager.session.prevented) return b.preventDefault(), void 0;var d = this.actions,
-            e = w(d, Mb),
-            f = w(d, Ob),
-            g = w(d, Nb);return e || f && c & X || g && c & Y ? this.preventSrc(b) : void 0;
-      }
-    }, preventSrc: function preventSrc(a) {
-      this.manager.session.prevented = !0, a.preventDefault();
-    } };var Rb = 1,
-      Sb = 2,
-      Tb = 4,
-      Ub = 8,
-      Vb = Ub,
-      Wb = 16,
-      Xb = 32;Yb.prototype = { defaults: {}, set: function set(a) {
-      return n(this.options, a), this.manager && this.manager.touchAction.update(), this;
-    }, recognizeWith: function recognizeWith(a) {
-      if (l(a, "recognizeWith", this)) return this;var b = this.simultaneous;return a = _b(a, this), b[a.id] || (b[a.id] = a, a.recognizeWith(this)), this;
-    }, dropRecognizeWith: function dropRecognizeWith(a) {
-      return l(a, "dropRecognizeWith", this) ? this : (a = _b(a, this), delete this.simultaneous[a.id], this);
-    }, requireFailure: function requireFailure(a) {
-      if (l(a, "requireFailure", this)) return this;var b = this.requireFail;return a = _b(a, this), -1 === y(b, a) && (b.push(a), a.requireFailure(this)), this;
-    }, dropRequireFailure: function dropRequireFailure(a) {
-      if (l(a, "dropRequireFailure", this)) return this;a = _b(a, this);var b = y(this.requireFail, a);return b > -1 && this.requireFail.splice(b, 1), this;
-    }, hasRequireFailures: function hasRequireFailures() {
-      return this.requireFail.length > 0;
-    }, canRecognizeWith: function canRecognizeWith(a) {
-      return !!this.simultaneous[a.id];
-    }, emit: function emit(a) {
-      function d(d) {
-        b.manager.emit(b.options.event + (d ? Zb(c) : ""), a);
-      }var b = this,
-          c = this.state;Ub > c && d(!0), d(), c >= Ub && d(!0);
-    }, tryEmit: function tryEmit(a) {
-      return this.canEmit() ? this.emit(a) : (this.state = Xb, void 0);
-    }, canEmit: function canEmit() {
-      for (var a = 0; a < this.requireFail.length;) {
-        if (!(this.requireFail[a].state & (Xb | Rb))) return !1;a++;
-      }return !0;
-    }, recognize: function recognize(a) {
-      var b = n({}, a);return r(this.options.enable, [this, b]) ? (this.state & (Vb | Wb | Xb) && (this.state = Rb), this.state = this.process(b), this.state & (Sb | Tb | Ub | Wb) && this.tryEmit(b), void 0) : (this.reset(), this.state = Xb, void 0);
-    }, process: function process() {}, getTouchAction: function getTouchAction() {}, reset: function reset() {} }, p(ac, Yb, { defaults: { pointers: 1 }, attrTest: function attrTest(a) {
-      var b = this.options.pointers;return 0 === b || a.pointers.length === b;
-    }, process: function process(a) {
-      var b = this.state,
-          c = a.eventType,
-          d = b & (Sb | Tb),
-          e = this.attrTest(a);return d && (c & R || !e) ? b | Wb : d || e ? c & Q ? b | Ub : b & Sb ? b | Tb : Sb : Xb;
-    } }), p(bc, ac, { defaults: { event: "pan", threshold: 10, pointers: 1, direction: Z }, getTouchAction: function getTouchAction() {
-      var a = this.options.direction,
-          b = [];return a & X && b.push(Ob), a & Y && b.push(Nb), b;
-    }, directionTest: function directionTest(a) {
-      var b = this.options,
-          c = !0,
-          d = a.distance,
-          e = a.direction,
-          f = a.deltaX,
-          g = a.deltaY;return e & b.direction || (b.direction & X ? (e = 0 === f ? S : 0 > f ? T : U, c = f != this.pX, d = Math.abs(a.deltaX)) : (e = 0 === g ? S : 0 > g ? V : W, c = g != this.pY, d = Math.abs(a.deltaY))), a.direction = e, c && d > b.threshold && e & b.direction;
-    }, attrTest: function attrTest(a) {
-      return ac.prototype.attrTest.call(this, a) && (this.state & Sb || !(this.state & Sb) && this.directionTest(a));
-    }, emit: function emit(a) {
-      this.pX = a.deltaX, this.pY = a.deltaY;var b = $b(a.direction);b && this.manager.emit(this.options.event + b, a), this._super.emit.call(this, a);
-    } }), p(cc, ac, { defaults: { event: "pinch", threshold: 0, pointers: 2 }, getTouchAction: function getTouchAction() {
-      return [Mb];
-    }, attrTest: function attrTest(a) {
-      return this._super.attrTest.call(this, a) && (Math.abs(a.scale - 1) > this.options.threshold || this.state & Sb);
-    }, emit: function emit(a) {
-      if (this._super.emit.call(this, a), 1 !== a.scale) {
-        var b = a.scale < 1 ? "in" : "out";this.manager.emit(this.options.event + b, a);
-      }
-    } }), p(dc, Yb, { defaults: { event: "press", pointers: 1, time: 500, threshold: 5 }, getTouchAction: function getTouchAction() {
-      return [Kb];
-    }, process: function process(a) {
-      var b = this.options,
-          c = a.pointers.length === b.pointers,
-          d = a.distance < b.threshold,
-          e = a.deltaTime > b.time;if (this._input = a, !d || !c || a.eventType & (Q | R) && !e) this.reset();else if (a.eventType & O) this.reset(), this._timer = k(function () {
-        this.state = Vb, this.tryEmit();
-      }, b.time, this);else if (a.eventType & Q) return Vb;return Xb;
-    }, reset: function reset() {
-      clearTimeout(this._timer);
-    }, emit: function emit(a) {
-      this.state === Vb && (a && a.eventType & Q ? this.manager.emit(this.options.event + "up", a) : (this._input.timeStamp = j(), this.manager.emit(this.options.event, this._input)));
-    } }), p(ec, ac, { defaults: { event: "rotate", threshold: 0, pointers: 2 }, getTouchAction: function getTouchAction() {
-      return [Mb];
-    }, attrTest: function attrTest(a) {
-      return this._super.attrTest.call(this, a) && (Math.abs(a.rotation) > this.options.threshold || this.state & Sb);
-    } }), p(fc, ac, { defaults: { event: "swipe", threshold: 10, velocity: .65, direction: X | Y, pointers: 1 }, getTouchAction: function getTouchAction() {
-      return bc.prototype.getTouchAction.call(this);
-    }, attrTest: function attrTest(a) {
-      var c,
-          b = this.options.direction;return b & (X | Y) ? c = a.velocity : b & X ? c = a.velocityX : b & Y && (c = a.velocityY), this._super.attrTest.call(this, a) && b & a.direction && a.distance > this.options.threshold && i(c) > this.options.velocity && a.eventType & Q;
-    }, emit: function emit(a) {
-      var b = $b(a.direction);b && this.manager.emit(this.options.event + b, a), this.manager.emit(this.options.event, a);
-    } }), p(gc, Yb, { defaults: { event: "tap", pointers: 1, taps: 1, interval: 300, time: 250, threshold: 2, posThreshold: 10 }, getTouchAction: function getTouchAction() {
-      return [Lb];
-    }, process: function process(a) {
-      var b = this.options,
-          c = a.pointers.length === b.pointers,
-          d = a.distance < b.threshold,
-          e = a.deltaTime < b.time;if (this.reset(), a.eventType & O && 0 === this.count) return this.failTimeout();if (d && e && c) {
-        if (a.eventType != Q) return this.failTimeout();var f = this.pTime ? a.timeStamp - this.pTime < b.interval : !0,
-            g = !this.pCenter || kb(this.pCenter, a.center) < b.posThreshold;this.pTime = a.timeStamp, this.pCenter = a.center, g && f ? this.count += 1 : this.count = 1, this._input = a;var h = this.count % b.taps;if (0 === h) return this.hasRequireFailures() ? (this._timer = k(function () {
-          this.state = Vb, this.tryEmit();
-        }, b.interval, this), Sb) : Vb;
-      }return Xb;
-    }, failTimeout: function failTimeout() {
-      return this._timer = k(function () {
-        this.state = Xb;
-      }, this.options.interval, this), Xb;
-    }, reset: function reset() {
-      clearTimeout(this._timer);
-    }, emit: function emit() {
-      this.state == Vb && (this._input.tapCount = this.count, this.manager.emit(this.options.event, this._input));
-    } }), hc.VERSION = "2.0.4", hc.defaults = { domEvents: !1, touchAction: Jb, enable: !0, inputTarget: null, inputClass: null, preset: [[ec, { enable: !1 }], [cc, { enable: !1 }, ["rotate"]], [fc, { direction: X }], [bc, { direction: X }, ["swipe"]], [gc], [gc, { event: "doubletap", taps: 2 }, ["tap"]], [dc]], cssProps: { userSelect: "default", touchSelect: "none", touchCallout: "none", contentZooming: "none", userDrag: "none", tapHighlightColor: "rgba(0,0,0,0)" } };var ic = 1,
-      jc = 2;kc.prototype = { set: function set(a) {
-      return n(this.options, a), a.touchAction && this.touchAction.update(), a.inputTarget && (this.input.destroy(), this.input.target = a.inputTarget, this.input.init()), this;
-    }, stop: function stop(a) {
-      this.session.stopped = a ? jc : ic;
-    }, recognize: function recognize(a) {
-      var b = this.session;if (!b.stopped) {
-        this.touchAction.preventDefaults(a);var c,
-            d = this.recognizers,
-            e = b.curRecognizer;(!e || e && e.state & Vb) && (e = b.curRecognizer = null);for (var f = 0; f < d.length;) {
-          c = d[f], b.stopped === jc || e && c != e && !c.canRecognizeWith(e) ? c.reset() : c.recognize(a), !e && c.state & (Sb | Tb | Ub) && (e = b.curRecognizer = c), f++;
-        }
-      }
-    }, get: function get(a) {
-      if (a instanceof Yb) return a;for (var b = this.recognizers, c = 0; c < b.length; c++) {
-        if (b[c].options.event == a) return b[c];
-      }return null;
-    }, add: function add(a) {
-      if (l(a, "add", this)) return this;var b = this.get(a.options.event);return b && this.remove(b), this.recognizers.push(a), a.manager = this, this.touchAction.update(), a;
-    }, remove: function remove(a) {
-      if (l(a, "remove", this)) return this;var b = this.recognizers;return a = this.get(a), b.splice(y(b, a), 1), this.touchAction.update(), this;
-    }, on: function on(a, b) {
-      var c = this.handlers;return m(x(a), function (a) {
-        c[a] = c[a] || [], c[a].push(b);
-      }), this;
-    }, off: function off(a, b) {
-      var c = this.handlers;return m(x(a), function (a) {
-        b ? c[a].splice(y(c[a], b), 1) : delete c[a];
-      }), this;
-    }, emit: function emit(a, b) {
-      this.options.domEvents && mc(a, b);var c = this.handlers[a] && this.handlers[a].slice();if (c && c.length) {
-        b.type = a, b.preventDefault = function () {
-          b.srcEvent.preventDefault();
-        };for (var d = 0; d < c.length;) {
-          c[d](b), d++;
-        }
-      }
-    }, destroy: function destroy() {
-      this.element && lc(this, !1), this.handlers = {}, this.session = {}, this.input.destroy(), this.element = null;
-    } }, n(hc, { INPUT_START: O, INPUT_MOVE: P, INPUT_END: Q, INPUT_CANCEL: R, STATE_POSSIBLE: Rb, STATE_BEGAN: Sb, STATE_CHANGED: Tb, STATE_ENDED: Ub, STATE_RECOGNIZED: Vb, STATE_CANCELLED: Wb, STATE_FAILED: Xb, DIRECTION_NONE: S, DIRECTION_LEFT: T, DIRECTION_RIGHT: U, DIRECTION_UP: V, DIRECTION_DOWN: W, DIRECTION_HORIZONTAL: X, DIRECTION_VERTICAL: Y, DIRECTION_ALL: Z, Manager: kc, Input: ab, TouchAction: Pb, TouchInput: Eb, MouseInput: rb, PointerEventInput: wb, TouchMouseInput: Gb, SingleTouchInput: Ab, Recognizer: Yb, AttrRecognizer: ac, Tap: gc, Pan: bc, Swipe: fc, Pinch: cc, Rotate: ec, Press: dc, on: t, off: u, each: m, merge: o, extend: n, inherit: p, bindFn: q, prefixed: B }), ( false ? "undefined" : _typeof(__webpack_require__(61))) == g && __webpack_require__(62) ? !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
-    return hc;
-  }).call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "undefined" != typeof module && module.exports ? module.exports = hc : a[c] = hc;
-}(window, document, "Hammer");
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports) {
-
-module.exports = function() {
-	throw new Error("define cannot be used indirect");
-};
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports) {
-
-/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
-module.exports = __webpack_amd_options__;
-
-/* WEBPACK VAR INJECTION */}.call(exports, {}))
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports) {
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-(function ($) {
-
-  var methods = {
-    init: function init(options) {
-      var defaults = {
-        menuWidth: 300,
-        edge: 'left',
-        closeOnClick: false,
-        draggable: true,
-        onOpen: null,
-        onClose: null
-      };
-      options = $.extend(defaults, options);
-
-      $(this).each(function () {
-        var $this = $(this);
-        var menuId = $this.attr('data-activates');
-        var menu = $("#" + menuId);
-
-        // Set to width
-        if (options.menuWidth != 300) {
-          menu.css('width', options.menuWidth);
-        }
-
-        // Add Touch Area
-        var $dragTarget = $('.drag-target[data-sidenav="' + menuId + '"]');
-        console.log($dragTarget);
-        if (options.draggable) {
-          // Regenerate dragTarget
-          if ($dragTarget.length) {
-            $dragTarget.remove();
-          }
-
-          $dragTarget = $('<div class="drag-target"></div>').attr('data-sidenav', menuId);
-          $('body').append($dragTarget);
-        } else {
-          $dragTarget = $();
-        }
-
-        if (options.edge == 'left') {
-          menu.css('transform', 'translateX(-100%)');
-          $dragTarget.css({ 'left': 0 }); // Add Touch Area
-        } else {
-          menu.addClass('right-aligned') // Change text-alignment to right
-          .css('transform', 'translateX(100%)');
-          $dragTarget.css({ 'right': 0 }); // Add Touch Area
-        }
-
-        // If fixed sidenav, bring menu out
-        if (menu.hasClass('fixed')) {
-          if (window.innerWidth > 992) {
-            menu.css('transform', 'translateX(0)');
-          }
-        }
-
-        // Window resize to reset on large screens fixed
-        if (menu.hasClass('fixed')) {
-          $(window).resize(function () {
-            if (window.innerWidth > 992) {
-              // Close menu if window is resized bigger than 992 and user has fixed sidenav
-              if ($('#sidenav-overlay').length !== 0 && menuOut) {
-                removeMenu(true);
-              } else {
-                // menu.removeAttr('style');
-                menu.css('transform', 'translateX(0%)');
-                // menu.css('width', options.menuWidth);
-              }
-            } else if (menuOut === false) {
-              if (options.edge === 'left') {
-                menu.css('transform', 'translateX(-100%)');
-              } else {
-                menu.css('transform', 'translateX(100%)');
-              }
-            }
-          });
-        }
-
-        // if closeOnClick, then add close event for all a tags in side sideNav
-        if (options.closeOnClick === true) {
-          menu.on("click.itemclick", "a:not(.collapsible-header)", function () {
-            if (!(window.innerWidth > 992 && menu.hasClass('fixed'))) {
-              removeMenu();
-            }
-          });
-        }
-
-        var removeMenu = function removeMenu(restoreNav) {
-          panning = false;
-          menuOut = false;
-          // Reenable scrolling
-          $('body').css({
-            overflow: '',
-            width: ''
-          });
-
-          $('#sidenav-overlay').velocity({ opacity: 0 }, { duration: 200,
-            queue: false, easing: 'easeOutQuad',
-            complete: function complete() {
-              $(this).remove();
-            } });
-          if (options.edge === 'left') {
-            // Reset phantom div
-            $dragTarget.css({ width: '', right: '', left: '0' });
-            menu.velocity({ 'translateX': '-100%' }, { duration: 200,
-              queue: false,
-              easing: 'easeOutCubic',
-              complete: function complete() {
-                if (restoreNav === true) {
-                  // Restore Fixed sidenav
-                  menu.removeAttr('style');
-                  menu.css('width', options.menuWidth);
-                }
-              }
-
-            });
-          } else {
-            // Reset phantom div
-            $dragTarget.css({ width: '', right: '0', left: '' });
-            menu.velocity({ 'translateX': '100%' }, { duration: 200,
-              queue: false,
-              easing: 'easeOutCubic',
-              complete: function complete() {
-                if (restoreNav === true) {
-                  // Restore Fixed sidenav
-                  menu.removeAttr('style');
-                  menu.css('width', options.menuWidth);
-                }
-              }
-            });
-          }
-
-          // Callback
-          if (typeof options.onClose === 'function') {
-            options.onClose.call(this, menu);
-          }
-        };
-
-        // Touch Event
-        var panning = false;
-        var menuOut = false;
-
-        if (options.draggable) {
-          $dragTarget.on('click', function () {
-            if (menuOut) {
-              removeMenu();
-            }
-          });
-
-          $dragTarget.hammer({
-            prevent_default: false
-          }).on('pan', function (e) {
-
-            if (e.gesture.pointerType == "touch") {
-
-              var direction = e.gesture.direction;
-              var x = e.gesture.center.x;
-              var y = e.gesture.center.y;
-              var velocityX = e.gesture.velocityX;
-
-              // Vertical scroll bugfix
-              if (x === 0 && y === 0) {
-                return;
-              }
-
-              // Disable Scrolling
-              var $body = $('body');
-              var $overlay = $('#sidenav-overlay');
-              var oldWidth = $body.innerWidth();
-              $body.css('overflow', 'hidden');
-              $body.width(oldWidth);
-
-              // If overlay does not exist, create one and if it is clicked, close menu
-              if ($overlay.length === 0) {
-                $overlay = $('<div id="sidenav-overlay"></div>');
-                $overlay.css('opacity', 0).click(function () {
-                  removeMenu();
-                });
-
-                // Run 'onOpen' when sidenav is opened via touch/swipe if applicable
-                if (typeof options.onOpen === 'function') {
-                  options.onOpen.call(this, menu);
-                }
-
-                $('body').append($overlay);
-              }
-
-              // Keep within boundaries
-              if (options.edge === 'left') {
-                if (x > options.menuWidth) {
-                  x = options.menuWidth;
-                } else if (x < 0) {
-                  x = 0;
-                }
-              }
-
-              if (options.edge === 'left') {
-                // Left Direction
-                if (x < options.menuWidth / 2) {
-                  menuOut = false;
-                }
-                // Right Direction
-                else if (x >= options.menuWidth / 2) {
-                    menuOut = true;
-                  }
-                menu.css('transform', 'translateX(' + (x - options.menuWidth) + 'px)');
-              } else {
-                // Left Direction
-                if (x < window.innerWidth - options.menuWidth / 2) {
-                  menuOut = true;
-                }
-                // Right Direction
-                else if (x >= window.innerWidth - options.menuWidth / 2) {
-                    menuOut = false;
-                  }
-                var rightPos = x - options.menuWidth / 2;
-                if (rightPos < 0) {
-                  rightPos = 0;
-                }
-
-                menu.css('transform', 'translateX(' + rightPos + 'px)');
-              }
-
-              // Percentage overlay
-              var overlayPerc;
-              if (options.edge === 'left') {
-                overlayPerc = x / options.menuWidth;
-                $overlay.velocity({ opacity: overlayPerc }, { duration: 10, queue: false, easing: 'easeOutQuad' });
-              } else {
-                overlayPerc = Math.abs((x - window.innerWidth) / options.menuWidth);
-                $overlay.velocity({ opacity: overlayPerc }, { duration: 10, queue: false, easing: 'easeOutQuad' });
-              }
-            }
-          }).on('panend', function (e) {
-
-            if (e.gesture.pointerType == "touch") {
-              var $overlay = $('#sidenav-overlay');
-              var velocityX = e.gesture.velocityX;
-              var x = e.gesture.center.x;
-              var leftPos = x - options.menuWidth;
-              var rightPos = x - options.menuWidth / 2;
-              if (leftPos > 0) {
-                leftPos = 0;
-              }
-              if (rightPos < 0) {
-                rightPos = 0;
-              }
-              panning = false;
-
-              if (options.edge === 'left') {
-                // If velocityX <= 0.3 then the user is flinging the menu closed so ignore menuOut
-                if (menuOut && velocityX <= 0.3 || velocityX < -0.5) {
-                  // Return menu to open
-                  if (leftPos !== 0) {
-                    menu.velocity({ 'translateX': [0, leftPos] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
-                  }
-
-                  $overlay.velocity({ opacity: 1 }, { duration: 50, queue: false, easing: 'easeOutQuad' });
-                  $dragTarget.css({ width: '50%', right: 0, left: '' });
-                  menuOut = true;
-                } else if (!menuOut || velocityX > 0.3) {
-                  // Enable Scrolling
-                  $('body').css({
-                    overflow: '',
-                    width: ''
-                  });
-                  // Slide menu closed
-                  menu.velocity({ 'translateX': [-1 * options.menuWidth - 10, leftPos] }, { duration: 200, queue: false, easing: 'easeOutQuad' });
-                  $overlay.velocity({ opacity: 0 }, { duration: 200, queue: false, easing: 'easeOutQuad',
-                    complete: function complete() {
-                      // Run 'onClose' when sidenav is closed via touch/swipe if applicable
-                      if (typeof options.onClose === 'function') {
-                        options.onClose.call(this, menu);
-                      }
-
-                      $(this).remove();
-                    } });
-                  $dragTarget.css({ width: '10px', right: '', left: 0 });
-                }
-              } else {
-                if (menuOut && velocityX >= -0.3 || velocityX > 0.5) {
-                  // Return menu to open
-                  if (rightPos !== 0) {
-                    menu.velocity({ 'translateX': [0, rightPos] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
-                  }
-
-                  $overlay.velocity({ opacity: 1 }, { duration: 50, queue: false, easing: 'easeOutQuad' });
-                  $dragTarget.css({ width: '50%', right: '', left: 0 });
-                  menuOut = true;
-                } else if (!menuOut || velocityX < -0.3) {
-                  // Enable Scrolling
-                  $('body').css({
-                    overflow: '',
-                    width: ''
-                  });
-
-                  // Slide menu closed
-                  menu.velocity({ 'translateX': [options.menuWidth + 10, rightPos] }, { duration: 200, queue: false, easing: 'easeOutQuad' });
-                  $overlay.velocity({ opacity: 0 }, { duration: 200, queue: false, easing: 'easeOutQuad',
-                    complete: function complete() {
-                      // Run 'onClose' when sidenav is closed via touch/swipe if applicable
-                      if (typeof options.onClose === 'function') {
-                        options.onClose.call(this, menu);
-                      }
-
-                      $(this).remove();
-                    } });
-                  $dragTarget.css({ width: '10px', right: 0, left: '' });
-                }
-              }
-            }
-          });
-        }
-
-        $this.off('click.sidenav').on('click.sidenav', function () {
-          if (menuOut === true) {
-            menuOut = false;
-            panning = false;
-            removeMenu();
-          } else {
-
-            // Disable Scrolling
-            var $body = $('body');
-            var $overlay = $('<div id="sidenav-overlay"></div>');
-            var oldWidth = $body.innerWidth();
-            $body.css('overflow', 'hidden');
-            $body.width(oldWidth);
-
-            // Push current drag target on top of DOM tree
-            $('body').append($dragTarget);
-
-            if (options.edge === 'left') {
-              $dragTarget.css({ width: '50%', right: 0, left: '' });
-              menu.velocity({ 'translateX': [0, -1 * options.menuWidth] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
-            } else {
-              $dragTarget.css({ width: '50%', right: '', left: 0 });
-              menu.velocity({ 'translateX': [0, options.menuWidth] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
-            }
-
-            // Overlay close on click
-            $overlay.css('opacity', 0).click(function () {
-              menuOut = false;
-              panning = false;
-              removeMenu();
-              $overlay.velocity({ opacity: 0 }, { duration: 300, queue: false, easing: 'easeOutQuad',
-                complete: function complete() {
-                  $(this).remove();
-                }
-              });
-            });
-
-            // Append body
-            $('body').append($overlay);
-            $overlay.velocity({ opacity: 1 }, { duration: 300, queue: false, easing: 'easeOutQuad',
-              complete: function complete() {
-                menuOut = true;
-                panning = false;
-              }
-            });
-
-            // Callback
-            if (typeof options.onOpen === 'function') {
-              options.onOpen.call(this, menu);
-            }
-          }
-
-          return false;
-        });
-      });
-    },
-    destroy: function destroy() {
-      var $overlay = $('#sidenav-overlay');
-      var $dragTarget = $('.drag-target[data-sidenav="' + $(this).attr('data-activates') + '"]');
-      $overlay.trigger('click');
-      $dragTarget.remove();
-      $(this).off('click');
-      $overlay.remove();
-    },
-    show: function show() {
-      this.trigger('click');
-    },
-    hide: function hide() {
-      $('#sidenav-overlay').trigger('click');
-    }
-  };
-
-  $.fn.sideNav = function (methodOrOptions) {
-    if (methods[methodOrOptions]) {
-      return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if ((typeof methodOrOptions === 'undefined' ? 'undefined' : _typeof(methodOrOptions)) === 'object' || !methodOrOptions) {
-      // Default to "init"
-      return methods.init.apply(this, arguments);
-    } else {
-      $.error('Method ' + methodOrOptions + ' does not exist on jQuery.sideNav');
-    }
-  }; // Plugin end
-})(jQuery);
-
-/***/ }),
-/* 64 */,
-/* 65 */
-/***/ (function(module, exports) {
-
-(function ($) {
-  $(document).ready(function () {
-
-    // jQuery reverse
-    $.fn.reverse = [].reverse;
-
-    // Hover behaviour: make sure this doesn't work on .click-to-toggle FABs!
-    $(document).on('mouseenter.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle):not(.toolbar)', function (e) {
-      var $this = $(this);
-      openFABMenu($this);
-    });
-    $(document).on('mouseleave.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle):not(.toolbar)', function (e) {
-      var $this = $(this);
-      closeFABMenu($this);
-    });
-
-    // Toggle-on-click behaviour.
-    $(document).on('click.fabClickToggle', '.fixed-action-btn.click-to-toggle > a', function (e) {
-      var $this = $(this);
-      var $menu = $this.parent();
-      if ($menu.hasClass('active')) {
-        closeFABMenu($menu);
-      } else {
-        openFABMenu($menu);
-      }
-    });
-
-    // Toolbar transition behaviour.
-    $(document).on('click.fabToolbar', '.fixed-action-btn.toolbar > a', function (e) {
-      var $this = $(this);
-      var $menu = $this.parent();
-      FABtoToolbar($menu);
-    });
-  });
-
-  $.fn.extend({
-    openFAB: function openFAB() {
-      openFABMenu($(this));
-    },
-    closeFAB: function closeFAB() {
-      closeFABMenu($(this));
-    },
-    openToolbar: function openToolbar() {
-      FABtoToolbar($(this));
-    },
-    closeToolbar: function closeToolbar() {
-      toolbarToFAB($(this));
-    }
-  });
-
-  var openFABMenu = function openFABMenu(btn) {
-    var $this = btn;
-    if ($this.hasClass('active') === false) {
-
-      // Get direction option
-      var horizontal = $this.hasClass('horizontal');
-      var offsetY, offsetX;
-
-      if (horizontal === true) {
-        offsetX = 40;
-      } else {
-        offsetY = 40;
-      }
-
-      $this.addClass('active');
-      $this.find('ul .btn-floating').velocity({ scaleY: ".4", scaleX: ".4", translateY: offsetY + 'px', translateX: offsetX + 'px' }, { duration: 0 });
-
-      var time = 0;
-      $this.find('ul .btn-floating').reverse().each(function () {
-        $(this).velocity({ opacity: "1", scaleX: "1", scaleY: "1", translateY: "0", translateX: '0' }, { duration: 80, delay: time });
-        time += 40;
-      });
-    }
-  };
-
-  var closeFABMenu = function closeFABMenu(btn) {
-    var $this = btn;
-    // Get direction option
-    var horizontal = $this.hasClass('horizontal');
-    var offsetY, offsetX;
-
-    if (horizontal === true) {
-      offsetX = 40;
-    } else {
-      offsetY = 40;
-    }
-
-    $this.removeClass('active');
-    var time = 0;
-    $this.find('ul .btn-floating').velocity("stop", true);
-    $this.find('ul .btn-floating').velocity({ opacity: "0", scaleX: ".4", scaleY: ".4", translateY: offsetY + 'px', translateX: offsetX + 'px' }, { duration: 80 });
-  };
-
-  /**
-   * Transform FAB into toolbar
-   * @param  {Object}  object jQuery object
-   */
-  var FABtoToolbar = function FABtoToolbar(btn) {
-    if (btn.attr('data-open') === "true") {
-      return;
-    }
-
-    var offsetX, offsetY, scaleFactor;
-    var windowWidth = window.innerWidth;
-    var windowHeight = window.innerHeight;
-    var btnRect = btn[0].getBoundingClientRect();
-    var anchor = btn.find('> a').first();
-    var menu = btn.find('> ul').first();
-    var backdrop = $('<div class="fab-backdrop"></div>');
-    var fabColor = anchor.css('background-color');
-    anchor.append(backdrop);
-
-    offsetX = btnRect.left - windowWidth / 2 + btnRect.width / 2;
-    offsetY = windowHeight - btnRect.bottom;
-    scaleFactor = windowWidth / backdrop.width();
-    btn.attr('data-origin-bottom', btnRect.bottom);
-    btn.attr('data-origin-left', btnRect.left);
-    btn.attr('data-origin-width', btnRect.width);
-
-    // Set initial state
-    btn.addClass('active');
-    btn.attr('data-open', true);
-    btn.css({
-      'text-align': 'center',
-      width: '100%',
-      bottom: 0,
-      left: 0,
-      transform: 'translateX(' + offsetX + 'px)',
-      transition: 'none'
-    });
-    anchor.css({
-      transform: 'translateY(' + -offsetY + 'px)',
-      transition: 'none'
-    });
-    backdrop.css({
-      'background-color': fabColor
-    });
-
-    setTimeout(function () {
-      btn.css({
-        transform: '',
-        transition: 'transform .2s cubic-bezier(0.550, 0.085, 0.680, 0.530), background-color 0s linear .2s'
-      });
-      anchor.css({
-        overflow: 'visible',
-        transform: '',
-        transition: 'transform .2s'
-      });
-
-      setTimeout(function () {
-        btn.css({
-          overflow: 'hidden',
-          'background-color': fabColor
-        });
-        backdrop.css({
-          transform: 'scale(' + scaleFactor + ')',
-          transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
-        });
-        menu.find('> li > a').css({
-          opacity: 1
-        });
-
-        // Scroll to close.
-        $(window).on('scroll.fabToolbarClose', function () {
-          toolbarToFAB(btn);
-          $(window).off('scroll.fabToolbarClose');
-          $(document).off('click.fabToolbarClose');
-        });
-
-        $(document).on('click.fabToolbarClose', function (e) {
-          if (!$(e.target).closest(menu).length) {
-            toolbarToFAB(btn);
-            $(window).off('scroll.fabToolbarClose');
-            $(document).off('click.fabToolbarClose');
-          }
-        });
-      }, 100);
-    }, 0);
-  };
-
-  /**
-   * Transform toolbar back into FAB
-   * @param  {Object}  object jQuery object
-   */
-  var toolbarToFAB = function toolbarToFAB(btn) {
-    if (btn.attr('data-open') !== "true") {
-      return;
-    }
-
-    var offsetX, offsetY, scaleFactor;
-    var windowWidth = window.innerWidth;
-    var windowHeight = window.innerHeight;
-    var btnWidth = btn.attr('data-origin-width');
-    var btnBottom = btn.attr('data-origin-bottom');
-    var btnLeft = btn.attr('data-origin-left');
-    var anchor = btn.find('> .btn-floating').first();
-    var menu = btn.find('> ul').first();
-    var backdrop = btn.find('.fab-backdrop');
-    var fabColor = anchor.css('background-color');
-
-    offsetX = btnLeft - windowWidth / 2 + btnWidth / 2;
-    offsetY = windowHeight - btnBottom;
-    scaleFactor = windowWidth / backdrop.width();
-
-    // Hide backdrop
-    btn.removeClass('active');
-    btn.attr('data-open', false);
-    btn.css({
-      'background-color': 'transparent',
-      transition: 'none'
-    });
-    anchor.css({
-      transition: 'none'
-    });
-    backdrop.css({
-      transform: 'scale(0)',
-      'background-color': fabColor
-    });
-    menu.find('> li > a').css({
-      opacity: ''
-    });
-
-    setTimeout(function () {
-      backdrop.remove();
-
-      // Set initial state.
-      btn.css({
-        'text-align': '',
-        width: '',
-        bottom: '',
-        left: '',
-        overflow: '',
-        'background-color': '',
-        transform: 'translate3d(' + -offsetX + 'px,0,0)'
-      });
-      anchor.css({
-        overflow: '',
-        transform: 'translate3d(0,' + offsetY + 'px,0)'
-      });
-
-      setTimeout(function () {
-        btn.css({
-          transform: 'translate3d(0,0,0)',
-          transition: 'transform .2s'
-        });
-        anchor.css({
-          transform: 'translate3d(0,0,0)',
-          transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
-        });
-      }, 20);
-    }, 200);
-  };
-})(jQuery);
-
-/***/ }),
-/* 66 */,
-/* 67 */
-/***/ (function(module, exports) {
-
-(function ($) {
-  $(document).ready(function () {
-
-    // Function to update labels of text fields
-    Materialize.updateTextFields = function () {
-      var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
-      $(input_selector).each(function (index, element) {
-        var $this = $(this);
-        if ($(element).val().length > 0 || $(element).is(':focus') || element.autofocus || $this.attr('placeholder') !== undefined) {
-          $this.siblings('label').addClass('active');
-        } else if ($(element)[0].validity) {
-          $this.siblings('label').toggleClass('active', $(element)[0].validity.badInput === true);
-        } else {
-          $this.siblings('label').removeClass('active');
-        }
-      });
-    };
-
-    // Text based inputs
-    var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
-
-    // Add active if form auto complete
-    $(document).on('change', input_selector, function () {
-      if ($(this).val().length !== 0 || $(this).attr('placeholder') !== undefined) {
-        $(this).siblings('label').addClass('active');
-      }
-      validate_field($(this));
-    });
-
-    // Add active if input element has been pre-populated on document ready
-    $(document).ready(function () {
-      Materialize.updateTextFields();
-    });
-
-    // HTML DOM FORM RESET handling
-    $(document).on('reset', function (e) {
-      var formReset = $(e.target);
-      if (formReset.is('form')) {
-        formReset.find(input_selector).removeClass('valid').removeClass('invalid');
-        formReset.find(input_selector).each(function () {
-          if ($(this).attr('value') === '') {
-            $(this).siblings('label').removeClass('active');
-          }
-        });
-
-        // Reset select
-        formReset.find('select.initialized').each(function () {
-          var reset_text = formReset.find('option[selected]').text();
-          formReset.siblings('input.select-dropdown').val(reset_text);
-        });
-      }
-    });
-
-    // Add active when element has focus
-    $(document).on('focus', input_selector, function () {
-      $(this).siblings('label, .prefix').addClass('active');
-    });
-
-    $(document).on('blur', input_selector, function () {
-      var $inputElement = $(this);
-      var selector = ".prefix";
-
-      if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
-        selector += ", label";
-      }
-
-      $inputElement.siblings(selector).removeClass('active');
-
-      validate_field($inputElement);
-    });
-
-    window.validate_field = function (object) {
-      var hasLength = object.attr('data-length') !== undefined;
-      var lenAttr = parseInt(object.attr('data-length'));
-      var len = object.val().length;
-
-      if (object.val().length === 0 && object[0].validity.badInput === false && !object.is(':required')) {
-        if (object.hasClass('validate')) {
-          object.removeClass('valid');
-          object.removeClass('invalid');
-        }
-      } else {
-        if (object.hasClass('validate')) {
-          // Check for character counter attributes
-          if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
-            object.removeClass('invalid');
-            object.addClass('valid');
-          } else {
-            object.removeClass('valid');
-            object.addClass('invalid');
-          }
-        }
-      }
-    };
-
-    // Radio and Checkbox focus class
-    var radio_checkbox = 'input[type=radio], input[type=checkbox]';
-    $(document).on('keyup.radio', radio_checkbox, function (e) {
-      // TAB, check if tabbing to radio or checkbox.
-      if (e.which === 9) {
-        $(this).addClass('tabbed');
-        var $this = $(this);
-        $this.one('blur', function (e) {
-
-          $(this).removeClass('tabbed');
-        });
-        return;
-      }
-    });
-
-    // Textarea Auto Resize
-    var hiddenDiv = $('.hiddendiv').first();
-    if (!hiddenDiv.length) {
-      hiddenDiv = $('<div class="hiddendiv common"></div>');
-      $('body').append(hiddenDiv);
-    }
-    var text_area_selector = '.materialize-textarea';
-
-    function textareaAutoResize($textarea) {
-      // Set font properties of hiddenDiv
-
-      var fontFamily = $textarea.css('font-family');
-      var fontSize = $textarea.css('font-size');
-      var lineHeight = $textarea.css('line-height');
-      var padding = $textarea.css('padding');
-
-      if (fontSize) {
-        hiddenDiv.css('font-size', fontSize);
-      }
-      if (fontFamily) {
-        hiddenDiv.css('font-family', fontFamily);
-      }
-      if (lineHeight) {
-        hiddenDiv.css('line-height', lineHeight);
-      }
-      if (padding) {
-        hiddenDiv.css('padding', padding);
-      }
-
-      // Set original-height, if none
-      if (!$textarea.data('original-height')) {
-        $textarea.data('original-height', $textarea.height());
-      }
-
-      if ($textarea.attr('wrap') === 'off') {
-        hiddenDiv.css('overflow-wrap', 'normal').css('white-space', 'pre');
-      }
-
-      hiddenDiv.text($textarea.val() + '\n');
-      var content = hiddenDiv.html().replace(/\n/g, '<br>');
-      hiddenDiv.html(content);
-
-      // When textarea is hidden, width goes crazy.
-      // Approximate with half of window size
-
-      if ($textarea.is(':visible')) {
-        hiddenDiv.css('width', $textarea.width());
-      } else {
-        hiddenDiv.css('width', $(window).width() / 2);
-      }
-
-      /**
-       * Resize if the new height is greater than the
-       * original height of the textarea
-       */
-      if ($textarea.data('original-height') <= hiddenDiv.height()) {
-        $textarea.css('height', hiddenDiv.height());
-      } else if ($textarea.val().length < $textarea.data('previous-length')) {
-        /**
-         * In case the new height is less than original height, it
-         * means the textarea has less text than before
-         * So we set the height to the original one
-         */
-        $textarea.css('height', $textarea.data('original-height'));
-      }
-      $textarea.data('previous-length', $textarea.val().length);
-    }
-
-    $(text_area_selector).each(function () {
-      var $textarea = $(this);
-      /**
-       * Instead of resizing textarea on document load,
-       * store the original height and the original length
-       */
-      $textarea.data('original-height', $textarea.height());
-      $textarea.data('previous-length', $textarea.val().length);
-    });
-
-    $('body').on('keyup keydown autoresize', text_area_selector, function () {
-      textareaAutoResize($(this));
-    });
-
-    // File Input Path
-    $(document).on('change', '.file-field input[type="file"]', function () {
-      var file_field = $(this).closest('.file-field');
-      var path_input = file_field.find('input.file-path');
-      var files = $(this)[0].files;
-      var file_names = [];
-      for (var i = 0; i < files.length; i++) {
-        file_names.push(files[i].name);
-      }
-      path_input.val(file_names.join(", "));
-      path_input.trigger('change');
-    });
-
-    /****************
-    *  Range Input  *
-    ****************/
-
-    var range_type = 'input[type=range]';
-    var range_mousedown = false;
-    var left;
-
-    $(range_type).each(function () {
-      var thumb = $('<span class="thumb"><span class="value"></span></span>');
-      $(this).after(thumb);
-    });
-
-    var showRangeBubble = function showRangeBubble(thumb) {
-      var paddingLeft = parseInt(thumb.parent().css('padding-left'));
-      var marginLeft = -7 + paddingLeft + 'px';
-      thumb.velocity({ height: "30px", width: "30px", top: "-30px", marginLeft: marginLeft }, { duration: 300, easing: 'easeOutExpo' });
-    };
-
-    var calcRangeOffset = function calcRangeOffset(range) {
-      var width = range.width() - 15;
-      var max = parseFloat(range.attr('max'));
-      var min = parseFloat(range.attr('min'));
-      var percent = (parseFloat(range.val()) - min) / (max - min);
-      return percent * width;
-    };
-
-    var range_wrapper = '.range-field';
-    $(document).on('change', range_type, function (e) {
-      var thumb = $(this).siblings('.thumb');
-      thumb.find('.value').html($(this).val());
-
-      if (!thumb.hasClass('active')) {
-        showRangeBubble(thumb);
-      }
-
-      var offsetLeft = calcRangeOffset($(this));
-      thumb.addClass('active').css('left', offsetLeft);
-    });
-
-    $(document).on('mousedown touchstart', range_type, function (e) {
-      var thumb = $(this).siblings('.thumb');
-
-      // If thumb indicator does not exist yet, create it
-      if (thumb.length <= 0) {
-        thumb = $('<span class="thumb"><span class="value"></span></span>');
-        $(this).after(thumb);
-      }
-
-      // Set indicator value
-      thumb.find('.value').html($(this).val());
-
-      range_mousedown = true;
-      $(this).addClass('active');
-
-      if (!thumb.hasClass('active')) {
-        showRangeBubble(thumb);
-      }
-
-      if (e.type !== 'input') {
-        var offsetLeft = calcRangeOffset($(this));
-        thumb.addClass('active').css('left', offsetLeft);
-      }
-    });
-
-    $(document).on('mouseup touchend', range_wrapper, function () {
-      range_mousedown = false;
-      $(this).removeClass('active');
-    });
-
-    $(document).on('input mousemove touchmove', range_wrapper, function (e) {
-      var thumb = $(this).children('.thumb');
-      var left;
-      var input = $(this).find(range_type);
-
-      if (range_mousedown) {
-        if (!thumb.hasClass('active')) {
-          showRangeBubble(thumb);
-        }
-
-        var offsetLeft = calcRangeOffset(input);
-        thumb.addClass('active').css('left', offsetLeft);
-        thumb.find('.value').html(thumb.siblings(range_type).val());
-      }
-    });
-
-    $(document).on('mouseout touchleave', range_wrapper, function () {
-      if (!range_mousedown) {
-
-        var thumb = $(this).children('.thumb');
-        var paddingLeft = parseInt($(this).css('padding-left'));
-        var marginLeft = 7 + paddingLeft + 'px';
-
-        if (thumb.hasClass('active')) {
-          thumb.velocity({ height: '0', width: '0', top: '10px', marginLeft: marginLeft }, { duration: 100 });
-        }
-        thumb.removeClass('active');
-      }
-    });
-
-    /**************************
-     * Auto complete plugin  *
-     *************************/
-    $.fn.autocomplete = function (options) {
-      // Defaults
-      var defaults = {
-        data: {},
-        limit: Infinity,
-        onAutocomplete: null,
-        minLength: 1
-      };
-
-      options = $.extend(defaults, options);
-
-      return this.each(function () {
-        var $input = $(this);
-        var data = options.data,
-            count = 0,
-            activeIndex = -1,
-            oldVal,
-            $inputDiv = $input.closest('.input-field'); // Div to append on
-
-        // Check if data isn't empty
-        if (!$.isEmptyObject(data)) {
-          var $autocomplete = $('<ul class="autocomplete-content dropdown-content"></ul>');
-          var $oldAutocomplete;
-
-          // Append autocomplete element.
-          // Prevent double structure init.
-          if ($inputDiv.length) {
-            $oldAutocomplete = $inputDiv.children('.autocomplete-content.dropdown-content').first();
-            if (!$oldAutocomplete.length) {
-              $inputDiv.append($autocomplete); // Set ul in body
-            }
-          } else {
-            $oldAutocomplete = $input.next('.autocomplete-content.dropdown-content');
-            if (!$oldAutocomplete.length) {
-              $input.after($autocomplete);
-            }
-          }
-          if ($oldAutocomplete.length) {
-            $autocomplete = $oldAutocomplete;
-          }
-
-          // Highlight partial match.
-          var highlight = function highlight(string, $el) {
-            var img = $el.find('img');
-            var matchStart = $el.text().toLowerCase().indexOf("" + string.toLowerCase() + ""),
-                matchEnd = matchStart + string.length - 1,
-                beforeMatch = $el.text().slice(0, matchStart),
-                matchText = $el.text().slice(matchStart, matchEnd + 1),
-                afterMatch = $el.text().slice(matchEnd + 1);
-            $el.html("<span>" + beforeMatch + "<span class='highlight'>" + matchText + "</span>" + afterMatch + "</span>");
-            if (img.length) {
-              $el.prepend(img);
-            }
-          };
-
-          // Reset current element position
-          var resetCurrentElement = function resetCurrentElement() {
-            activeIndex = -1;
-            $autocomplete.find('.active').removeClass('active');
-          };
-
-          // Remove autocomplete elements
-          var removeAutocomplete = function removeAutocomplete() {
-            $autocomplete.empty();
-            resetCurrentElement();
-            oldVal = undefined;
-          };
-
-          $input.off('blur.autocomplete').on('blur.autocomplete', function () {
-            removeAutocomplete();
-          });
-
-          // Perform search
-          $input.off('keyup.autocomplete focus.autocomplete').on('keyup.autocomplete focus.autocomplete', function (e) {
-            // Reset count.
-            count = 0;
-            var val = $input.val().toLowerCase();
-
-            // Don't capture enter or arrow key usage.
-            if (e.which === 13 || e.which === 38 || e.which === 40) {
-              return;
-            }
-
-            // Check if the input isn't empty
-            if (oldVal !== val) {
-              removeAutocomplete();
-
-              if (val.length >= options.minLength) {
-                for (var key in data) {
-                  if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
-                    // Break if past limit
-                    if (count >= options.limit) {
-                      break;
-                    }
-
-                    var autocompleteOption = $('<li></li>');
-                    if (!!data[key]) {
-                      autocompleteOption.append('<img src="' + data[key] + '" class="right circle"><span>' + key + '</span>');
-                    } else {
-                      autocompleteOption.append('<span>' + key + '</span>');
-                    }
-
-                    $autocomplete.append(autocompleteOption);
-                    highlight(val, autocompleteOption);
-                    count++;
-                  }
-                }
-              }
-            }
-
-            // Update oldVal
-            oldVal = val;
-          });
-
-          $input.off('keydown.autocomplete').on('keydown.autocomplete', function (e) {
-            // Arrow keys and enter key usage
-            var keyCode = e.which,
-                liElement,
-                numItems = $autocomplete.children('li').length,
-                $active = $autocomplete.children('.active').first();
-
-            // select element on Enter
-            if (keyCode === 13 && activeIndex >= 0) {
-              liElement = $autocomplete.children('li').eq(activeIndex);
-              if (liElement.length) {
-                liElement.trigger('mousedown.autocomplete');
-                e.preventDefault();
-              }
-              return;
-            }
-
-            // Capture up and down key
-            if (keyCode === 38 || keyCode === 40) {
-              e.preventDefault();
-
-              if (keyCode === 38 && activeIndex > 0) {
-                activeIndex--;
-              }
-
-              if (keyCode === 40 && activeIndex < numItems - 1) {
-                activeIndex++;
-              }
-
-              $active.removeClass('active');
-              if (activeIndex >= 0) {
-                $autocomplete.children('li').eq(activeIndex).addClass('active');
-              }
-            }
-          });
-
-          // Set input value
-          $autocomplete.off('mousedown.autocomplete touchstart.autocomplete').on('mousedown.autocomplete touchstart.autocomplete', 'li', function () {
-            var text = $(this).text().trim();
-            $input.val(text);
-            $input.trigger('change');
-            removeAutocomplete();
-
-            // Handle onAutocomplete callback.
-            if (typeof options.onAutocomplete === "function") {
-              options.onAutocomplete.call(this, text);
-            }
-          });
-
-          // Empty data
-        } else {
-          $input.off('keyup.autocomplete focus.autocomplete');
-        }
-      });
-    };
-  }); // End of $(document).ready
-
-  /*******************
-   *  Select Plugin  *
-   ******************/
-  $.fn.material_select = function (callback) {
-    $(this).each(function () {
-      var $select = $(this);
-
-      if ($select.hasClass('browser-default')) {
-        return; // Continue to next (return false breaks out of entire loop)
-      }
-
-      var multiple = $select.attr('multiple') ? true : false,
-          lastID = $select.attr('data-select-id'); // Tear down structure if Select needs to be rebuilt
-
-      if (lastID) {
-        $select.parent().find('span.caret').remove();
-        $select.parent().find('input').remove();
-
-        $select.unwrap();
-        $('ul#select-options-' + lastID).remove();
-      }
-
-      // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
-      if (callback === 'destroy') {
-        $select.removeAttr('data-select-id').removeClass('initialized');
-        $(window).off('click.select');
-        return;
-      }
-
-      var uniqueID = Materialize.guid();
-      $select.attr('data-select-id', uniqueID);
-      var wrapper = $('<div class="select-wrapper"></div>');
-      wrapper.addClass($select.attr('class'));
-      if ($select.is(':disabled')) wrapper.addClass('disabled');
-      var options = $('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
-          selectChildren = $select.children('option, optgroup'),
-          valuesSelected = [],
-          optionsHover = false;
-
-      var label = $select.find('option:selected').html() || $select.find('option:first').html() || "";
-
-      // Function that renders and appends the option taking into
-      // account type and possible image icon.
-      var appendOptionWithIcon = function appendOptionWithIcon(select, option, type) {
-        // Add disabled attr if disabled
-        var disabledClass = option.is(':disabled') ? 'disabled ' : '';
-        var optgroupClass = type === 'optgroup-option' ? 'optgroup-option ' : '';
-        var multipleCheckbox = multiple ? '<input type="checkbox"' + disabledClass + '/><label></label>' : '';
-
-        // add icons
-        var icon_url = option.data('icon');
-        var classes = option.attr('class');
-        if (!!icon_url) {
-          var classString = '';
-          if (!!classes) classString = ' class="' + classes + '"';
-
-          // Check for multiple type.
-          options.append($('<li class="' + disabledClass + optgroupClass + '"><img alt="" src="' + icon_url + '"' + classString + '><span>' + multipleCheckbox + option.html() + '</span></li>'));
-          return true;
-        }
-
-        // Check for multiple type.
-        options.append($('<li class="' + disabledClass + optgroupClass + '"><span>' + multipleCheckbox + option.html() + '</span></li>'));
-      };
-
-      /* Create dropdown structure. */
-      if (selectChildren.length) {
-        selectChildren.each(function () {
-          if ($(this).is('option')) {
-            // Direct descendant option.
-            if (multiple) {
-              appendOptionWithIcon($select, $(this), 'multiple');
-            } else {
-              appendOptionWithIcon($select, $(this));
-            }
-          } else if ($(this).is('optgroup')) {
-            // Optgroup.
-            var selectOptions = $(this).children('option');
-            options.append($('<li class="optgroup"><span>' + $(this).attr('label') + '</span></li>'));
-
-            selectOptions.each(function () {
-              appendOptionWithIcon($select, $(this), 'optgroup-option');
-            });
-          }
-        });
-      }
-
-      options.find('li:not(.optgroup)').each(function (i) {
-        $(this).click(function (e) {
-          // Check if option element is disabled
-          if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
-            var selected = true;
-
-            if (multiple) {
-              $('input[type="checkbox"]', this).prop('checked', function (i, v) {
-                return !v;
-              });
-              selected = toggleEntryFromArray(valuesSelected, i, $select);
-              $newSelect.trigger('focus');
-            } else {
-              options.find('li').removeClass('active');
-              $(this).toggleClass('active');
-              $newSelect.val($(this).text());
-            }
-
-            activateOption(options, $(this));
-            $select.find('option').eq(i).prop('selected', selected);
-            // Trigger onchange() event
-            $select.trigger('change');
-            if (typeof callback !== 'undefined') callback();
-          }
-
-          e.stopPropagation();
-        });
-      });
-
-      // Wrap Elements
-      $select.wrap(wrapper);
-      // Add Select Display Element
-      var dropdownIcon = $('<span class="caret">&#9660;</span>');
-
-      // escape double quotes
-      var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
-
-      var $newSelect = $('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
-      $select.before($newSelect);
-      $newSelect.before(dropdownIcon);
-
-      $newSelect.after(options);
-      // Check if section element is disabled
-      if (!$select.is(':disabled')) {
-        $newSelect.dropdown({ 'hover': false });
-      }
-
-      // Copy tabindex
-      if ($select.attr('tabindex')) {
-        $($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
-      }
-
-      $select.addClass('initialized');
-
-      $newSelect.on({
-        'focus': function focus() {
-          if ($('ul.select-dropdown').not(options[0]).is(':visible')) {
-            $('input.select-dropdown').trigger('close');
-            $(window).off('click.select');
-          }
-          if (!options.is(':visible')) {
-            $(this).trigger('open', ['focus']);
-            var label = $(this).val();
-            if (multiple && label.indexOf(',') >= 0) {
-              label = label.split(',')[0];
-            }
-
-            var selectedOption = options.find('li').filter(function () {
-              return $(this).text().toLowerCase() === label.toLowerCase();
-            })[0];
-            activateOption(options, selectedOption, true);
-
-            $(window).off('click.select').on('click.select', function () {
-              multiple && (optionsHover || $newSelect.trigger('close'));
-              $(window).off('click.select');
-            });
-          }
-        },
-        'click': function click(e) {
-          e.stopPropagation();
-        }
-      });
-
-      $newSelect.on('blur', function () {
-        if (!multiple) {
-          $(this).trigger('close');
-          $(window).off('click.select');
-        }
-        options.find('li.selected').removeClass('selected');
-      });
-
-      options.hover(function () {
-        optionsHover = true;
-      }, function () {
-        optionsHover = false;
-      });
-
-      // Add initial multiple selections.
-      if (multiple) {
-        $select.find("option:selected:not(:disabled)").each(function () {
-          var index = this.index;
-
-          toggleEntryFromArray(valuesSelected, index, $select);
-          options.find("li:not(.optgroup)").eq(index).find(":checkbox").prop("checked", true);
-        });
-      }
-
-      /**
-       * Make option as selected and scroll to selected position
-       * @param {jQuery} collection  Select options jQuery element
-       * @param {Element} newOption  element of the new option
-       * @param {Boolean} firstActivation  If on first activation of select
-       */
-      var activateOption = function activateOption(collection, newOption, firstActivation) {
-        if (newOption) {
-          collection.find('li.selected').removeClass('selected');
-          var option = $(newOption);
-          option.addClass('selected');
-          if (!multiple || !!firstActivation) {
-            options.scrollTo(option);
-          }
-        }
-      };
-
-      // Allow user to search by typing
-      // this array is cleared after 1 second
-      var filterQuery = [],
-          onKeyDown = function onKeyDown(e) {
-        // TAB - switch to another input
-        if (e.which == 9) {
-          $newSelect.trigger('close');
-          return;
-        }
-
-        // ARROW DOWN WHEN SELECT IS CLOSED - open select options
-        if (e.which == 40 && !options.is(':visible')) {
-          $newSelect.trigger('open');
-          return;
-        }
-
-        // ENTER WHEN SELECT IS CLOSED - submit form
-        if (e.which == 13 && !options.is(':visible')) {
-          return;
-        }
-
-        e.preventDefault();
-
-        // CASE WHEN USER TYPE LETTERS
-        var letter = String.fromCharCode(e.which).toLowerCase(),
-            nonLetters = [9, 13, 27, 38, 40];
-        if (letter && nonLetters.indexOf(e.which) === -1) {
-          filterQuery.push(letter);
-
-          var string = filterQuery.join(''),
-              newOption = options.find('li').filter(function () {
-            return $(this).text().toLowerCase().indexOf(string) === 0;
-          })[0];
-
-          if (newOption) {
-            activateOption(options, newOption);
-          }
-        }
-
-        // ENTER - select option and close when select options are opened
-        if (e.which == 13) {
-          var activeOption = options.find('li.selected:not(.disabled)')[0];
-          if (activeOption) {
-            $(activeOption).trigger('click');
-            if (!multiple) {
-              $newSelect.trigger('close');
-            }
-          }
-        }
-
-        // ARROW DOWN - move to next not disabled option
-        if (e.which == 40) {
-          if (options.find('li.selected').length) {
-            newOption = options.find('li.selected').next('li:not(.disabled)')[0];
-          } else {
-            newOption = options.find('li:not(.disabled)')[0];
-          }
-          activateOption(options, newOption);
-        }
-
-        // ESC - close options
-        if (e.which == 27) {
-          $newSelect.trigger('close');
-        }
-
-        // ARROW UP - move to previous not disabled option
-        if (e.which == 38) {
-          newOption = options.find('li.selected').prev('li:not(.disabled)')[0];
-          if (newOption) activateOption(options, newOption);
-        }
-
-        // Automaticaly clean filter query so user can search again by starting letters
-        setTimeout(function () {
-          filterQuery = [];
-        }, 1000);
-      };
-
-      $newSelect.on('keydown', onKeyDown);
-    });
-
-    function toggleEntryFromArray(entriesArray, entryIndex, select) {
-      var index = entriesArray.indexOf(entryIndex),
-          notAdded = index === -1;
-
-      if (notAdded) {
-        entriesArray.push(entryIndex);
-      } else {
-        entriesArray.splice(index, 1);
-      }
-
-      select.siblings('ul.dropdown-content').find('li:not(.optgroup)').eq(entryIndex).toggleClass('active');
-
-      // use notAdded instead of true (to detect if the option is selected or not)
-      select.find('option').eq(entryIndex).prop('selected', notAdded);
-      setValueToInput(entriesArray, select);
-
-      return notAdded;
-    }
-
-    function setValueToInput(entriesArray, select) {
-      var value = '';
-
-      for (var i = 0, count = entriesArray.length; i < count; i++) {
-        var text = select.find('option').eq(entriesArray[i]).text();
-
-        i === 0 ? value += text : value += ', ' + text;
-      }
-
-      if (value === '') {
-        value = select.find('option:disabled').eq(0).text();
-      }
-
-      select.siblings('input.select-dropdown').val(value);
-    }
-  };
-})(jQuery);
-
-/***/ }),
-/* 68 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -35282,7 +33326,1929 @@ if (true) {
 
 
 /***/ }),
-/* 69 */
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+!function (a, b, c, d) {
+  "use strict";
+  function k(a, b, c) {
+    return setTimeout(q(a, c), b);
+  }function l(a, b, c) {
+    return Array.isArray(a) ? (m(a, c[b], c), !0) : !1;
+  }function m(a, b, c) {
+    var e;if (a) if (a.forEach) a.forEach(b, c);else if (a.length !== d) for (e = 0; e < a.length;) {
+      b.call(c, a[e], e, a), e++;
+    } else for (e in a) {
+      a.hasOwnProperty(e) && b.call(c, a[e], e, a);
+    }
+  }function n(a, b, c) {
+    for (var e = Object.keys(b), f = 0; f < e.length;) {
+      (!c || c && a[e[f]] === d) && (a[e[f]] = b[e[f]]), f++;
+    }return a;
+  }function o(a, b) {
+    return n(a, b, !0);
+  }function p(a, b, c) {
+    var e,
+        d = b.prototype;e = a.prototype = Object.create(d), e.constructor = a, e._super = d, c && n(e, c);
+  }function q(a, b) {
+    return function () {
+      return a.apply(b, arguments);
+    };
+  }function r(a, b) {
+    return (typeof a === "undefined" ? "undefined" : _typeof(a)) == g ? a.apply(b ? b[0] || d : d, b) : a;
+  }function s(a, b) {
+    return a === d ? b : a;
+  }function t(a, b, c) {
+    m(x(b), function (b) {
+      a.addEventListener(b, c, !1);
+    });
+  }function u(a, b, c) {
+    m(x(b), function (b) {
+      a.removeEventListener(b, c, !1);
+    });
+  }function v(a, b) {
+    for (; a;) {
+      if (a == b) return !0;a = a.parentNode;
+    }return !1;
+  }function w(a, b) {
+    return a.indexOf(b) > -1;
+  }function x(a) {
+    return a.trim().split(/\s+/g);
+  }function y(a, b, c) {
+    if (a.indexOf && !c) return a.indexOf(b);for (var d = 0; d < a.length;) {
+      if (c && a[d][c] == b || !c && a[d] === b) return d;d++;
+    }return -1;
+  }function z(a) {
+    return Array.prototype.slice.call(a, 0);
+  }function A(a, b, c) {
+    for (var d = [], e = [], f = 0; f < a.length;) {
+      var g = b ? a[f][b] : a[f];y(e, g) < 0 && d.push(a[f]), e[f] = g, f++;
+    }return c && (d = b ? d.sort(function (a, c) {
+      return a[b] > c[b];
+    }) : d.sort()), d;
+  }function B(a, b) {
+    for (var c, f, g = b[0].toUpperCase() + b.slice(1), h = 0; h < e.length;) {
+      if (c = e[h], f = c ? c + g : b, f in a) return f;h++;
+    }return d;
+  }function D() {
+    return C++;
+  }function E(a) {
+    var b = a.ownerDocument;return b.defaultView || b.parentWindow;
+  }function ab(a, b) {
+    var c = this;this.manager = a, this.callback = b, this.element = a.element, this.target = a.options.inputTarget, this.domHandler = function (b) {
+      r(a.options.enable, [a]) && c.handler(b);
+    }, this.init();
+  }function bb(a) {
+    var b,
+        c = a.options.inputClass;return b = c ? c : H ? wb : I ? Eb : G ? Gb : rb, new b(a, cb);
+  }function cb(a, b, c) {
+    var d = c.pointers.length,
+        e = c.changedPointers.length,
+        f = b & O && 0 === d - e,
+        g = b & (Q | R) && 0 === d - e;c.isFirst = !!f, c.isFinal = !!g, f && (a.session = {}), c.eventType = b, db(a, c), a.emit("hammer.input", c), a.recognize(c), a.session.prevInput = c;
+  }function db(a, b) {
+    var c = a.session,
+        d = b.pointers,
+        e = d.length;c.firstInput || (c.firstInput = gb(b)), e > 1 && !c.firstMultiple ? c.firstMultiple = gb(b) : 1 === e && (c.firstMultiple = !1);var f = c.firstInput,
+        g = c.firstMultiple,
+        h = g ? g.center : f.center,
+        i = b.center = hb(d);b.timeStamp = j(), b.deltaTime = b.timeStamp - f.timeStamp, b.angle = lb(h, i), b.distance = kb(h, i), eb(c, b), b.offsetDirection = jb(b.deltaX, b.deltaY), b.scale = g ? nb(g.pointers, d) : 1, b.rotation = g ? mb(g.pointers, d) : 0, fb(c, b);var k = a.element;v(b.srcEvent.target, k) && (k = b.srcEvent.target), b.target = k;
+  }function eb(a, b) {
+    var c = b.center,
+        d = a.offsetDelta || {},
+        e = a.prevDelta || {},
+        f = a.prevInput || {};(b.eventType === O || f.eventType === Q) && (e = a.prevDelta = { x: f.deltaX || 0, y: f.deltaY || 0 }, d = a.offsetDelta = { x: c.x, y: c.y }), b.deltaX = e.x + (c.x - d.x), b.deltaY = e.y + (c.y - d.y);
+  }function fb(a, b) {
+    var f,
+        g,
+        h,
+        j,
+        c = a.lastInterval || b,
+        e = b.timeStamp - c.timeStamp;if (b.eventType != R && (e > N || c.velocity === d)) {
+      var k = c.deltaX - b.deltaX,
+          l = c.deltaY - b.deltaY,
+          m = ib(e, k, l);g = m.x, h = m.y, f = i(m.x) > i(m.y) ? m.x : m.y, j = jb(k, l), a.lastInterval = b;
+    } else f = c.velocity, g = c.velocityX, h = c.velocityY, j = c.direction;b.velocity = f, b.velocityX = g, b.velocityY = h, b.direction = j;
+  }function gb(a) {
+    for (var b = [], c = 0; c < a.pointers.length;) {
+      b[c] = { clientX: h(a.pointers[c].clientX), clientY: h(a.pointers[c].clientY) }, c++;
+    }return { timeStamp: j(), pointers: b, center: hb(b), deltaX: a.deltaX, deltaY: a.deltaY };
+  }function hb(a) {
+    var b = a.length;if (1 === b) return { x: h(a[0].clientX), y: h(a[0].clientY) };for (var c = 0, d = 0, e = 0; b > e;) {
+      c += a[e].clientX, d += a[e].clientY, e++;
+    }return { x: h(c / b), y: h(d / b) };
+  }function ib(a, b, c) {
+    return { x: b / a || 0, y: c / a || 0 };
+  }function jb(a, b) {
+    return a === b ? S : i(a) >= i(b) ? a > 0 ? T : U : b > 0 ? V : W;
+  }function kb(a, b, c) {
+    c || (c = $);var d = b[c[0]] - a[c[0]],
+        e = b[c[1]] - a[c[1]];return Math.sqrt(d * d + e * e);
+  }function lb(a, b, c) {
+    c || (c = $);var d = b[c[0]] - a[c[0]],
+        e = b[c[1]] - a[c[1]];return 180 * Math.atan2(e, d) / Math.PI;
+  }function mb(a, b) {
+    return lb(b[1], b[0], _) - lb(a[1], a[0], _);
+  }function nb(a, b) {
+    return kb(b[0], b[1], _) / kb(a[0], a[1], _);
+  }function rb() {
+    this.evEl = pb, this.evWin = qb, this.allow = !0, this.pressed = !1, ab.apply(this, arguments);
+  }function wb() {
+    this.evEl = ub, this.evWin = vb, ab.apply(this, arguments), this.store = this.manager.session.pointerEvents = [];
+  }function Ab() {
+    this.evTarget = yb, this.evWin = zb, this.started = !1, ab.apply(this, arguments);
+  }function Bb(a, b) {
+    var c = z(a.touches),
+        d = z(a.changedTouches);return b & (Q | R) && (c = A(c.concat(d), "identifier", !0)), [c, d];
+  }function Eb() {
+    this.evTarget = Db, this.targetIds = {}, ab.apply(this, arguments);
+  }function Fb(a, b) {
+    var c = z(a.touches),
+        d = this.targetIds;if (b & (O | P) && 1 === c.length) return d[c[0].identifier] = !0, [c, c];var e,
+        f,
+        g = z(a.changedTouches),
+        h = [],
+        i = this.target;if (f = c.filter(function (a) {
+      return v(a.target, i);
+    }), b === O) for (e = 0; e < f.length;) {
+      d[f[e].identifier] = !0, e++;
+    }for (e = 0; e < g.length;) {
+      d[g[e].identifier] && h.push(g[e]), b & (Q | R) && delete d[g[e].identifier], e++;
+    }return h.length ? [A(f.concat(h), "identifier", !0), h] : void 0;
+  }function Gb() {
+    ab.apply(this, arguments);var a = q(this.handler, this);this.touch = new Eb(this.manager, a), this.mouse = new rb(this.manager, a);
+  }function Pb(a, b) {
+    this.manager = a, this.set(b);
+  }function Qb(a) {
+    if (w(a, Mb)) return Mb;var b = w(a, Nb),
+        c = w(a, Ob);return b && c ? Nb + " " + Ob : b || c ? b ? Nb : Ob : w(a, Lb) ? Lb : Kb;
+  }function Yb(a) {
+    this.id = D(), this.manager = null, this.options = o(a || {}, this.defaults), this.options.enable = s(this.options.enable, !0), this.state = Rb, this.simultaneous = {}, this.requireFail = [];
+  }function Zb(a) {
+    return a & Wb ? "cancel" : a & Ub ? "end" : a & Tb ? "move" : a & Sb ? "start" : "";
+  }function $b(a) {
+    return a == W ? "down" : a == V ? "up" : a == T ? "left" : a == U ? "right" : "";
+  }function _b(a, b) {
+    var c = b.manager;return c ? c.get(a) : a;
+  }function ac() {
+    Yb.apply(this, arguments);
+  }function bc() {
+    ac.apply(this, arguments), this.pX = null, this.pY = null;
+  }function cc() {
+    ac.apply(this, arguments);
+  }function dc() {
+    Yb.apply(this, arguments), this._timer = null, this._input = null;
+  }function ec() {
+    ac.apply(this, arguments);
+  }function fc() {
+    ac.apply(this, arguments);
+  }function gc() {
+    Yb.apply(this, arguments), this.pTime = !1, this.pCenter = !1, this._timer = null, this._input = null, this.count = 0;
+  }function hc(a, b) {
+    return b = b || {}, b.recognizers = s(b.recognizers, hc.defaults.preset), new kc(a, b);
+  }function kc(a, b) {
+    b = b || {}, this.options = o(b, hc.defaults), this.options.inputTarget = this.options.inputTarget || a, this.handlers = {}, this.session = {}, this.recognizers = [], this.element = a, this.input = bb(this), this.touchAction = new Pb(this, this.options.touchAction), lc(this, !0), m(b.recognizers, function (a) {
+      var b = this.add(new a[0](a[1]));a[2] && b.recognizeWith(a[2]), a[3] && b.requireFailure(a[3]);
+    }, this);
+  }function lc(a, b) {
+    var c = a.element;m(a.options.cssProps, function (a, d) {
+      c.style[B(c.style, d)] = b ? a : "";
+    });
+  }function mc(a, c) {
+    var d = b.createEvent("Event");d.initEvent(a, !0, !0), d.gesture = c, c.target.dispatchEvent(d);
+  }var e = ["", "webkit", "moz", "MS", "ms", "o"],
+      f = b.createElement("div"),
+      g = "function",
+      h = Math.round,
+      i = Math.abs,
+      j = Date.now,
+      C = 1,
+      F = /mobile|tablet|ip(ad|hone|od)|android/i,
+      G = "ontouchstart" in a,
+      H = B(a, "PointerEvent") !== d,
+      I = G && F.test(navigator.userAgent),
+      J = "touch",
+      K = "pen",
+      L = "mouse",
+      M = "kinect",
+      N = 25,
+      O = 1,
+      P = 2,
+      Q = 4,
+      R = 8,
+      S = 1,
+      T = 2,
+      U = 4,
+      V = 8,
+      W = 16,
+      X = T | U,
+      Y = V | W,
+      Z = X | Y,
+      $ = ["x", "y"],
+      _ = ["clientX", "clientY"];ab.prototype = { handler: function handler() {}, init: function init() {
+      this.evEl && t(this.element, this.evEl, this.domHandler), this.evTarget && t(this.target, this.evTarget, this.domHandler), this.evWin && t(E(this.element), this.evWin, this.domHandler);
+    }, destroy: function destroy() {
+      this.evEl && u(this.element, this.evEl, this.domHandler), this.evTarget && u(this.target, this.evTarget, this.domHandler), this.evWin && u(E(this.element), this.evWin, this.domHandler);
+    } };var ob = { mousedown: O, mousemove: P, mouseup: Q },
+      pb = "mousedown",
+      qb = "mousemove mouseup";p(rb, ab, { handler: function handler(a) {
+      var b = ob[a.type];b & O && 0 === a.button && (this.pressed = !0), b & P && 1 !== a.which && (b = Q), this.pressed && this.allow && (b & Q && (this.pressed = !1), this.callback(this.manager, b, { pointers: [a], changedPointers: [a], pointerType: L, srcEvent: a }));
+    } });var sb = { pointerdown: O, pointermove: P, pointerup: Q, pointercancel: R, pointerout: R },
+      tb = { 2: J, 3: K, 4: L, 5: M },
+      ub = "pointerdown",
+      vb = "pointermove pointerup pointercancel";a.MSPointerEvent && (ub = "MSPointerDown", vb = "MSPointerMove MSPointerUp MSPointerCancel"), p(wb, ab, { handler: function handler(a) {
+      var b = this.store,
+          c = !1,
+          d = a.type.toLowerCase().replace("ms", ""),
+          e = sb[d],
+          f = tb[a.pointerType] || a.pointerType,
+          g = f == J,
+          h = y(b, a.pointerId, "pointerId");e & O && (0 === a.button || g) ? 0 > h && (b.push(a), h = b.length - 1) : e & (Q | R) && (c = !0), 0 > h || (b[h] = a, this.callback(this.manager, e, { pointers: b, changedPointers: [a], pointerType: f, srcEvent: a }), c && b.splice(h, 1));
+    } });var xb = { touchstart: O, touchmove: P, touchend: Q, touchcancel: R },
+      yb = "touchstart",
+      zb = "touchstart touchmove touchend touchcancel";p(Ab, ab, { handler: function handler(a) {
+      var b = xb[a.type];if (b === O && (this.started = !0), this.started) {
+        var c = Bb.call(this, a, b);b & (Q | R) && 0 === c[0].length - c[1].length && (this.started = !1), this.callback(this.manager, b, { pointers: c[0], changedPointers: c[1], pointerType: J, srcEvent: a });
+      }
+    } });var Cb = { touchstart: O, touchmove: P, touchend: Q, touchcancel: R },
+      Db = "touchstart touchmove touchend touchcancel";p(Eb, ab, { handler: function handler(a) {
+      var b = Cb[a.type],
+          c = Fb.call(this, a, b);c && this.callback(this.manager, b, { pointers: c[0], changedPointers: c[1], pointerType: J, srcEvent: a });
+    } }), p(Gb, ab, { handler: function handler(a, b, c) {
+      var d = c.pointerType == J,
+          e = c.pointerType == L;if (d) this.mouse.allow = !1;else if (e && !this.mouse.allow) return;b & (Q | R) && (this.mouse.allow = !0), this.callback(a, b, c);
+    }, destroy: function destroy() {
+      this.touch.destroy(), this.mouse.destroy();
+    } });var Hb = B(f.style, "touchAction"),
+      Ib = Hb !== d,
+      Jb = "compute",
+      Kb = "auto",
+      Lb = "manipulation",
+      Mb = "none",
+      Nb = "pan-x",
+      Ob = "pan-y";Pb.prototype = { set: function set(a) {
+      a == Jb && (a = this.compute()), Ib && (this.manager.element.style[Hb] = a), this.actions = a.toLowerCase().trim();
+    }, update: function update() {
+      this.set(this.manager.options.touchAction);
+    }, compute: function compute() {
+      var a = [];return m(this.manager.recognizers, function (b) {
+        r(b.options.enable, [b]) && (a = a.concat(b.getTouchAction()));
+      }), Qb(a.join(" "));
+    }, preventDefaults: function preventDefaults(a) {
+      if (!Ib) {
+        var b = a.srcEvent,
+            c = a.offsetDirection;if (this.manager.session.prevented) return b.preventDefault(), void 0;var d = this.actions,
+            e = w(d, Mb),
+            f = w(d, Ob),
+            g = w(d, Nb);return e || f && c & X || g && c & Y ? this.preventSrc(b) : void 0;
+      }
+    }, preventSrc: function preventSrc(a) {
+      this.manager.session.prevented = !0, a.preventDefault();
+    } };var Rb = 1,
+      Sb = 2,
+      Tb = 4,
+      Ub = 8,
+      Vb = Ub,
+      Wb = 16,
+      Xb = 32;Yb.prototype = { defaults: {}, set: function set(a) {
+      return n(this.options, a), this.manager && this.manager.touchAction.update(), this;
+    }, recognizeWith: function recognizeWith(a) {
+      if (l(a, "recognizeWith", this)) return this;var b = this.simultaneous;return a = _b(a, this), b[a.id] || (b[a.id] = a, a.recognizeWith(this)), this;
+    }, dropRecognizeWith: function dropRecognizeWith(a) {
+      return l(a, "dropRecognizeWith", this) ? this : (a = _b(a, this), delete this.simultaneous[a.id], this);
+    }, requireFailure: function requireFailure(a) {
+      if (l(a, "requireFailure", this)) return this;var b = this.requireFail;return a = _b(a, this), -1 === y(b, a) && (b.push(a), a.requireFailure(this)), this;
+    }, dropRequireFailure: function dropRequireFailure(a) {
+      if (l(a, "dropRequireFailure", this)) return this;a = _b(a, this);var b = y(this.requireFail, a);return b > -1 && this.requireFail.splice(b, 1), this;
+    }, hasRequireFailures: function hasRequireFailures() {
+      return this.requireFail.length > 0;
+    }, canRecognizeWith: function canRecognizeWith(a) {
+      return !!this.simultaneous[a.id];
+    }, emit: function emit(a) {
+      function d(d) {
+        b.manager.emit(b.options.event + (d ? Zb(c) : ""), a);
+      }var b = this,
+          c = this.state;Ub > c && d(!0), d(), c >= Ub && d(!0);
+    }, tryEmit: function tryEmit(a) {
+      return this.canEmit() ? this.emit(a) : (this.state = Xb, void 0);
+    }, canEmit: function canEmit() {
+      for (var a = 0; a < this.requireFail.length;) {
+        if (!(this.requireFail[a].state & (Xb | Rb))) return !1;a++;
+      }return !0;
+    }, recognize: function recognize(a) {
+      var b = n({}, a);return r(this.options.enable, [this, b]) ? (this.state & (Vb | Wb | Xb) && (this.state = Rb), this.state = this.process(b), this.state & (Sb | Tb | Ub | Wb) && this.tryEmit(b), void 0) : (this.reset(), this.state = Xb, void 0);
+    }, process: function process() {}, getTouchAction: function getTouchAction() {}, reset: function reset() {} }, p(ac, Yb, { defaults: { pointers: 1 }, attrTest: function attrTest(a) {
+      var b = this.options.pointers;return 0 === b || a.pointers.length === b;
+    }, process: function process(a) {
+      var b = this.state,
+          c = a.eventType,
+          d = b & (Sb | Tb),
+          e = this.attrTest(a);return d && (c & R || !e) ? b | Wb : d || e ? c & Q ? b | Ub : b & Sb ? b | Tb : Sb : Xb;
+    } }), p(bc, ac, { defaults: { event: "pan", threshold: 10, pointers: 1, direction: Z }, getTouchAction: function getTouchAction() {
+      var a = this.options.direction,
+          b = [];return a & X && b.push(Ob), a & Y && b.push(Nb), b;
+    }, directionTest: function directionTest(a) {
+      var b = this.options,
+          c = !0,
+          d = a.distance,
+          e = a.direction,
+          f = a.deltaX,
+          g = a.deltaY;return e & b.direction || (b.direction & X ? (e = 0 === f ? S : 0 > f ? T : U, c = f != this.pX, d = Math.abs(a.deltaX)) : (e = 0 === g ? S : 0 > g ? V : W, c = g != this.pY, d = Math.abs(a.deltaY))), a.direction = e, c && d > b.threshold && e & b.direction;
+    }, attrTest: function attrTest(a) {
+      return ac.prototype.attrTest.call(this, a) && (this.state & Sb || !(this.state & Sb) && this.directionTest(a));
+    }, emit: function emit(a) {
+      this.pX = a.deltaX, this.pY = a.deltaY;var b = $b(a.direction);b && this.manager.emit(this.options.event + b, a), this._super.emit.call(this, a);
+    } }), p(cc, ac, { defaults: { event: "pinch", threshold: 0, pointers: 2 }, getTouchAction: function getTouchAction() {
+      return [Mb];
+    }, attrTest: function attrTest(a) {
+      return this._super.attrTest.call(this, a) && (Math.abs(a.scale - 1) > this.options.threshold || this.state & Sb);
+    }, emit: function emit(a) {
+      if (this._super.emit.call(this, a), 1 !== a.scale) {
+        var b = a.scale < 1 ? "in" : "out";this.manager.emit(this.options.event + b, a);
+      }
+    } }), p(dc, Yb, { defaults: { event: "press", pointers: 1, time: 500, threshold: 5 }, getTouchAction: function getTouchAction() {
+      return [Kb];
+    }, process: function process(a) {
+      var b = this.options,
+          c = a.pointers.length === b.pointers,
+          d = a.distance < b.threshold,
+          e = a.deltaTime > b.time;if (this._input = a, !d || !c || a.eventType & (Q | R) && !e) this.reset();else if (a.eventType & O) this.reset(), this._timer = k(function () {
+        this.state = Vb, this.tryEmit();
+      }, b.time, this);else if (a.eventType & Q) return Vb;return Xb;
+    }, reset: function reset() {
+      clearTimeout(this._timer);
+    }, emit: function emit(a) {
+      this.state === Vb && (a && a.eventType & Q ? this.manager.emit(this.options.event + "up", a) : (this._input.timeStamp = j(), this.manager.emit(this.options.event, this._input)));
+    } }), p(ec, ac, { defaults: { event: "rotate", threshold: 0, pointers: 2 }, getTouchAction: function getTouchAction() {
+      return [Mb];
+    }, attrTest: function attrTest(a) {
+      return this._super.attrTest.call(this, a) && (Math.abs(a.rotation) > this.options.threshold || this.state & Sb);
+    } }), p(fc, ac, { defaults: { event: "swipe", threshold: 10, velocity: .65, direction: X | Y, pointers: 1 }, getTouchAction: function getTouchAction() {
+      return bc.prototype.getTouchAction.call(this);
+    }, attrTest: function attrTest(a) {
+      var c,
+          b = this.options.direction;return b & (X | Y) ? c = a.velocity : b & X ? c = a.velocityX : b & Y && (c = a.velocityY), this._super.attrTest.call(this, a) && b & a.direction && a.distance > this.options.threshold && i(c) > this.options.velocity && a.eventType & Q;
+    }, emit: function emit(a) {
+      var b = $b(a.direction);b && this.manager.emit(this.options.event + b, a), this.manager.emit(this.options.event, a);
+    } }), p(gc, Yb, { defaults: { event: "tap", pointers: 1, taps: 1, interval: 300, time: 250, threshold: 2, posThreshold: 10 }, getTouchAction: function getTouchAction() {
+      return [Lb];
+    }, process: function process(a) {
+      var b = this.options,
+          c = a.pointers.length === b.pointers,
+          d = a.distance < b.threshold,
+          e = a.deltaTime < b.time;if (this.reset(), a.eventType & O && 0 === this.count) return this.failTimeout();if (d && e && c) {
+        if (a.eventType != Q) return this.failTimeout();var f = this.pTime ? a.timeStamp - this.pTime < b.interval : !0,
+            g = !this.pCenter || kb(this.pCenter, a.center) < b.posThreshold;this.pTime = a.timeStamp, this.pCenter = a.center, g && f ? this.count += 1 : this.count = 1, this._input = a;var h = this.count % b.taps;if (0 === h) return this.hasRequireFailures() ? (this._timer = k(function () {
+          this.state = Vb, this.tryEmit();
+        }, b.interval, this), Sb) : Vb;
+      }return Xb;
+    }, failTimeout: function failTimeout() {
+      return this._timer = k(function () {
+        this.state = Xb;
+      }, this.options.interval, this), Xb;
+    }, reset: function reset() {
+      clearTimeout(this._timer);
+    }, emit: function emit() {
+      this.state == Vb && (this._input.tapCount = this.count, this.manager.emit(this.options.event, this._input));
+    } }), hc.VERSION = "2.0.4", hc.defaults = { domEvents: !1, touchAction: Jb, enable: !0, inputTarget: null, inputClass: null, preset: [[ec, { enable: !1 }], [cc, { enable: !1 }, ["rotate"]], [fc, { direction: X }], [bc, { direction: X }, ["swipe"]], [gc], [gc, { event: "doubletap", taps: 2 }, ["tap"]], [dc]], cssProps: { userSelect: "default", touchSelect: "none", touchCallout: "none", contentZooming: "none", userDrag: "none", tapHighlightColor: "rgba(0,0,0,0)" } };var ic = 1,
+      jc = 2;kc.prototype = { set: function set(a) {
+      return n(this.options, a), a.touchAction && this.touchAction.update(), a.inputTarget && (this.input.destroy(), this.input.target = a.inputTarget, this.input.init()), this;
+    }, stop: function stop(a) {
+      this.session.stopped = a ? jc : ic;
+    }, recognize: function recognize(a) {
+      var b = this.session;if (!b.stopped) {
+        this.touchAction.preventDefaults(a);var c,
+            d = this.recognizers,
+            e = b.curRecognizer;(!e || e && e.state & Vb) && (e = b.curRecognizer = null);for (var f = 0; f < d.length;) {
+          c = d[f], b.stopped === jc || e && c != e && !c.canRecognizeWith(e) ? c.reset() : c.recognize(a), !e && c.state & (Sb | Tb | Ub) && (e = b.curRecognizer = c), f++;
+        }
+      }
+    }, get: function get(a) {
+      if (a instanceof Yb) return a;for (var b = this.recognizers, c = 0; c < b.length; c++) {
+        if (b[c].options.event == a) return b[c];
+      }return null;
+    }, add: function add(a) {
+      if (l(a, "add", this)) return this;var b = this.get(a.options.event);return b && this.remove(b), this.recognizers.push(a), a.manager = this, this.touchAction.update(), a;
+    }, remove: function remove(a) {
+      if (l(a, "remove", this)) return this;var b = this.recognizers;return a = this.get(a), b.splice(y(b, a), 1), this.touchAction.update(), this;
+    }, on: function on(a, b) {
+      var c = this.handlers;return m(x(a), function (a) {
+        c[a] = c[a] || [], c[a].push(b);
+      }), this;
+    }, off: function off(a, b) {
+      var c = this.handlers;return m(x(a), function (a) {
+        b ? c[a].splice(y(c[a], b), 1) : delete c[a];
+      }), this;
+    }, emit: function emit(a, b) {
+      this.options.domEvents && mc(a, b);var c = this.handlers[a] && this.handlers[a].slice();if (c && c.length) {
+        b.type = a, b.preventDefault = function () {
+          b.srcEvent.preventDefault();
+        };for (var d = 0; d < c.length;) {
+          c[d](b), d++;
+        }
+      }
+    }, destroy: function destroy() {
+      this.element && lc(this, !1), this.handlers = {}, this.session = {}, this.input.destroy(), this.element = null;
+    } }, n(hc, { INPUT_START: O, INPUT_MOVE: P, INPUT_END: Q, INPUT_CANCEL: R, STATE_POSSIBLE: Rb, STATE_BEGAN: Sb, STATE_CHANGED: Tb, STATE_ENDED: Ub, STATE_RECOGNIZED: Vb, STATE_CANCELLED: Wb, STATE_FAILED: Xb, DIRECTION_NONE: S, DIRECTION_LEFT: T, DIRECTION_RIGHT: U, DIRECTION_UP: V, DIRECTION_DOWN: W, DIRECTION_HORIZONTAL: X, DIRECTION_VERTICAL: Y, DIRECTION_ALL: Z, Manager: kc, Input: ab, TouchAction: Pb, TouchInput: Eb, MouseInput: rb, PointerEventInput: wb, TouchMouseInput: Gb, SingleTouchInput: Ab, Recognizer: Yb, AttrRecognizer: ac, Tap: gc, Pan: bc, Swipe: fc, Pinch: cc, Rotate: ec, Press: dc, on: t, off: u, each: m, merge: o, extend: n, inherit: p, bindFn: q, prefixed: B }), ( false ? "undefined" : _typeof(__webpack_require__(40))) == g && __webpack_require__(41) ? !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+    return hc;
+  }).call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "undefined" != typeof module && module.exports ? module.exports = hc : a[c] = hc;
+}(window, document, "Hammer");
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+module.exports = function() {
+	throw new Error("define cannot be used indirect");
+};
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+(function ($) {
+
+  var methods = {
+    init: function init(options) {
+      var defaults = {
+        menuWidth: 300,
+        edge: 'left',
+        closeOnClick: false,
+        draggable: true,
+        onOpen: null,
+        onClose: null
+      };
+      options = $.extend(defaults, options);
+
+      $(this).each(function () {
+        var $this = $(this);
+        var menuId = $this.attr('data-activates');
+        var menu = $("#" + menuId);
+
+        // Set to width
+        if (options.menuWidth != 300) {
+          menu.css('width', options.menuWidth);
+        }
+
+        // Add Touch Area
+        var $dragTarget = $('.drag-target[data-sidenav="' + menuId + '"]');
+        console.log($dragTarget);
+        if (options.draggable) {
+          // Regenerate dragTarget
+          if ($dragTarget.length) {
+            $dragTarget.remove();
+          }
+
+          $dragTarget = $('<div class="drag-target"></div>').attr('data-sidenav', menuId);
+          $('body').append($dragTarget);
+        } else {
+          $dragTarget = $();
+        }
+
+        if (options.edge == 'left') {
+          menu.css('transform', 'translateX(-100%)');
+          $dragTarget.css({ 'left': 0 }); // Add Touch Area
+        } else {
+          menu.addClass('right-aligned') // Change text-alignment to right
+          .css('transform', 'translateX(100%)');
+          $dragTarget.css({ 'right': 0 }); // Add Touch Area
+        }
+
+        // If fixed sidenav, bring menu out
+        if (menu.hasClass('fixed')) {
+          if (window.innerWidth > 992) {
+            menu.css('transform', 'translateX(0)');
+          }
+        }
+
+        // Window resize to reset on large screens fixed
+        if (menu.hasClass('fixed')) {
+          $(window).resize(function () {
+            if (window.innerWidth > 992) {
+              // Close menu if window is resized bigger than 992 and user has fixed sidenav
+              if ($('#sidenav-overlay').length !== 0 && menuOut) {
+                removeMenu(true);
+              } else {
+                // menu.removeAttr('style');
+                menu.css('transform', 'translateX(0%)');
+                // menu.css('width', options.menuWidth);
+              }
+            } else if (menuOut === false) {
+              if (options.edge === 'left') {
+                menu.css('transform', 'translateX(-100%)');
+              } else {
+                menu.css('transform', 'translateX(100%)');
+              }
+            }
+          });
+        }
+
+        // if closeOnClick, then add close event for all a tags in side sideNav
+        if (options.closeOnClick === true) {
+          menu.on("click.itemclick", "a:not(.collapsible-header)", function () {
+            if (!(window.innerWidth > 992 && menu.hasClass('fixed'))) {
+              removeMenu();
+            }
+          });
+        }
+
+        var removeMenu = function removeMenu(restoreNav) {
+          panning = false;
+          menuOut = false;
+          // Reenable scrolling
+          $('body').css({
+            overflow: '',
+            width: ''
+          });
+
+          $('#sidenav-overlay').velocity({ opacity: 0 }, { duration: 200,
+            queue: false, easing: 'easeOutQuad',
+            complete: function complete() {
+              $(this).remove();
+            } });
+          if (options.edge === 'left') {
+            // Reset phantom div
+            $dragTarget.css({ width: '', right: '', left: '0' });
+            menu.velocity({ 'translateX': '-100%' }, { duration: 200,
+              queue: false,
+              easing: 'easeOutCubic',
+              complete: function complete() {
+                if (restoreNav === true) {
+                  // Restore Fixed sidenav
+                  menu.removeAttr('style');
+                  menu.css('width', options.menuWidth);
+                }
+              }
+
+            });
+          } else {
+            // Reset phantom div
+            $dragTarget.css({ width: '', right: '0', left: '' });
+            menu.velocity({ 'translateX': '100%' }, { duration: 200,
+              queue: false,
+              easing: 'easeOutCubic',
+              complete: function complete() {
+                if (restoreNav === true) {
+                  // Restore Fixed sidenav
+                  menu.removeAttr('style');
+                  menu.css('width', options.menuWidth);
+                }
+              }
+            });
+          }
+
+          // Callback
+          if (typeof options.onClose === 'function') {
+            options.onClose.call(this, menu);
+          }
+        };
+
+        // Touch Event
+        var panning = false;
+        var menuOut = false;
+
+        if (options.draggable) {
+          $dragTarget.on('click', function () {
+            if (menuOut) {
+              removeMenu();
+            }
+          });
+
+          $dragTarget.hammer({
+            prevent_default: false
+          }).on('pan', function (e) {
+
+            if (e.gesture.pointerType == "touch") {
+
+              var direction = e.gesture.direction;
+              var x = e.gesture.center.x;
+              var y = e.gesture.center.y;
+              var velocityX = e.gesture.velocityX;
+
+              // Vertical scroll bugfix
+              if (x === 0 && y === 0) {
+                return;
+              }
+
+              // Disable Scrolling
+              var $body = $('body');
+              var $overlay = $('#sidenav-overlay');
+              var oldWidth = $body.innerWidth();
+              $body.css('overflow', 'hidden');
+              $body.width(oldWidth);
+
+              // If overlay does not exist, create one and if it is clicked, close menu
+              if ($overlay.length === 0) {
+                $overlay = $('<div id="sidenav-overlay"></div>');
+                $overlay.css('opacity', 0).click(function () {
+                  removeMenu();
+                });
+
+                // Run 'onOpen' when sidenav is opened via touch/swipe if applicable
+                if (typeof options.onOpen === 'function') {
+                  options.onOpen.call(this, menu);
+                }
+
+                $('body').append($overlay);
+              }
+
+              // Keep within boundaries
+              if (options.edge === 'left') {
+                if (x > options.menuWidth) {
+                  x = options.menuWidth;
+                } else if (x < 0) {
+                  x = 0;
+                }
+              }
+
+              if (options.edge === 'left') {
+                // Left Direction
+                if (x < options.menuWidth / 2) {
+                  menuOut = false;
+                }
+                // Right Direction
+                else if (x >= options.menuWidth / 2) {
+                    menuOut = true;
+                  }
+                menu.css('transform', 'translateX(' + (x - options.menuWidth) + 'px)');
+              } else {
+                // Left Direction
+                if (x < window.innerWidth - options.menuWidth / 2) {
+                  menuOut = true;
+                }
+                // Right Direction
+                else if (x >= window.innerWidth - options.menuWidth / 2) {
+                    menuOut = false;
+                  }
+                var rightPos = x - options.menuWidth / 2;
+                if (rightPos < 0) {
+                  rightPos = 0;
+                }
+
+                menu.css('transform', 'translateX(' + rightPos + 'px)');
+              }
+
+              // Percentage overlay
+              var overlayPerc;
+              if (options.edge === 'left') {
+                overlayPerc = x / options.menuWidth;
+                $overlay.velocity({ opacity: overlayPerc }, { duration: 10, queue: false, easing: 'easeOutQuad' });
+              } else {
+                overlayPerc = Math.abs((x - window.innerWidth) / options.menuWidth);
+                $overlay.velocity({ opacity: overlayPerc }, { duration: 10, queue: false, easing: 'easeOutQuad' });
+              }
+            }
+          }).on('panend', function (e) {
+
+            if (e.gesture.pointerType == "touch") {
+              var $overlay = $('#sidenav-overlay');
+              var velocityX = e.gesture.velocityX;
+              var x = e.gesture.center.x;
+              var leftPos = x - options.menuWidth;
+              var rightPos = x - options.menuWidth / 2;
+              if (leftPos > 0) {
+                leftPos = 0;
+              }
+              if (rightPos < 0) {
+                rightPos = 0;
+              }
+              panning = false;
+
+              if (options.edge === 'left') {
+                // If velocityX <= 0.3 then the user is flinging the menu closed so ignore menuOut
+                if (menuOut && velocityX <= 0.3 || velocityX < -0.5) {
+                  // Return menu to open
+                  if (leftPos !== 0) {
+                    menu.velocity({ 'translateX': [0, leftPos] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
+                  }
+
+                  $overlay.velocity({ opacity: 1 }, { duration: 50, queue: false, easing: 'easeOutQuad' });
+                  $dragTarget.css({ width: '50%', right: 0, left: '' });
+                  menuOut = true;
+                } else if (!menuOut || velocityX > 0.3) {
+                  // Enable Scrolling
+                  $('body').css({
+                    overflow: '',
+                    width: ''
+                  });
+                  // Slide menu closed
+                  menu.velocity({ 'translateX': [-1 * options.menuWidth - 10, leftPos] }, { duration: 200, queue: false, easing: 'easeOutQuad' });
+                  $overlay.velocity({ opacity: 0 }, { duration: 200, queue: false, easing: 'easeOutQuad',
+                    complete: function complete() {
+                      // Run 'onClose' when sidenav is closed via touch/swipe if applicable
+                      if (typeof options.onClose === 'function') {
+                        options.onClose.call(this, menu);
+                      }
+
+                      $(this).remove();
+                    } });
+                  $dragTarget.css({ width: '10px', right: '', left: 0 });
+                }
+              } else {
+                if (menuOut && velocityX >= -0.3 || velocityX > 0.5) {
+                  // Return menu to open
+                  if (rightPos !== 0) {
+                    menu.velocity({ 'translateX': [0, rightPos] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
+                  }
+
+                  $overlay.velocity({ opacity: 1 }, { duration: 50, queue: false, easing: 'easeOutQuad' });
+                  $dragTarget.css({ width: '50%', right: '', left: 0 });
+                  menuOut = true;
+                } else if (!menuOut || velocityX < -0.3) {
+                  // Enable Scrolling
+                  $('body').css({
+                    overflow: '',
+                    width: ''
+                  });
+
+                  // Slide menu closed
+                  menu.velocity({ 'translateX': [options.menuWidth + 10, rightPos] }, { duration: 200, queue: false, easing: 'easeOutQuad' });
+                  $overlay.velocity({ opacity: 0 }, { duration: 200, queue: false, easing: 'easeOutQuad',
+                    complete: function complete() {
+                      // Run 'onClose' when sidenav is closed via touch/swipe if applicable
+                      if (typeof options.onClose === 'function') {
+                        options.onClose.call(this, menu);
+                      }
+
+                      $(this).remove();
+                    } });
+                  $dragTarget.css({ width: '10px', right: 0, left: '' });
+                }
+              }
+            }
+          });
+        }
+
+        $this.off('click.sidenav').on('click.sidenav', function () {
+          if (menuOut === true) {
+            menuOut = false;
+            panning = false;
+            removeMenu();
+          } else {
+
+            // Disable Scrolling
+            var $body = $('body');
+            var $overlay = $('<div id="sidenav-overlay"></div>');
+            var oldWidth = $body.innerWidth();
+            $body.css('overflow', 'hidden');
+            $body.width(oldWidth);
+
+            // Push current drag target on top of DOM tree
+            $('body').append($dragTarget);
+
+            if (options.edge === 'left') {
+              $dragTarget.css({ width: '50%', right: 0, left: '' });
+              menu.velocity({ 'translateX': [0, -1 * options.menuWidth] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
+            } else {
+              $dragTarget.css({ width: '50%', right: '', left: 0 });
+              menu.velocity({ 'translateX': [0, options.menuWidth] }, { duration: 300, queue: false, easing: 'easeOutQuad' });
+            }
+
+            // Overlay close on click
+            $overlay.css('opacity', 0).click(function () {
+              menuOut = false;
+              panning = false;
+              removeMenu();
+              $overlay.velocity({ opacity: 0 }, { duration: 300, queue: false, easing: 'easeOutQuad',
+                complete: function complete() {
+                  $(this).remove();
+                }
+              });
+            });
+
+            // Append body
+            $('body').append($overlay);
+            $overlay.velocity({ opacity: 1 }, { duration: 300, queue: false, easing: 'easeOutQuad',
+              complete: function complete() {
+                menuOut = true;
+                panning = false;
+              }
+            });
+
+            // Callback
+            if (typeof options.onOpen === 'function') {
+              options.onOpen.call(this, menu);
+            }
+          }
+
+          return false;
+        });
+      });
+    },
+    destroy: function destroy() {
+      var $overlay = $('#sidenav-overlay');
+      var $dragTarget = $('.drag-target[data-sidenav="' + $(this).attr('data-activates') + '"]');
+      $overlay.trigger('click');
+      $dragTarget.remove();
+      $(this).off('click');
+      $overlay.remove();
+    },
+    show: function show() {
+      this.trigger('click');
+    },
+    hide: function hide() {
+      $('#sidenav-overlay').trigger('click');
+    }
+  };
+
+  $.fn.sideNav = function (methodOrOptions) {
+    if (methods[methodOrOptions]) {
+      return methods[methodOrOptions].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else if ((typeof methodOrOptions === 'undefined' ? 'undefined' : _typeof(methodOrOptions)) === 'object' || !methodOrOptions) {
+      // Default to "init"
+      return methods.init.apply(this, arguments);
+    } else {
+      $.error('Method ' + methodOrOptions + ' does not exist on jQuery.sideNav');
+    }
+  }; // Plugin end
+})(jQuery);
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
+
+(function ($) {
+  $(document).ready(function () {
+
+    // jQuery reverse
+    $.fn.reverse = [].reverse;
+
+    // Hover behaviour: make sure this doesn't work on .click-to-toggle FABs!
+    $(document).on('mouseenter.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle):not(.toolbar)', function (e) {
+      var $this = $(this);
+      openFABMenu($this);
+    });
+    $(document).on('mouseleave.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle):not(.toolbar)', function (e) {
+      var $this = $(this);
+      closeFABMenu($this);
+    });
+
+    // Toggle-on-click behaviour.
+    $(document).on('click.fabClickToggle', '.fixed-action-btn.click-to-toggle > a', function (e) {
+      var $this = $(this);
+      var $menu = $this.parent();
+      if ($menu.hasClass('active')) {
+        closeFABMenu($menu);
+      } else {
+        openFABMenu($menu);
+      }
+    });
+
+    // Toolbar transition behaviour.
+    $(document).on('click.fabToolbar', '.fixed-action-btn.toolbar > a', function (e) {
+      var $this = $(this);
+      var $menu = $this.parent();
+      FABtoToolbar($menu);
+    });
+  });
+
+  $.fn.extend({
+    openFAB: function openFAB() {
+      openFABMenu($(this));
+    },
+    closeFAB: function closeFAB() {
+      closeFABMenu($(this));
+    },
+    openToolbar: function openToolbar() {
+      FABtoToolbar($(this));
+    },
+    closeToolbar: function closeToolbar() {
+      toolbarToFAB($(this));
+    }
+  });
+
+  var openFABMenu = function openFABMenu(btn) {
+    var $this = btn;
+    if ($this.hasClass('active') === false) {
+
+      // Get direction option
+      var horizontal = $this.hasClass('horizontal');
+      var offsetY, offsetX;
+
+      if (horizontal === true) {
+        offsetX = 40;
+      } else {
+        offsetY = 40;
+      }
+
+      $this.addClass('active');
+      $this.find('ul .btn-floating').velocity({ scaleY: ".4", scaleX: ".4", translateY: offsetY + 'px', translateX: offsetX + 'px' }, { duration: 0 });
+
+      var time = 0;
+      $this.find('ul .btn-floating').reverse().each(function () {
+        $(this).velocity({ opacity: "1", scaleX: "1", scaleY: "1", translateY: "0", translateX: '0' }, { duration: 80, delay: time });
+        time += 40;
+      });
+    }
+  };
+
+  var closeFABMenu = function closeFABMenu(btn) {
+    var $this = btn;
+    // Get direction option
+    var horizontal = $this.hasClass('horizontal');
+    var offsetY, offsetX;
+
+    if (horizontal === true) {
+      offsetX = 40;
+    } else {
+      offsetY = 40;
+    }
+
+    $this.removeClass('active');
+    var time = 0;
+    $this.find('ul .btn-floating').velocity("stop", true);
+    $this.find('ul .btn-floating').velocity({ opacity: "0", scaleX: ".4", scaleY: ".4", translateY: offsetY + 'px', translateX: offsetX + 'px' }, { duration: 80 });
+  };
+
+  /**
+   * Transform FAB into toolbar
+   * @param  {Object}  object jQuery object
+   */
+  var FABtoToolbar = function FABtoToolbar(btn) {
+    if (btn.attr('data-open') === "true") {
+      return;
+    }
+
+    var offsetX, offsetY, scaleFactor;
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var btnRect = btn[0].getBoundingClientRect();
+    var anchor = btn.find('> a').first();
+    var menu = btn.find('> ul').first();
+    var backdrop = $('<div class="fab-backdrop"></div>');
+    var fabColor = anchor.css('background-color');
+    anchor.append(backdrop);
+
+    offsetX = btnRect.left - windowWidth / 2 + btnRect.width / 2;
+    offsetY = windowHeight - btnRect.bottom;
+    scaleFactor = windowWidth / backdrop.width();
+    btn.attr('data-origin-bottom', btnRect.bottom);
+    btn.attr('data-origin-left', btnRect.left);
+    btn.attr('data-origin-width', btnRect.width);
+
+    // Set initial state
+    btn.addClass('active');
+    btn.attr('data-open', true);
+    btn.css({
+      'text-align': 'center',
+      width: '100%',
+      bottom: 0,
+      left: 0,
+      transform: 'translateX(' + offsetX + 'px)',
+      transition: 'none'
+    });
+    anchor.css({
+      transform: 'translateY(' + -offsetY + 'px)',
+      transition: 'none'
+    });
+    backdrop.css({
+      'background-color': fabColor
+    });
+
+    setTimeout(function () {
+      btn.css({
+        transform: '',
+        transition: 'transform .2s cubic-bezier(0.550, 0.085, 0.680, 0.530), background-color 0s linear .2s'
+      });
+      anchor.css({
+        overflow: 'visible',
+        transform: '',
+        transition: 'transform .2s'
+      });
+
+      setTimeout(function () {
+        btn.css({
+          overflow: 'hidden',
+          'background-color': fabColor
+        });
+        backdrop.css({
+          transform: 'scale(' + scaleFactor + ')',
+          transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
+        });
+        menu.find('> li > a').css({
+          opacity: 1
+        });
+
+        // Scroll to close.
+        $(window).on('scroll.fabToolbarClose', function () {
+          toolbarToFAB(btn);
+          $(window).off('scroll.fabToolbarClose');
+          $(document).off('click.fabToolbarClose');
+        });
+
+        $(document).on('click.fabToolbarClose', function (e) {
+          if (!$(e.target).closest(menu).length) {
+            toolbarToFAB(btn);
+            $(window).off('scroll.fabToolbarClose');
+            $(document).off('click.fabToolbarClose');
+          }
+        });
+      }, 100);
+    }, 0);
+  };
+
+  /**
+   * Transform toolbar back into FAB
+   * @param  {Object}  object jQuery object
+   */
+  var toolbarToFAB = function toolbarToFAB(btn) {
+    if (btn.attr('data-open') !== "true") {
+      return;
+    }
+
+    var offsetX, offsetY, scaleFactor;
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var btnWidth = btn.attr('data-origin-width');
+    var btnBottom = btn.attr('data-origin-bottom');
+    var btnLeft = btn.attr('data-origin-left');
+    var anchor = btn.find('> .btn-floating').first();
+    var menu = btn.find('> ul').first();
+    var backdrop = btn.find('.fab-backdrop');
+    var fabColor = anchor.css('background-color');
+
+    offsetX = btnLeft - windowWidth / 2 + btnWidth / 2;
+    offsetY = windowHeight - btnBottom;
+    scaleFactor = windowWidth / backdrop.width();
+
+    // Hide backdrop
+    btn.removeClass('active');
+    btn.attr('data-open', false);
+    btn.css({
+      'background-color': 'transparent',
+      transition: 'none'
+    });
+    anchor.css({
+      transition: 'none'
+    });
+    backdrop.css({
+      transform: 'scale(0)',
+      'background-color': fabColor
+    });
+    menu.find('> li > a').css({
+      opacity: ''
+    });
+
+    setTimeout(function () {
+      backdrop.remove();
+
+      // Set initial state.
+      btn.css({
+        'text-align': '',
+        width: '',
+        bottom: '',
+        left: '',
+        overflow: '',
+        'background-color': '',
+        transform: 'translate3d(' + -offsetX + 'px,0,0)'
+      });
+      anchor.css({
+        overflow: '',
+        transform: 'translate3d(0,' + offsetY + 'px,0)'
+      });
+
+      setTimeout(function () {
+        btn.css({
+          transform: 'translate3d(0,0,0)',
+          transition: 'transform .2s'
+        });
+        anchor.css({
+          transform: 'translate3d(0,0,0)',
+          transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
+        });
+      }, 20);
+    }, 200);
+  };
+})(jQuery);
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports) {
+
+(function ($) {
+  $(document).ready(function () {
+
+    // Function to update labels of text fields
+    Materialize.updateTextFields = function () {
+      var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+      $(input_selector).each(function (index, element) {
+        var $this = $(this);
+        if ($(element).val().length > 0 || $(element).is(':focus') || element.autofocus || $this.attr('placeholder') !== undefined) {
+          $this.siblings('label').addClass('active');
+        } else if ($(element)[0].validity) {
+          $this.siblings('label').toggleClass('active', $(element)[0].validity.badInput === true);
+        } else {
+          $this.siblings('label').removeClass('active');
+        }
+      });
+    };
+
+    // Text based inputs
+    var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+
+    // Add active if form auto complete
+    $(document).on('change', input_selector, function () {
+      if ($(this).val().length !== 0 || $(this).attr('placeholder') !== undefined) {
+        $(this).siblings('label').addClass('active');
+      }
+      validate_field($(this));
+    });
+
+    // Add active if input element has been pre-populated on document ready
+    $(document).ready(function () {
+      Materialize.updateTextFields();
+    });
+
+    // HTML DOM FORM RESET handling
+    $(document).on('reset', function (e) {
+      var formReset = $(e.target);
+      if (formReset.is('form')) {
+        formReset.find(input_selector).removeClass('valid').removeClass('invalid');
+        formReset.find(input_selector).each(function () {
+          if ($(this).attr('value') === '') {
+            $(this).siblings('label').removeClass('active');
+          }
+        });
+
+        // Reset select
+        formReset.find('select.initialized').each(function () {
+          var reset_text = formReset.find('option[selected]').text();
+          formReset.siblings('input.select-dropdown').val(reset_text);
+        });
+      }
+    });
+
+    // Add active when element has focus
+    $(document).on('focus', input_selector, function () {
+      $(this).siblings('label, .prefix').addClass('active');
+    });
+
+    $(document).on('blur', input_selector, function () {
+      var $inputElement = $(this);
+      var selector = ".prefix";
+
+      if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
+        selector += ", label";
+      }
+
+      $inputElement.siblings(selector).removeClass('active');
+
+      validate_field($inputElement);
+    });
+
+    window.validate_field = function (object) {
+      var hasLength = object.attr('data-length') !== undefined;
+      var lenAttr = parseInt(object.attr('data-length'));
+      var len = object.val().length;
+
+      if (object.val().length === 0 && object[0].validity.badInput === false && !object.is(':required')) {
+        if (object.hasClass('validate')) {
+          object.removeClass('valid');
+          object.removeClass('invalid');
+        }
+      } else {
+        if (object.hasClass('validate')) {
+          // Check for character counter attributes
+          if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
+            object.removeClass('invalid');
+            object.addClass('valid');
+          } else {
+            object.removeClass('valid');
+            object.addClass('invalid');
+          }
+        }
+      }
+    };
+
+    // Radio and Checkbox focus class
+    var radio_checkbox = 'input[type=radio], input[type=checkbox]';
+    $(document).on('keyup.radio', radio_checkbox, function (e) {
+      // TAB, check if tabbing to radio or checkbox.
+      if (e.which === 9) {
+        $(this).addClass('tabbed');
+        var $this = $(this);
+        $this.one('blur', function (e) {
+
+          $(this).removeClass('tabbed');
+        });
+        return;
+      }
+    });
+
+    // Textarea Auto Resize
+    var hiddenDiv = $('.hiddendiv').first();
+    if (!hiddenDiv.length) {
+      hiddenDiv = $('<div class="hiddendiv common"></div>');
+      $('body').append(hiddenDiv);
+    }
+    var text_area_selector = '.materialize-textarea';
+
+    function textareaAutoResize($textarea) {
+      // Set font properties of hiddenDiv
+
+      var fontFamily = $textarea.css('font-family');
+      var fontSize = $textarea.css('font-size');
+      var lineHeight = $textarea.css('line-height');
+      var padding = $textarea.css('padding');
+
+      if (fontSize) {
+        hiddenDiv.css('font-size', fontSize);
+      }
+      if (fontFamily) {
+        hiddenDiv.css('font-family', fontFamily);
+      }
+      if (lineHeight) {
+        hiddenDiv.css('line-height', lineHeight);
+      }
+      if (padding) {
+        hiddenDiv.css('padding', padding);
+      }
+
+      // Set original-height, if none
+      if (!$textarea.data('original-height')) {
+        $textarea.data('original-height', $textarea.height());
+      }
+
+      if ($textarea.attr('wrap') === 'off') {
+        hiddenDiv.css('overflow-wrap', 'normal').css('white-space', 'pre');
+      }
+
+      hiddenDiv.text($textarea.val() + '\n');
+      var content = hiddenDiv.html().replace(/\n/g, '<br>');
+      hiddenDiv.html(content);
+
+      // When textarea is hidden, width goes crazy.
+      // Approximate with half of window size
+
+      if ($textarea.is(':visible')) {
+        hiddenDiv.css('width', $textarea.width());
+      } else {
+        hiddenDiv.css('width', $(window).width() / 2);
+      }
+
+      /**
+       * Resize if the new height is greater than the
+       * original height of the textarea
+       */
+      if ($textarea.data('original-height') <= hiddenDiv.height()) {
+        $textarea.css('height', hiddenDiv.height());
+      } else if ($textarea.val().length < $textarea.data('previous-length')) {
+        /**
+         * In case the new height is less than original height, it
+         * means the textarea has less text than before
+         * So we set the height to the original one
+         */
+        $textarea.css('height', $textarea.data('original-height'));
+      }
+      $textarea.data('previous-length', $textarea.val().length);
+    }
+
+    $(text_area_selector).each(function () {
+      var $textarea = $(this);
+      /**
+       * Instead of resizing textarea on document load,
+       * store the original height and the original length
+       */
+      $textarea.data('original-height', $textarea.height());
+      $textarea.data('previous-length', $textarea.val().length);
+    });
+
+    $('body').on('keyup keydown autoresize', text_area_selector, function () {
+      textareaAutoResize($(this));
+    });
+
+    // File Input Path
+    $(document).on('change', '.file-field input[type="file"]', function () {
+      var file_field = $(this).closest('.file-field');
+      var path_input = file_field.find('input.file-path');
+      var files = $(this)[0].files;
+      var file_names = [];
+      for (var i = 0; i < files.length; i++) {
+        file_names.push(files[i].name);
+      }
+      path_input.val(file_names.join(", "));
+      path_input.trigger('change');
+    });
+
+    /****************
+    *  Range Input  *
+    ****************/
+
+    var range_type = 'input[type=range]';
+    var range_mousedown = false;
+    var left;
+
+    $(range_type).each(function () {
+      var thumb = $('<span class="thumb"><span class="value"></span></span>');
+      $(this).after(thumb);
+    });
+
+    var showRangeBubble = function showRangeBubble(thumb) {
+      var paddingLeft = parseInt(thumb.parent().css('padding-left'));
+      var marginLeft = -7 + paddingLeft + 'px';
+      thumb.velocity({ height: "30px", width: "30px", top: "-30px", marginLeft: marginLeft }, { duration: 300, easing: 'easeOutExpo' });
+    };
+
+    var calcRangeOffset = function calcRangeOffset(range) {
+      var width = range.width() - 15;
+      var max = parseFloat(range.attr('max'));
+      var min = parseFloat(range.attr('min'));
+      var percent = (parseFloat(range.val()) - min) / (max - min);
+      return percent * width;
+    };
+
+    var range_wrapper = '.range-field';
+    $(document).on('change', range_type, function (e) {
+      var thumb = $(this).siblings('.thumb');
+      thumb.find('.value').html($(this).val());
+
+      if (!thumb.hasClass('active')) {
+        showRangeBubble(thumb);
+      }
+
+      var offsetLeft = calcRangeOffset($(this));
+      thumb.addClass('active').css('left', offsetLeft);
+    });
+
+    $(document).on('mousedown touchstart', range_type, function (e) {
+      var thumb = $(this).siblings('.thumb');
+
+      // If thumb indicator does not exist yet, create it
+      if (thumb.length <= 0) {
+        thumb = $('<span class="thumb"><span class="value"></span></span>');
+        $(this).after(thumb);
+      }
+
+      // Set indicator value
+      thumb.find('.value').html($(this).val());
+
+      range_mousedown = true;
+      $(this).addClass('active');
+
+      if (!thumb.hasClass('active')) {
+        showRangeBubble(thumb);
+      }
+
+      if (e.type !== 'input') {
+        var offsetLeft = calcRangeOffset($(this));
+        thumb.addClass('active').css('left', offsetLeft);
+      }
+    });
+
+    $(document).on('mouseup touchend', range_wrapper, function () {
+      range_mousedown = false;
+      $(this).removeClass('active');
+    });
+
+    $(document).on('input mousemove touchmove', range_wrapper, function (e) {
+      var thumb = $(this).children('.thumb');
+      var left;
+      var input = $(this).find(range_type);
+
+      if (range_mousedown) {
+        if (!thumb.hasClass('active')) {
+          showRangeBubble(thumb);
+        }
+
+        var offsetLeft = calcRangeOffset(input);
+        thumb.addClass('active').css('left', offsetLeft);
+        thumb.find('.value').html(thumb.siblings(range_type).val());
+      }
+    });
+
+    $(document).on('mouseout touchleave', range_wrapper, function () {
+      if (!range_mousedown) {
+
+        var thumb = $(this).children('.thumb');
+        var paddingLeft = parseInt($(this).css('padding-left'));
+        var marginLeft = 7 + paddingLeft + 'px';
+
+        if (thumb.hasClass('active')) {
+          thumb.velocity({ height: '0', width: '0', top: '10px', marginLeft: marginLeft }, { duration: 100 });
+        }
+        thumb.removeClass('active');
+      }
+    });
+
+    /**************************
+     * Auto complete plugin  *
+     *************************/
+    $.fn.autocomplete = function (options) {
+      // Defaults
+      var defaults = {
+        data: {},
+        limit: Infinity,
+        onAutocomplete: null,
+        minLength: 1
+      };
+
+      options = $.extend(defaults, options);
+
+      return this.each(function () {
+        var $input = $(this);
+        var data = options.data,
+            count = 0,
+            activeIndex = -1,
+            oldVal,
+            $inputDiv = $input.closest('.input-field'); // Div to append on
+
+        // Check if data isn't empty
+        if (!$.isEmptyObject(data)) {
+          var $autocomplete = $('<ul class="autocomplete-content dropdown-content"></ul>');
+          var $oldAutocomplete;
+
+          // Append autocomplete element.
+          // Prevent double structure init.
+          if ($inputDiv.length) {
+            $oldAutocomplete = $inputDiv.children('.autocomplete-content.dropdown-content').first();
+            if (!$oldAutocomplete.length) {
+              $inputDiv.append($autocomplete); // Set ul in body
+            }
+          } else {
+            $oldAutocomplete = $input.next('.autocomplete-content.dropdown-content');
+            if (!$oldAutocomplete.length) {
+              $input.after($autocomplete);
+            }
+          }
+          if ($oldAutocomplete.length) {
+            $autocomplete = $oldAutocomplete;
+          }
+
+          // Highlight partial match.
+          var highlight = function highlight(string, $el) {
+            var img = $el.find('img');
+            var matchStart = $el.text().toLowerCase().indexOf("" + string.toLowerCase() + ""),
+                matchEnd = matchStart + string.length - 1,
+                beforeMatch = $el.text().slice(0, matchStart),
+                matchText = $el.text().slice(matchStart, matchEnd + 1),
+                afterMatch = $el.text().slice(matchEnd + 1);
+            $el.html("<span>" + beforeMatch + "<span class='highlight'>" + matchText + "</span>" + afterMatch + "</span>");
+            if (img.length) {
+              $el.prepend(img);
+            }
+          };
+
+          // Reset current element position
+          var resetCurrentElement = function resetCurrentElement() {
+            activeIndex = -1;
+            $autocomplete.find('.active').removeClass('active');
+          };
+
+          // Remove autocomplete elements
+          var removeAutocomplete = function removeAutocomplete() {
+            $autocomplete.empty();
+            resetCurrentElement();
+            oldVal = undefined;
+          };
+
+          $input.off('blur.autocomplete').on('blur.autocomplete', function () {
+            removeAutocomplete();
+          });
+
+          // Perform search
+          $input.off('keyup.autocomplete focus.autocomplete').on('keyup.autocomplete focus.autocomplete', function (e) {
+            // Reset count.
+            count = 0;
+            var val = $input.val().toLowerCase();
+
+            // Don't capture enter or arrow key usage.
+            if (e.which === 13 || e.which === 38 || e.which === 40) {
+              return;
+            }
+
+            // Check if the input isn't empty
+            if (oldVal !== val) {
+              removeAutocomplete();
+
+              if (val.length >= options.minLength) {
+                for (var key in data) {
+                  if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
+                    // Break if past limit
+                    if (count >= options.limit) {
+                      break;
+                    }
+
+                    var autocompleteOption = $('<li></li>');
+                    if (!!data[key]) {
+                      autocompleteOption.append('<img src="' + data[key] + '" class="right circle"><span>' + key + '</span>');
+                    } else {
+                      autocompleteOption.append('<span>' + key + '</span>');
+                    }
+
+                    $autocomplete.append(autocompleteOption);
+                    highlight(val, autocompleteOption);
+                    count++;
+                  }
+                }
+              }
+            }
+
+            // Update oldVal
+            oldVal = val;
+          });
+
+          $input.off('keydown.autocomplete').on('keydown.autocomplete', function (e) {
+            // Arrow keys and enter key usage
+            var keyCode = e.which,
+                liElement,
+                numItems = $autocomplete.children('li').length,
+                $active = $autocomplete.children('.active').first();
+
+            // select element on Enter
+            if (keyCode === 13 && activeIndex >= 0) {
+              liElement = $autocomplete.children('li').eq(activeIndex);
+              if (liElement.length) {
+                liElement.trigger('mousedown.autocomplete');
+                e.preventDefault();
+              }
+              return;
+            }
+
+            // Capture up and down key
+            if (keyCode === 38 || keyCode === 40) {
+              e.preventDefault();
+
+              if (keyCode === 38 && activeIndex > 0) {
+                activeIndex--;
+              }
+
+              if (keyCode === 40 && activeIndex < numItems - 1) {
+                activeIndex++;
+              }
+
+              $active.removeClass('active');
+              if (activeIndex >= 0) {
+                $autocomplete.children('li').eq(activeIndex).addClass('active');
+              }
+            }
+          });
+
+          // Set input value
+          $autocomplete.off('mousedown.autocomplete touchstart.autocomplete').on('mousedown.autocomplete touchstart.autocomplete', 'li', function () {
+            var text = $(this).text().trim();
+            $input.val(text);
+            $input.trigger('change');
+            removeAutocomplete();
+
+            // Handle onAutocomplete callback.
+            if (typeof options.onAutocomplete === "function") {
+              options.onAutocomplete.call(this, text);
+            }
+          });
+
+          // Empty data
+        } else {
+          $input.off('keyup.autocomplete focus.autocomplete');
+        }
+      });
+    };
+  }); // End of $(document).ready
+
+  /*******************
+   *  Select Plugin  *
+   ******************/
+  $.fn.material_select = function (callback) {
+    $(this).each(function () {
+      var $select = $(this);
+
+      if ($select.hasClass('browser-default')) {
+        return; // Continue to next (return false breaks out of entire loop)
+      }
+
+      var multiple = $select.attr('multiple') ? true : false,
+          lastID = $select.attr('data-select-id'); // Tear down structure if Select needs to be rebuilt
+
+      if (lastID) {
+        $select.parent().find('span.caret').remove();
+        $select.parent().find('input').remove();
+
+        $select.unwrap();
+        $('ul#select-options-' + lastID).remove();
+      }
+
+      // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
+      if (callback === 'destroy') {
+        $select.removeAttr('data-select-id').removeClass('initialized');
+        $(window).off('click.select');
+        return;
+      }
+
+      var uniqueID = Materialize.guid();
+      $select.attr('data-select-id', uniqueID);
+      var wrapper = $('<div class="select-wrapper"></div>');
+      wrapper.addClass($select.attr('class'));
+      if ($select.is(':disabled')) wrapper.addClass('disabled');
+      var options = $('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
+          selectChildren = $select.children('option, optgroup'),
+          valuesSelected = [],
+          optionsHover = false;
+
+      var label = $select.find('option:selected').html() || $select.find('option:first').html() || "";
+
+      // Function that renders and appends the option taking into
+      // account type and possible image icon.
+      var appendOptionWithIcon = function appendOptionWithIcon(select, option, type) {
+        // Add disabled attr if disabled
+        var disabledClass = option.is(':disabled') ? 'disabled ' : '';
+        var optgroupClass = type === 'optgroup-option' ? 'optgroup-option ' : '';
+        var multipleCheckbox = multiple ? '<input type="checkbox"' + disabledClass + '/><label></label>' : '';
+
+        // add icons
+        var icon_url = option.data('icon');
+        var classes = option.attr('class');
+        if (!!icon_url) {
+          var classString = '';
+          if (!!classes) classString = ' class="' + classes + '"';
+
+          // Check for multiple type.
+          options.append($('<li class="' + disabledClass + optgroupClass + '"><img alt="" src="' + icon_url + '"' + classString + '><span>' + multipleCheckbox + option.html() + '</span></li>'));
+          return true;
+        }
+
+        // Check for multiple type.
+        options.append($('<li class="' + disabledClass + optgroupClass + '"><span>' + multipleCheckbox + option.html() + '</span></li>'));
+      };
+
+      /* Create dropdown structure. */
+      if (selectChildren.length) {
+        selectChildren.each(function () {
+          if ($(this).is('option')) {
+            // Direct descendant option.
+            if (multiple) {
+              appendOptionWithIcon($select, $(this), 'multiple');
+            } else {
+              appendOptionWithIcon($select, $(this));
+            }
+          } else if ($(this).is('optgroup')) {
+            // Optgroup.
+            var selectOptions = $(this).children('option');
+            options.append($('<li class="optgroup"><span>' + $(this).attr('label') + '</span></li>'));
+
+            selectOptions.each(function () {
+              appendOptionWithIcon($select, $(this), 'optgroup-option');
+            });
+          }
+        });
+      }
+
+      options.find('li:not(.optgroup)').each(function (i) {
+        $(this).click(function (e) {
+          // Check if option element is disabled
+          if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
+            var selected = true;
+
+            if (multiple) {
+              $('input[type="checkbox"]', this).prop('checked', function (i, v) {
+                return !v;
+              });
+              selected = toggleEntryFromArray(valuesSelected, i, $select);
+              $newSelect.trigger('focus');
+            } else {
+              options.find('li').removeClass('active');
+              $(this).toggleClass('active');
+              $newSelect.val($(this).text());
+            }
+
+            activateOption(options, $(this));
+            $select.find('option').eq(i).prop('selected', selected);
+            // Trigger onchange() event
+            $select.trigger('change');
+            if (typeof callback !== 'undefined') callback();
+          }
+
+          e.stopPropagation();
+        });
+      });
+
+      // Wrap Elements
+      $select.wrap(wrapper);
+      // Add Select Display Element
+      var dropdownIcon = $('<span class="caret">&#9660;</span>');
+
+      // escape double quotes
+      var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
+
+      var $newSelect = $('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
+      $select.before($newSelect);
+      $newSelect.before(dropdownIcon);
+
+      $newSelect.after(options);
+      // Check if section element is disabled
+      if (!$select.is(':disabled')) {
+        $newSelect.dropdown({ 'hover': false });
+      }
+
+      // Copy tabindex
+      if ($select.attr('tabindex')) {
+        $($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
+      }
+
+      $select.addClass('initialized');
+
+      $newSelect.on({
+        'focus': function focus() {
+          if ($('ul.select-dropdown').not(options[0]).is(':visible')) {
+            $('input.select-dropdown').trigger('close');
+            $(window).off('click.select');
+          }
+          if (!options.is(':visible')) {
+            $(this).trigger('open', ['focus']);
+            var label = $(this).val();
+            if (multiple && label.indexOf(',') >= 0) {
+              label = label.split(',')[0];
+            }
+
+            var selectedOption = options.find('li').filter(function () {
+              return $(this).text().toLowerCase() === label.toLowerCase();
+            })[0];
+            activateOption(options, selectedOption, true);
+
+            $(window).off('click.select').on('click.select', function () {
+              multiple && (optionsHover || $newSelect.trigger('close'));
+              $(window).off('click.select');
+            });
+          }
+        },
+        'click': function click(e) {
+          e.stopPropagation();
+        }
+      });
+
+      $newSelect.on('blur', function () {
+        if (!multiple) {
+          $(this).trigger('close');
+          $(window).off('click.select');
+        }
+        options.find('li.selected').removeClass('selected');
+      });
+
+      options.hover(function () {
+        optionsHover = true;
+      }, function () {
+        optionsHover = false;
+      });
+
+      // Add initial multiple selections.
+      if (multiple) {
+        $select.find("option:selected:not(:disabled)").each(function () {
+          var index = this.index;
+
+          toggleEntryFromArray(valuesSelected, index, $select);
+          options.find("li:not(.optgroup)").eq(index).find(":checkbox").prop("checked", true);
+        });
+      }
+
+      /**
+       * Make option as selected and scroll to selected position
+       * @param {jQuery} collection  Select options jQuery element
+       * @param {Element} newOption  element of the new option
+       * @param {Boolean} firstActivation  If on first activation of select
+       */
+      var activateOption = function activateOption(collection, newOption, firstActivation) {
+        if (newOption) {
+          collection.find('li.selected').removeClass('selected');
+          var option = $(newOption);
+          option.addClass('selected');
+          if (!multiple || !!firstActivation) {
+            options.scrollTo(option);
+          }
+        }
+      };
+
+      // Allow user to search by typing
+      // this array is cleared after 1 second
+      var filterQuery = [],
+          onKeyDown = function onKeyDown(e) {
+        // TAB - switch to another input
+        if (e.which == 9) {
+          $newSelect.trigger('close');
+          return;
+        }
+
+        // ARROW DOWN WHEN SELECT IS CLOSED - open select options
+        if (e.which == 40 && !options.is(':visible')) {
+          $newSelect.trigger('open');
+          return;
+        }
+
+        // ENTER WHEN SELECT IS CLOSED - submit form
+        if (e.which == 13 && !options.is(':visible')) {
+          return;
+        }
+
+        e.preventDefault();
+
+        // CASE WHEN USER TYPE LETTERS
+        var letter = String.fromCharCode(e.which).toLowerCase(),
+            nonLetters = [9, 13, 27, 38, 40];
+        if (letter && nonLetters.indexOf(e.which) === -1) {
+          filterQuery.push(letter);
+
+          var string = filterQuery.join(''),
+              newOption = options.find('li').filter(function () {
+            return $(this).text().toLowerCase().indexOf(string) === 0;
+          })[0];
+
+          if (newOption) {
+            activateOption(options, newOption);
+          }
+        }
+
+        // ENTER - select option and close when select options are opened
+        if (e.which == 13) {
+          var activeOption = options.find('li.selected:not(.disabled)')[0];
+          if (activeOption) {
+            $(activeOption).trigger('click');
+            if (!multiple) {
+              $newSelect.trigger('close');
+            }
+          }
+        }
+
+        // ARROW DOWN - move to next not disabled option
+        if (e.which == 40) {
+          if (options.find('li.selected').length) {
+            newOption = options.find('li.selected').next('li:not(.disabled)')[0];
+          } else {
+            newOption = options.find('li:not(.disabled)')[0];
+          }
+          activateOption(options, newOption);
+        }
+
+        // ESC - close options
+        if (e.which == 27) {
+          $newSelect.trigger('close');
+        }
+
+        // ARROW UP - move to previous not disabled option
+        if (e.which == 38) {
+          newOption = options.find('li.selected').prev('li:not(.disabled)')[0];
+          if (newOption) activateOption(options, newOption);
+        }
+
+        // Automaticaly clean filter query so user can search again by starting letters
+        setTimeout(function () {
+          filterQuery = [];
+        }, 1000);
+      };
+
+      $newSelect.on('keydown', onKeyDown);
+    });
+
+    function toggleEntryFromArray(entriesArray, entryIndex, select) {
+      var index = entriesArray.indexOf(entryIndex),
+          notAdded = index === -1;
+
+      if (notAdded) {
+        entriesArray.push(entryIndex);
+      } else {
+        entriesArray.splice(index, 1);
+      }
+
+      select.siblings('ul.dropdown-content').find('li:not(.optgroup)').eq(entryIndex).toggleClass('active');
+
+      // use notAdded instead of true (to detect if the option is selected or not)
+      select.find('option').eq(entryIndex).prop('selected', notAdded);
+      setValueToInput(entriesArray, select);
+
+      return notAdded;
+    }
+
+    function setValueToInput(entriesArray, select) {
+      var value = '';
+
+      for (var i = 0, count = entriesArray.length; i < count; i++) {
+        var text = select.find('option').eq(entriesArray[i]).text();
+
+        i === 0 ? value += text : value += ', ' + text;
+      }
+
+      if (value === '') {
+        value = select.find('option:disabled').eq(0).text();
+      }
+
+      select.siblings('input.select-dropdown').val(value);
+    }
+  };
+})(jQuery);
+
+/***/ }),
+/* 45 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -35582,6 +35548,780 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
   }; // Plugin end
 })(jQuery);
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports) {
+
+$(function () {
+    $(".sidenav").sideNav();
+    $('.slider').slider({ indicators: false });
+    $('select').material_select();
+});
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*!
+ * Waves v0.6.4
+ * http://fian.my.id/Waves
+ *
+ * Copyright 2014 Alfiana E. Sibuea and other contributors
+ * Released under the MIT license
+ * https://github.com/fians/Waves/blob/master/LICENSE
+ */
+
+;(function (window) {
+    'use strict';
+
+    var Waves = Waves || {};
+    var $$ = document.querySelectorAll.bind(document);
+
+    // Find exact position of element
+    function isWindow(obj) {
+        return obj !== null && obj === obj.window;
+    }
+
+    function getWindow(elem) {
+        return isWindow(elem) ? elem : elem.nodeType === 9 && elem.defaultView;
+    }
+
+    function offset(elem) {
+        var docElem,
+            win,
+            box = { top: 0, left: 0 },
+            doc = elem && elem.ownerDocument;
+
+        docElem = doc.documentElement;
+
+        if (_typeof(elem.getBoundingClientRect) !== ( true ? 'undefined' : _typeof(undefined))) {
+            box = elem.getBoundingClientRect();
+        }
+        win = getWindow(doc);
+        return {
+            top: box.top + win.pageYOffset - docElem.clientTop,
+            left: box.left + win.pageXOffset - docElem.clientLeft
+        };
+    }
+
+    function convertStyle(obj) {
+        var style = '';
+
+        for (var a in obj) {
+            if (obj.hasOwnProperty(a)) {
+                style += a + ':' + obj[a] + ';';
+            }
+        }
+
+        return style;
+    }
+
+    var Effect = {
+
+        // Effect delay
+        duration: 750,
+
+        show: function show(e, element) {
+
+            // Disable right click
+            if (e.button === 2) {
+                return false;
+            }
+
+            var el = element || this;
+
+            // Create ripple
+            var ripple = document.createElement('div');
+            ripple.className = 'waves-ripple';
+            el.appendChild(ripple);
+
+            // Get click coordinate and element witdh
+            var pos = offset(el);
+            var relativeY = e.pageY - pos.top;
+            var relativeX = e.pageX - pos.left;
+            var scale = 'scale(' + el.clientWidth / 100 * 10 + ')';
+
+            // Support for touch devices
+            if ('touches' in e) {
+                relativeY = e.touches[0].pageY - pos.top;
+                relativeX = e.touches[0].pageX - pos.left;
+            }
+
+            // Attach data to element
+            ripple.setAttribute('data-hold', Date.now());
+            ripple.setAttribute('data-scale', scale);
+            ripple.setAttribute('data-x', relativeX);
+            ripple.setAttribute('data-y', relativeY);
+
+            // Set ripple position
+            var rippleStyle = {
+                'top': relativeY + 'px',
+                'left': relativeX + 'px'
+            };
+
+            ripple.className = ripple.className + ' waves-notransition';
+            ripple.setAttribute('style', convertStyle(rippleStyle));
+            ripple.className = ripple.className.replace('waves-notransition', '');
+
+            // Scale the ripple
+            rippleStyle['-webkit-transform'] = scale;
+            rippleStyle['-moz-transform'] = scale;
+            rippleStyle['-ms-transform'] = scale;
+            rippleStyle['-o-transform'] = scale;
+            rippleStyle.transform = scale;
+            rippleStyle.opacity = '1';
+
+            rippleStyle['-webkit-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['-moz-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['-o-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['transition-duration'] = Effect.duration + 'ms';
+
+            rippleStyle['-webkit-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['-moz-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['-o-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+
+            ripple.setAttribute('style', convertStyle(rippleStyle));
+        },
+
+        hide: function hide(e) {
+            TouchHandler.touchup(e);
+
+            var el = this;
+            var width = el.clientWidth * 1.4;
+
+            // Get first ripple
+            var ripple = null;
+            var ripples = el.getElementsByClassName('waves-ripple');
+            if (ripples.length > 0) {
+                ripple = ripples[ripples.length - 1];
+            } else {
+                return false;
+            }
+
+            var relativeX = ripple.getAttribute('data-x');
+            var relativeY = ripple.getAttribute('data-y');
+            var scale = ripple.getAttribute('data-scale');
+
+            // Get delay beetween mousedown and mouse leave
+            var diff = Date.now() - Number(ripple.getAttribute('data-hold'));
+            var delay = 350 - diff;
+
+            if (delay < 0) {
+                delay = 0;
+            }
+
+            // Fade out ripple after delay
+            setTimeout(function () {
+                var style = {
+                    'top': relativeY + 'px',
+                    'left': relativeX + 'px',
+                    'opacity': '0',
+
+                    // Duration
+                    '-webkit-transition-duration': Effect.duration + 'ms',
+                    '-moz-transition-duration': Effect.duration + 'ms',
+                    '-o-transition-duration': Effect.duration + 'ms',
+                    'transition-duration': Effect.duration + 'ms',
+                    '-webkit-transform': scale,
+                    '-moz-transform': scale,
+                    '-ms-transform': scale,
+                    '-o-transform': scale,
+                    'transform': scale
+                };
+
+                ripple.setAttribute('style', convertStyle(style));
+
+                setTimeout(function () {
+                    try {
+                        el.removeChild(ripple);
+                    } catch (e) {
+                        return false;
+                    }
+                }, Effect.duration);
+            }, delay);
+        },
+
+        // Little hack to make <input> can perform waves effect
+        wrapInput: function wrapInput(elements) {
+            for (var a = 0; a < elements.length; a++) {
+                var el = elements[a];
+
+                if (el.tagName.toLowerCase() === 'input') {
+                    var parent = el.parentNode;
+
+                    // If input already have parent just pass through
+                    if (parent.tagName.toLowerCase() === 'i' && parent.className.indexOf('waves-effect') !== -1) {
+                        continue;
+                    }
+
+                    // Put element class and style to the specified parent
+                    var wrapper = document.createElement('i');
+                    wrapper.className = el.className + ' waves-input-wrapper';
+
+                    var elementStyle = el.getAttribute('style');
+
+                    if (!elementStyle) {
+                        elementStyle = '';
+                    }
+
+                    wrapper.setAttribute('style', elementStyle);
+
+                    el.className = 'waves-button-input';
+                    el.removeAttribute('style');
+
+                    // Put element as child
+                    parent.replaceChild(wrapper, el);
+                    wrapper.appendChild(el);
+                }
+            }
+        }
+    };
+
+    /**
+     * Disable mousedown event for 500ms during and after touch
+     */
+    var TouchHandler = {
+        /* uses an integer rather than bool so there's no issues with
+         * needing to clear timeouts if another touch event occurred
+         * within the 500ms. Cannot mouseup between touchstart and
+         * touchend, nor in the 500ms after touchend. */
+        touches: 0,
+        allowEvent: function allowEvent(e) {
+            var allow = true;
+
+            if (e.type === 'touchstart') {
+                TouchHandler.touches += 1; //push
+            } else if (e.type === 'touchend' || e.type === 'touchcancel') {
+                setTimeout(function () {
+                    if (TouchHandler.touches > 0) {
+                        TouchHandler.touches -= 1; //pop after 500ms
+                    }
+                }, 500);
+            } else if (e.type === 'mousedown' && TouchHandler.touches > 0) {
+                allow = false;
+            }
+
+            return allow;
+        },
+        touchup: function touchup(e) {
+            TouchHandler.allowEvent(e);
+        }
+    };
+
+    /**
+     * Delegated click handler for .waves-effect element.
+     * returns null when .waves-effect element not in "click tree"
+     */
+    function getWavesEffectElement(e) {
+        if (TouchHandler.allowEvent(e) === false) {
+            return null;
+        }
+
+        var element = null;
+        var target = e.target || e.srcElement;
+
+        while (target.parentNode !== null) {
+            if (!(target instanceof SVGElement) && target.className.indexOf('waves-effect') !== -1) {
+                element = target;
+                break;
+            }
+            target = target.parentNode;
+        }
+        return element;
+    }
+
+    /**
+     * Bubble the click and show effect if .waves-effect elem was found
+     */
+    function showEffect(e) {
+        var element = getWavesEffectElement(e);
+
+        if (element !== null) {
+            Effect.show(e, element);
+
+            if ('ontouchstart' in window) {
+                element.addEventListener('touchend', Effect.hide, false);
+                element.addEventListener('touchcancel', Effect.hide, false);
+            }
+
+            element.addEventListener('mouseup', Effect.hide, false);
+            element.addEventListener('mouseleave', Effect.hide, false);
+            element.addEventListener('dragend', Effect.hide, false);
+        }
+    }
+
+    Waves.displayEffect = function (options) {
+        options = options || {};
+
+        if ('duration' in options) {
+            Effect.duration = options.duration;
+        }
+
+        //Wrap input inside <i> tag
+        Effect.wrapInput($$('.waves-effect'));
+
+        if ('ontouchstart' in window) {
+            document.body.addEventListener('touchstart', showEffect, false);
+        }
+
+        document.body.addEventListener('mousedown', showEffect, false);
+    };
+
+    /**
+     * Attach Waves to an input element (or any element which doesn't
+     * bubble mouseup/mousedown events).
+     *   Intended to be used with dynamically loaded forms/inputs, or
+     * where the user doesn't want a delegated click handler.
+     */
+    Waves.attach = function (element) {
+        //FUTURE: automatically add waves classes and allow users
+        // to specify them with an options param? Eg. light/classic/button
+        if (element.tagName.toLowerCase() === 'input') {
+            Effect.wrapInput([element]);
+            element = element.parentNode;
+        }
+
+        if ('ontouchstart' in window) {
+            element.addEventListener('touchstart', showEffect, false);
+        }
+
+        element.addEventListener('mousedown', showEffect, false);
+    };
+
+    window.Waves = Waves;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Waves.displayEffect();
+    }, false);
+})(window);
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+(function ($) {
+
+  // Add posibility to scroll to selected option
+  // usefull for select for example
+  $.fn.scrollTo = function (elem) {
+    $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+    return this;
+  };
+
+  $.fn.dropdown = function (options) {
+    var defaults = {
+      inDuration: 300,
+      outDuration: 225,
+      constrainWidth: true, // Constrains width of dropdown to the activator
+      hover: false,
+      gutter: 0, // Spacing from edge
+      belowOrigin: false,
+      alignment: 'left',
+      stopPropagation: false
+    };
+
+    // Open dropdown.
+    if (options === "open") {
+      this.each(function () {
+        $(this).trigger('open');
+      });
+      return false;
+    }
+
+    // Close dropdown.
+    if (options === "close") {
+      this.each(function () {
+        $(this).trigger('close');
+      });
+      return false;
+    }
+
+    this.each(function () {
+      var origin = $(this);
+      var curr_options = $.extend({}, defaults, options);
+      var isFocused = false;
+
+      // Dropdown menu
+      var activates = $("#" + origin.attr('data-activates'));
+
+      function updateOptions() {
+        if (origin.data('induration') !== undefined) curr_options.inDuration = origin.data('induration');
+        if (origin.data('outduration') !== undefined) curr_options.outDuration = origin.data('outduration');
+        if (origin.data('constrainwidth') !== undefined) curr_options.constrainWidth = origin.data('constrainwidth');
+        if (origin.data('hover') !== undefined) curr_options.hover = origin.data('hover');
+        if (origin.data('gutter') !== undefined) curr_options.gutter = origin.data('gutter');
+        if (origin.data('beloworigin') !== undefined) curr_options.belowOrigin = origin.data('beloworigin');
+        if (origin.data('alignment') !== undefined) curr_options.alignment = origin.data('alignment');
+        if (origin.data('stoppropagation') !== undefined) curr_options.stopPropagation = origin.data('stoppropagation');
+      }
+
+      updateOptions();
+
+      // Attach dropdown to its activator
+      origin.after(activates);
+
+      /*
+        Helper function to position and resize dropdown.
+        Used in hover and click handler.
+      */
+      function placeDropdown(eventType) {
+        // Check for simultaneous focus and click events.
+        if (eventType === 'focus') {
+          isFocused = true;
+        }
+
+        // Check html data attributes
+        updateOptions();
+
+        // Set Dropdown state
+        activates.addClass('active');
+        origin.addClass('active');
+
+        var originWidth = origin[0].getBoundingClientRect().width;
+
+        // Constrain width
+        if (curr_options.constrainWidth === true) {
+          activates.css('width', originWidth);
+        } else {
+          activates.css('white-space', 'nowrap');
+        }
+
+        // Offscreen detection
+        var windowHeight = window.innerHeight;
+        var originHeight = origin.innerHeight();
+        var offsetLeft = origin.offset().left;
+        var offsetTop = origin.offset().top - $(window).scrollTop();
+        var currAlignment = curr_options.alignment;
+        var gutterSpacing = 0;
+        var leftPosition = 0;
+
+        // Below Origin
+        var verticalOffset = 0;
+        if (curr_options.belowOrigin === true) {
+          verticalOffset = originHeight;
+        }
+
+        // Check for scrolling positioned container.
+        var scrollYOffset = 0;
+        var scrollXOffset = 0;
+        var wrapper = origin.parent();
+        if (!wrapper.is('body')) {
+          if (wrapper[0].scrollHeight > wrapper[0].clientHeight) {
+            scrollYOffset = wrapper[0].scrollTop;
+          }
+          if (wrapper[0].scrollWidth > wrapper[0].clientWidth) {
+            scrollXOffset = wrapper[0].scrollLeft;
+          }
+        }
+
+        if (offsetLeft + activates.innerWidth() > $(window).width()) {
+          // Dropdown goes past screen on right, force right alignment
+          currAlignment = 'right';
+        } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
+          // Dropdown goes past screen on left, force left alignment
+          currAlignment = 'left';
+        }
+        // Vertical bottom offscreen detection
+        if (offsetTop + activates.innerHeight() > windowHeight) {
+          // If going upwards still goes offscreen, just crop height of dropdown.
+          if (offsetTop + originHeight - activates.innerHeight() < 0) {
+            var adjustedHeight = windowHeight - offsetTop - verticalOffset;
+            activates.css('max-height', adjustedHeight);
+          } else {
+            // Flow upwards.
+            if (!verticalOffset) {
+              verticalOffset += originHeight;
+            }
+            verticalOffset -= activates.innerHeight();
+          }
+        }
+
+        // Handle edge alignment
+        if (currAlignment === 'left') {
+          gutterSpacing = curr_options.gutter;
+          leftPosition = origin.position().left + gutterSpacing;
+        } else if (currAlignment === 'right') {
+          // Material icons fix
+          activates.stop(true, true).css({
+            opacity: 0,
+            left: 0
+          });
+
+          var offsetRight = origin.position().left + originWidth - activates.width();
+          gutterSpacing = -curr_options.gutter;
+          leftPosition = offsetRight + gutterSpacing;
+        }
+
+        // Position dropdown
+        activates.css({
+          position: 'absolute',
+          top: origin.position().top + verticalOffset + scrollYOffset,
+          left: leftPosition + scrollXOffset
+        });
+
+        // Show dropdown
+        activates.slideDown({
+          queue: false,
+          duration: curr_options.inDuration,
+          easing: 'easeOutCubic',
+          complete: function complete() {
+            $(this).css('height', '');
+          }
+        }).animate({ opacity: 1 }, { queue: false, duration: curr_options.inDuration, easing: 'easeOutSine' });
+
+        // Add click close handler to document
+        setTimeout(function () {
+          $(document).on('click.' + activates.attr('id'), function (e) {
+            hideDropdown();
+            $(document).off('click.' + activates.attr('id'));
+          });
+        }, 0);
+      }
+
+      function hideDropdown() {
+        // Check for simultaneous focus and click events.
+        isFocused = false;
+        activates.fadeOut(curr_options.outDuration);
+        activates.removeClass('active');
+        origin.removeClass('active');
+        $(document).off('click.' + activates.attr('id'));
+        setTimeout(function () {
+          activates.css('max-height', '');
+        }, curr_options.outDuration);
+      }
+
+      // Hover
+      if (curr_options.hover) {
+        var open = false;
+        origin.off('click.' + origin.attr('id'));
+        // Hover handler to show dropdown
+        origin.on('mouseenter', function (e) {
+          // Mouse over
+          if (open === false) {
+            placeDropdown();
+            open = true;
+          }
+        });
+        origin.on('mouseleave', function (e) {
+          // If hover on origin then to something other than dropdown content, then close
+          var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
+          if (!$(toEl).closest('.dropdown-content').is(activates)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        activates.on('mouseleave', function (e) {
+          // Mouse out
+          var toEl = e.toElement || e.relatedTarget;
+          if (!$(toEl).closest('.dropdown-button').is(origin)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        // Click
+      } else {
+        // Click handler to show dropdown
+        origin.off('click.' + origin.attr('id'));
+        origin.on('click.' + origin.attr('id'), function (e) {
+          if (!isFocused) {
+            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
+              e.preventDefault(); // Prevents button click from moving window
+              if (curr_options.stopPropagation) {
+                e.stopPropagation();
+              }
+              placeDropdown('click');
+            }
+            // If origin is clicked and menu is open, close menu
+            else if (origin.hasClass('active')) {
+                hideDropdown();
+                $(document).off('click.' + activates.attr('id'));
+              }
+          }
+        });
+      } // End else
+
+      // Listen to open and close event - useful for select component
+      origin.on('open', function (e, eventType) {
+        placeDropdown(eventType);
+      });
+      origin.on('close', hideDropdown);
+    });
+  }; // End dropdown plugin
+
+  $(document).ready(function () {
+    $('.dropdown-button').dropdown();
+  });
+})(jQuery);
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*
+ * jQuery Easing v1.4.0 - http://gsgd.co.uk/sandbox/jquery/easing/
+ * Open source under the BSD License.
+ * Copyright © 2008 George McGinley Smith
+ * All rights reserved.
+ * https://raw.github.com/gdsmith/jquery-easing/master/LICENSE
+*/
+
+(function (factory) {
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
+			return factory($);
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
+		exports = factory(require('jquery'));
+	} else {
+		factory(jQuery);
+	}
+})(function ($) {
+
+	// Preserve the original jQuery "swing" easing as "jswing"
+	$.easing['jswing'] = $.easing['swing'];
+
+	var pow = Math.pow,
+	    sqrt = Math.sqrt,
+	    sin = Math.sin,
+	    cos = Math.cos,
+	    PI = Math.PI,
+	    c1 = 1.70158,
+	    c2 = c1 * 1.525,
+	    c3 = c1 + 1,
+	    c4 = 2 * PI / 3,
+	    c5 = 2 * PI / 4.5;
+
+	// x is the fraction of animation progress, in the range 0..1
+	function bounceOut(x) {
+		var n1 = 7.5625,
+		    d1 = 2.75;
+		if (x < 1 / d1) {
+			return n1 * x * x;
+		} else if (x < 2 / d1) {
+			return n1 * (x -= 1.5 / d1) * x + .75;
+		} else if (x < 2.5 / d1) {
+			return n1 * (x -= 2.25 / d1) * x + .9375;
+		} else {
+			return n1 * (x -= 2.625 / d1) * x + .984375;
+		}
+	}
+
+	$.extend($.easing, {
+		def: 'easeOutQuad',
+		swing: function swing(x) {
+			return $.easing[$.easing.def](x);
+		},
+		easeInQuad: function easeInQuad(x) {
+			return x * x;
+		},
+		easeOutQuad: function easeOutQuad(x) {
+			return 1 - (1 - x) * (1 - x);
+		},
+		easeInOutQuad: function easeInOutQuad(x) {
+			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
+		},
+		easeInCubic: function easeInCubic(x) {
+			return x * x * x;
+		},
+		easeOutCubic: function easeOutCubic(x) {
+			return 1 - pow(1 - x, 3);
+		},
+		easeInOutCubic: function easeInOutCubic(x) {
+			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
+		},
+		easeInQuart: function easeInQuart(x) {
+			return x * x * x * x;
+		},
+		easeOutQuart: function easeOutQuart(x) {
+			return 1 - pow(1 - x, 4);
+		},
+		easeInOutQuart: function easeInOutQuart(x) {
+			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
+		},
+		easeInQuint: function easeInQuint(x) {
+			return x * x * x * x * x;
+		},
+		easeOutQuint: function easeOutQuint(x) {
+			return 1 - pow(1 - x, 5);
+		},
+		easeInOutQuint: function easeInOutQuint(x) {
+			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
+		},
+		easeInSine: function easeInSine(x) {
+			return 1 - cos(x * PI / 2);
+		},
+		easeOutSine: function easeOutSine(x) {
+			return sin(x * PI / 2);
+		},
+		easeInOutSine: function easeInOutSine(x) {
+			return -(cos(PI * x) - 1) / 2;
+		},
+		easeInExpo: function easeInExpo(x) {
+			return x === 0 ? 0 : pow(2, 10 * x - 10);
+		},
+		easeOutExpo: function easeOutExpo(x) {
+			return x === 1 ? 1 : 1 - pow(2, -10 * x);
+		},
+		easeInOutExpo: function easeInOutExpo(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? pow(2, 20 * x - 10) / 2 : (2 - pow(2, -20 * x + 10)) / 2;
+		},
+		easeInCirc: function easeInCirc(x) {
+			return 1 - sqrt(1 - pow(x, 2));
+		},
+		easeOutCirc: function easeOutCirc(x) {
+			return sqrt(1 - pow(x - 1, 2));
+		},
+		easeInOutCirc: function easeInOutCirc(x) {
+			return x < 0.5 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2 : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
+		},
+		easeInElastic: function easeInElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+		},
+		easeOutElastic: function easeOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+		},
+		easeInOutElastic: function easeInOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2 : pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5) / 2 + 1;
+		},
+		easeInBack: function easeInBack(x) {
+			return c3 * x * x * x - c1 * x * x;
+		},
+		easeOutBack: function easeOutBack(x) {
+			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+		},
+		easeInOutBack: function easeInOutBack(x) {
+			return x < 0.5 ? pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2 : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+		},
+		easeInBounce: function easeInBounce(x) {
+			return 1 - bounceOut(1 - x);
+		},
+		easeOutBounce: bounceOut,
+		easeInOutBounce: function easeInOutBounce(x) {
+			return x < 0.5 ? (1 - bounceOut(1 - 2 * x)) / 2 : (1 + bounceOut(2 * x - 1)) / 2;
+		}
+	});
+});
 
 /***/ })
 /******/ ]);

@@ -13,7 +13,10 @@ require('./jquery.hammer');
 require('./hammer.min');
 require('./sideNav');
 require('./buttons');
+require('./jquery.easing');
+require('./dropdown');
 require('./forms');
 require('./slider');
+require('./waves');
 
 require('./init');

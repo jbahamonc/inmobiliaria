@@ -48,12 +48,23 @@
       .caption {
         color: #fff;
         position: absolute;
-        top: 15%;
-        left: 15%;
-        width: 70%;
+        bottom: 10rem;
+        right: 7rem;
+        width: 100%;
+        max-width: 35rem;
         opacity: 0;
+        background-color: #FFF;
+        z-index: 3;
+        padding: 3rem;
 
-        p { color: $slider-bg-color-light; }
+        h3 {          
+          font-size: 1.8rem;
+          margin-top: 0;
+          margin-bottom: 1rem;
+          font-weight: 500;
+        }
+
+        p { color: #808080; font-size: 1rem; }
       }
 
       &.active {

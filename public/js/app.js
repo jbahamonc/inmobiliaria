@@ -405,110 +405,6 @@ module.exports = function(module) {
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(19);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(5);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(5);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * jQuery JavaScript Library v3.3.1
  * https://jquery.com/
@@ -10877,6 +10773,110 @@ return jQuery;
 
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(0);
+var normalizeHeaderName = __webpack_require__(19);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(5);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(5);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11149,7 +11149,7 @@ module.exports = Cancel;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(10);
-module.exports = __webpack_require__(47);
+module.exports = __webpack_require__(50);
 
 
 /***/ }),
@@ -11171,13 +11171,13 @@ __webpack_require__(37);
 __webpack_require__(39);
 __webpack_require__(42);
 __webpack_require__(43);
-__webpack_require__(54);
-__webpack_require__(53);
 __webpack_require__(44);
 __webpack_require__(45);
-__webpack_require__(52);
-
 __webpack_require__(46);
+__webpack_require__(47);
+__webpack_require__(48);
+
+__webpack_require__(49);
 
 /***/ }),
 /* 11 */
@@ -11193,7 +11193,7 @@ window._ = __webpack_require__(12);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(3);
+  window.$ = window.jQuery = __webpack_require__(2);
 
   //require('bootstrap-sass');
 } catch (e) {}
@@ -28395,7 +28395,7 @@ module.exports = __webpack_require__(15);
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(4);
 var Axios = __webpack_require__(17);
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 
 /**
  * Create an instance of Axios
@@ -28478,7 +28478,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(27);
 var dispatchRequest = __webpack_require__(28);
@@ -29207,7 +29207,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(29);
 var isCancel = __webpack_require__(7);
-var defaults = __webpack_require__(2);
+var defaults = __webpack_require__(3);
 var isAbsoluteURL = __webpack_require__(30);
 var combineURLs = __webpack_require__(31);
 
@@ -30640,7 +30640,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 (function (factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -34438,6 +34438,420 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 /***/ }),
 /* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*
+ * jQuery Easing v1.4.0 - http://gsgd.co.uk/sandbox/jquery/easing/
+ * Open source under the BSD License.
+ * Copyright © 2008 George McGinley Smith
+ * All rights reserved.
+ * https://raw.github.com/gdsmith/jquery-easing/master/LICENSE
+*/
+
+(function (factory) {
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
+			return factory($);
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
+		exports = factory(require('jquery'));
+	} else {
+		factory(jQuery);
+	}
+})(function ($) {
+
+	// Preserve the original jQuery "swing" easing as "jswing"
+	$.easing['jswing'] = $.easing['swing'];
+
+	var pow = Math.pow,
+	    sqrt = Math.sqrt,
+	    sin = Math.sin,
+	    cos = Math.cos,
+	    PI = Math.PI,
+	    c1 = 1.70158,
+	    c2 = c1 * 1.525,
+	    c3 = c1 + 1,
+	    c4 = 2 * PI / 3,
+	    c5 = 2 * PI / 4.5;
+
+	// x is the fraction of animation progress, in the range 0..1
+	function bounceOut(x) {
+		var n1 = 7.5625,
+		    d1 = 2.75;
+		if (x < 1 / d1) {
+			return n1 * x * x;
+		} else if (x < 2 / d1) {
+			return n1 * (x -= 1.5 / d1) * x + .75;
+		} else if (x < 2.5 / d1) {
+			return n1 * (x -= 2.25 / d1) * x + .9375;
+		} else {
+			return n1 * (x -= 2.625 / d1) * x + .984375;
+		}
+	}
+
+	$.extend($.easing, {
+		def: 'easeOutQuad',
+		swing: function swing(x) {
+			return $.easing[$.easing.def](x);
+		},
+		easeInQuad: function easeInQuad(x) {
+			return x * x;
+		},
+		easeOutQuad: function easeOutQuad(x) {
+			return 1 - (1 - x) * (1 - x);
+		},
+		easeInOutQuad: function easeInOutQuad(x) {
+			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
+		},
+		easeInCubic: function easeInCubic(x) {
+			return x * x * x;
+		},
+		easeOutCubic: function easeOutCubic(x) {
+			return 1 - pow(1 - x, 3);
+		},
+		easeInOutCubic: function easeInOutCubic(x) {
+			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
+		},
+		easeInQuart: function easeInQuart(x) {
+			return x * x * x * x;
+		},
+		easeOutQuart: function easeOutQuart(x) {
+			return 1 - pow(1 - x, 4);
+		},
+		easeInOutQuart: function easeInOutQuart(x) {
+			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
+		},
+		easeInQuint: function easeInQuint(x) {
+			return x * x * x * x * x;
+		},
+		easeOutQuint: function easeOutQuint(x) {
+			return 1 - pow(1 - x, 5);
+		},
+		easeInOutQuint: function easeInOutQuint(x) {
+			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
+		},
+		easeInSine: function easeInSine(x) {
+			return 1 - cos(x * PI / 2);
+		},
+		easeOutSine: function easeOutSine(x) {
+			return sin(x * PI / 2);
+		},
+		easeInOutSine: function easeInOutSine(x) {
+			return -(cos(PI * x) - 1) / 2;
+		},
+		easeInExpo: function easeInExpo(x) {
+			return x === 0 ? 0 : pow(2, 10 * x - 10);
+		},
+		easeOutExpo: function easeOutExpo(x) {
+			return x === 1 ? 1 : 1 - pow(2, -10 * x);
+		},
+		easeInOutExpo: function easeInOutExpo(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? pow(2, 20 * x - 10) / 2 : (2 - pow(2, -20 * x + 10)) / 2;
+		},
+		easeInCirc: function easeInCirc(x) {
+			return 1 - sqrt(1 - pow(x, 2));
+		},
+		easeOutCirc: function easeOutCirc(x) {
+			return sqrt(1 - pow(x - 1, 2));
+		},
+		easeInOutCirc: function easeInOutCirc(x) {
+			return x < 0.5 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2 : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
+		},
+		easeInElastic: function easeInElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+		},
+		easeOutElastic: function easeOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+		},
+		easeInOutElastic: function easeInOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2 : pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5) / 2 + 1;
+		},
+		easeInBack: function easeInBack(x) {
+			return c3 * x * x * x - c1 * x * x;
+		},
+		easeOutBack: function easeOutBack(x) {
+			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+		},
+		easeInOutBack: function easeInOutBack(x) {
+			return x < 0.5 ? pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2 : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+		},
+		easeInBounce: function easeInBounce(x) {
+			return 1 - bounceOut(1 - x);
+		},
+		easeOutBounce: bounceOut,
+		easeInOutBounce: function easeInOutBounce(x) {
+			return x < 0.5 ? (1 - bounceOut(1 - 2 * x)) / 2 : (1 + bounceOut(2 * x - 1)) / 2;
+		}
+	});
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+(function ($) {
+
+  // Add posibility to scroll to selected option
+  // usefull for select for example
+  $.fn.scrollTo = function (elem) {
+    $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+    return this;
+  };
+
+  $.fn.dropdown = function (options) {
+    var defaults = {
+      inDuration: 300,
+      outDuration: 225,
+      constrainWidth: true, // Constrains width of dropdown to the activator
+      hover: false,
+      gutter: 0, // Spacing from edge
+      belowOrigin: false,
+      alignment: 'left',
+      stopPropagation: false
+    };
+
+    // Open dropdown.
+    if (options === "open") {
+      this.each(function () {
+        $(this).trigger('open');
+      });
+      return false;
+    }
+
+    // Close dropdown.
+    if (options === "close") {
+      this.each(function () {
+        $(this).trigger('close');
+      });
+      return false;
+    }
+
+    this.each(function () {
+      var origin = $(this);
+      var curr_options = $.extend({}, defaults, options);
+      var isFocused = false;
+
+      // Dropdown menu
+      var activates = $("#" + origin.attr('data-activates'));
+
+      function updateOptions() {
+        if (origin.data('induration') !== undefined) curr_options.inDuration = origin.data('induration');
+        if (origin.data('outduration') !== undefined) curr_options.outDuration = origin.data('outduration');
+        if (origin.data('constrainwidth') !== undefined) curr_options.constrainWidth = origin.data('constrainwidth');
+        if (origin.data('hover') !== undefined) curr_options.hover = origin.data('hover');
+        if (origin.data('gutter') !== undefined) curr_options.gutter = origin.data('gutter');
+        if (origin.data('beloworigin') !== undefined) curr_options.belowOrigin = origin.data('beloworigin');
+        if (origin.data('alignment') !== undefined) curr_options.alignment = origin.data('alignment');
+        if (origin.data('stoppropagation') !== undefined) curr_options.stopPropagation = origin.data('stoppropagation');
+      }
+
+      updateOptions();
+
+      // Attach dropdown to its activator
+      origin.after(activates);
+
+      /*
+        Helper function to position and resize dropdown.
+        Used in hover and click handler.
+      */
+      function placeDropdown(eventType) {
+        // Check for simultaneous focus and click events.
+        if (eventType === 'focus') {
+          isFocused = true;
+        }
+
+        // Check html data attributes
+        updateOptions();
+
+        // Set Dropdown state
+        activates.addClass('active');
+        origin.addClass('active');
+
+        var originWidth = origin[0].getBoundingClientRect().width;
+
+        // Constrain width
+        if (curr_options.constrainWidth === true) {
+          activates.css('width', originWidth);
+        } else {
+          activates.css('white-space', 'nowrap');
+        }
+
+        // Offscreen detection
+        var windowHeight = window.innerHeight;
+        var originHeight = origin.innerHeight();
+        var offsetLeft = origin.offset().left;
+        var offsetTop = origin.offset().top - $(window).scrollTop();
+        var currAlignment = curr_options.alignment;
+        var gutterSpacing = 0;
+        var leftPosition = 0;
+
+        // Below Origin
+        var verticalOffset = 0;
+        if (curr_options.belowOrigin === true) {
+          verticalOffset = originHeight;
+        }
+
+        // Check for scrolling positioned container.
+        var scrollYOffset = 0;
+        var scrollXOffset = 0;
+        var wrapper = origin.parent();
+        if (!wrapper.is('body')) {
+          if (wrapper[0].scrollHeight > wrapper[0].clientHeight) {
+            scrollYOffset = wrapper[0].scrollTop;
+          }
+          if (wrapper[0].scrollWidth > wrapper[0].clientWidth) {
+            scrollXOffset = wrapper[0].scrollLeft;
+          }
+        }
+
+        if (offsetLeft + activates.innerWidth() > $(window).width()) {
+          // Dropdown goes past screen on right, force right alignment
+          currAlignment = 'right';
+        } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
+          // Dropdown goes past screen on left, force left alignment
+          currAlignment = 'left';
+        }
+        // Vertical bottom offscreen detection
+        if (offsetTop + activates.innerHeight() > windowHeight) {
+          // If going upwards still goes offscreen, just crop height of dropdown.
+          if (offsetTop + originHeight - activates.innerHeight() < 0) {
+            var adjustedHeight = windowHeight - offsetTop - verticalOffset;
+            activates.css('max-height', adjustedHeight);
+          } else {
+            // Flow upwards.
+            if (!verticalOffset) {
+              verticalOffset += originHeight;
+            }
+            verticalOffset -= activates.innerHeight();
+          }
+        }
+
+        // Handle edge alignment
+        if (currAlignment === 'left') {
+          gutterSpacing = curr_options.gutter;
+          leftPosition = origin.position().left + gutterSpacing;
+        } else if (currAlignment === 'right') {
+          // Material icons fix
+          activates.stop(true, true).css({
+            opacity: 0,
+            left: 0
+          });
+
+          var offsetRight = origin.position().left + originWidth - activates.width();
+          gutterSpacing = -curr_options.gutter;
+          leftPosition = offsetRight + gutterSpacing;
+        }
+
+        // Position dropdown
+        activates.css({
+          position: 'absolute',
+          top: origin.position().top + verticalOffset + scrollYOffset,
+          left: leftPosition + scrollXOffset
+        });
+
+        // Show dropdown
+        activates.slideDown({
+          queue: false,
+          duration: curr_options.inDuration,
+          easing: 'easeOutCubic',
+          complete: function complete() {
+            $(this).css('height', '');
+          }
+        }).animate({ opacity: 1 }, { queue: false, duration: curr_options.inDuration, easing: 'easeOutSine' });
+
+        // Add click close handler to document
+        setTimeout(function () {
+          $(document).on('click.' + activates.attr('id'), function (e) {
+            hideDropdown();
+            $(document).off('click.' + activates.attr('id'));
+          });
+        }, 0);
+      }
+
+      function hideDropdown() {
+        // Check for simultaneous focus and click events.
+        isFocused = false;
+        activates.fadeOut(curr_options.outDuration);
+        activates.removeClass('active');
+        origin.removeClass('active');
+        $(document).off('click.' + activates.attr('id'));
+        setTimeout(function () {
+          activates.css('max-height', '');
+        }, curr_options.outDuration);
+      }
+
+      // Hover
+      if (curr_options.hover) {
+        var open = false;
+        origin.off('click.' + origin.attr('id'));
+        // Hover handler to show dropdown
+        origin.on('mouseenter', function (e) {
+          // Mouse over
+          if (open === false) {
+            placeDropdown();
+            open = true;
+          }
+        });
+        origin.on('mouseleave', function (e) {
+          // If hover on origin then to something other than dropdown content, then close
+          var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
+          if (!$(toEl).closest('.dropdown-content').is(activates)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        activates.on('mouseleave', function (e) {
+          // Mouse out
+          var toEl = e.toElement || e.relatedTarget;
+          if (!$(toEl).closest('.dropdown-button').is(origin)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        // Click
+      } else {
+        // Click handler to show dropdown
+        origin.off('click.' + origin.attr('id'));
+        origin.on('click.' + origin.attr('id'), function (e) {
+          if (!isFocused) {
+            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
+              e.preventDefault(); // Prevents button click from moving window
+              if (curr_options.stopPropagation) {
+                e.stopPropagation();
+              }
+              placeDropdown('click');
+            }
+            // If origin is clicked and menu is open, close menu
+            else if (origin.hasClass('active')) {
+                hideDropdown();
+                $(document).off('click.' + activates.attr('id'));
+              }
+          }
+        });
+      } // End else
+
+      // Listen to open and close event - useful for select component
+      origin.on('open', function (e, eventType) {
+        placeDropdown(eventType);
+      });
+      origin.on('close', hideDropdown);
+    });
+  }; // End dropdown plugin
+
+  $(document).ready(function () {
+    $('.dropdown-button').dropdown();
+  });
+})(jQuery);
+
+/***/ }),
+/* 46 */
 /***/ (function(module, exports) {
 
 (function ($) {
@@ -35248,7 +35662,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -35550,27 +35964,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports) {
-
-$(function () {
-    $(".sidenav").sideNav();
-    $('.slider').slider({ indicators: false });
-    $('select').material_select();
-});
-
-/***/ }),
-/* 47 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -35910,418 +36304,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(window);
 
 /***/ }),
-/* 53 */
+/* 49 */
 /***/ (function(module, exports) {
 
-(function ($) {
-
-  // Add posibility to scroll to selected option
-  // usefull for select for example
-  $.fn.scrollTo = function (elem) {
-    $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
-    return this;
-  };
-
-  $.fn.dropdown = function (options) {
-    var defaults = {
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: true, // Constrains width of dropdown to the activator
-      hover: false,
-      gutter: 0, // Spacing from edge
-      belowOrigin: false,
-      alignment: 'left',
-      stopPropagation: false
-    };
-
-    // Open dropdown.
-    if (options === "open") {
-      this.each(function () {
-        $(this).trigger('open');
-      });
-      return false;
-    }
-
-    // Close dropdown.
-    if (options === "close") {
-      this.each(function () {
-        $(this).trigger('close');
-      });
-      return false;
-    }
-
-    this.each(function () {
-      var origin = $(this);
-      var curr_options = $.extend({}, defaults, options);
-      var isFocused = false;
-
-      // Dropdown menu
-      var activates = $("#" + origin.attr('data-activates'));
-
-      function updateOptions() {
-        if (origin.data('induration') !== undefined) curr_options.inDuration = origin.data('induration');
-        if (origin.data('outduration') !== undefined) curr_options.outDuration = origin.data('outduration');
-        if (origin.data('constrainwidth') !== undefined) curr_options.constrainWidth = origin.data('constrainwidth');
-        if (origin.data('hover') !== undefined) curr_options.hover = origin.data('hover');
-        if (origin.data('gutter') !== undefined) curr_options.gutter = origin.data('gutter');
-        if (origin.data('beloworigin') !== undefined) curr_options.belowOrigin = origin.data('beloworigin');
-        if (origin.data('alignment') !== undefined) curr_options.alignment = origin.data('alignment');
-        if (origin.data('stoppropagation') !== undefined) curr_options.stopPropagation = origin.data('stoppropagation');
-      }
-
-      updateOptions();
-
-      // Attach dropdown to its activator
-      origin.after(activates);
-
-      /*
-        Helper function to position and resize dropdown.
-        Used in hover and click handler.
-      */
-      function placeDropdown(eventType) {
-        // Check for simultaneous focus and click events.
-        if (eventType === 'focus') {
-          isFocused = true;
-        }
-
-        // Check html data attributes
-        updateOptions();
-
-        // Set Dropdown state
-        activates.addClass('active');
-        origin.addClass('active');
-
-        var originWidth = origin[0].getBoundingClientRect().width;
-
-        // Constrain width
-        if (curr_options.constrainWidth === true) {
-          activates.css('width', originWidth);
-        } else {
-          activates.css('white-space', 'nowrap');
-        }
-
-        // Offscreen detection
-        var windowHeight = window.innerHeight;
-        var originHeight = origin.innerHeight();
-        var offsetLeft = origin.offset().left;
-        var offsetTop = origin.offset().top - $(window).scrollTop();
-        var currAlignment = curr_options.alignment;
-        var gutterSpacing = 0;
-        var leftPosition = 0;
-
-        // Below Origin
-        var verticalOffset = 0;
-        if (curr_options.belowOrigin === true) {
-          verticalOffset = originHeight;
-        }
-
-        // Check for scrolling positioned container.
-        var scrollYOffset = 0;
-        var scrollXOffset = 0;
-        var wrapper = origin.parent();
-        if (!wrapper.is('body')) {
-          if (wrapper[0].scrollHeight > wrapper[0].clientHeight) {
-            scrollYOffset = wrapper[0].scrollTop;
-          }
-          if (wrapper[0].scrollWidth > wrapper[0].clientWidth) {
-            scrollXOffset = wrapper[0].scrollLeft;
-          }
-        }
-
-        if (offsetLeft + activates.innerWidth() > $(window).width()) {
-          // Dropdown goes past screen on right, force right alignment
-          currAlignment = 'right';
-        } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
-          // Dropdown goes past screen on left, force left alignment
-          currAlignment = 'left';
-        }
-        // Vertical bottom offscreen detection
-        if (offsetTop + activates.innerHeight() > windowHeight) {
-          // If going upwards still goes offscreen, just crop height of dropdown.
-          if (offsetTop + originHeight - activates.innerHeight() < 0) {
-            var adjustedHeight = windowHeight - offsetTop - verticalOffset;
-            activates.css('max-height', adjustedHeight);
-          } else {
-            // Flow upwards.
-            if (!verticalOffset) {
-              verticalOffset += originHeight;
-            }
-            verticalOffset -= activates.innerHeight();
-          }
-        }
-
-        // Handle edge alignment
-        if (currAlignment === 'left') {
-          gutterSpacing = curr_options.gutter;
-          leftPosition = origin.position().left + gutterSpacing;
-        } else if (currAlignment === 'right') {
-          // Material icons fix
-          activates.stop(true, true).css({
-            opacity: 0,
-            left: 0
-          });
-
-          var offsetRight = origin.position().left + originWidth - activates.width();
-          gutterSpacing = -curr_options.gutter;
-          leftPosition = offsetRight + gutterSpacing;
-        }
-
-        // Position dropdown
-        activates.css({
-          position: 'absolute',
-          top: origin.position().top + verticalOffset + scrollYOffset,
-          left: leftPosition + scrollXOffset
-        });
-
-        // Show dropdown
-        activates.slideDown({
-          queue: false,
-          duration: curr_options.inDuration,
-          easing: 'easeOutCubic',
-          complete: function complete() {
-            $(this).css('height', '');
-          }
-        }).animate({ opacity: 1 }, { queue: false, duration: curr_options.inDuration, easing: 'easeOutSine' });
-
-        // Add click close handler to document
-        setTimeout(function () {
-          $(document).on('click.' + activates.attr('id'), function (e) {
-            hideDropdown();
-            $(document).off('click.' + activates.attr('id'));
-          });
-        }, 0);
-      }
-
-      function hideDropdown() {
-        // Check for simultaneous focus and click events.
-        isFocused = false;
-        activates.fadeOut(curr_options.outDuration);
-        activates.removeClass('active');
-        origin.removeClass('active');
-        $(document).off('click.' + activates.attr('id'));
-        setTimeout(function () {
-          activates.css('max-height', '');
-        }, curr_options.outDuration);
-      }
-
-      // Hover
-      if (curr_options.hover) {
-        var open = false;
-        origin.off('click.' + origin.attr('id'));
-        // Hover handler to show dropdown
-        origin.on('mouseenter', function (e) {
-          // Mouse over
-          if (open === false) {
-            placeDropdown();
-            open = true;
-          }
-        });
-        origin.on('mouseleave', function (e) {
-          // If hover on origin then to something other than dropdown content, then close
-          var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
-          if (!$(toEl).closest('.dropdown-content').is(activates)) {
-            activates.stop(true, true);
-            hideDropdown();
-            open = false;
-          }
-        });
-
-        activates.on('mouseleave', function (e) {
-          // Mouse out
-          var toEl = e.toElement || e.relatedTarget;
-          if (!$(toEl).closest('.dropdown-button').is(origin)) {
-            activates.stop(true, true);
-            hideDropdown();
-            open = false;
-          }
-        });
-
-        // Click
-      } else {
-        // Click handler to show dropdown
-        origin.off('click.' + origin.attr('id'));
-        origin.on('click.' + origin.attr('id'), function (e) {
-          if (!isFocused) {
-            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
-              e.preventDefault(); // Prevents button click from moving window
-              if (curr_options.stopPropagation) {
-                e.stopPropagation();
-              }
-              placeDropdown('click');
-            }
-            // If origin is clicked and menu is open, close menu
-            else if (origin.hasClass('active')) {
-                hideDropdown();
-                $(document).off('click.' + activates.attr('id'));
-              }
-          }
-        });
-      } // End else
-
-      // Listen to open and close event - useful for select component
-      origin.on('open', function (e, eventType) {
-        placeDropdown(eventType);
-      });
-      origin.on('close', hideDropdown);
-    });
-  }; // End dropdown plugin
-
-  $(document).ready(function () {
-    $('.dropdown-button').dropdown();
-  });
-})(jQuery);
+$(function () {
+    $(".sidenav").sideNav();
+    $('.slider').slider({ indicators: false });
+    $('select').material_select();
+});
 
 /***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 50 */
+/***/ (function(module, exports) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/*
- * jQuery Easing v1.4.0 - http://gsgd.co.uk/sandbox/jquery/easing/
- * Open source under the BSD License.
- * Copyright © 2008 George McGinley Smith
- * All rights reserved.
- * https://raw.github.com/gdsmith/jquery-easing/master/LICENSE
-*/
-
-(function (factory) {
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
-			return factory($);
-		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
-		exports = factory(require('jquery'));
-	} else {
-		factory(jQuery);
-	}
-})(function ($) {
-
-	// Preserve the original jQuery "swing" easing as "jswing"
-	$.easing['jswing'] = $.easing['swing'];
-
-	var pow = Math.pow,
-	    sqrt = Math.sqrt,
-	    sin = Math.sin,
-	    cos = Math.cos,
-	    PI = Math.PI,
-	    c1 = 1.70158,
-	    c2 = c1 * 1.525,
-	    c3 = c1 + 1,
-	    c4 = 2 * PI / 3,
-	    c5 = 2 * PI / 4.5;
-
-	// x is the fraction of animation progress, in the range 0..1
-	function bounceOut(x) {
-		var n1 = 7.5625,
-		    d1 = 2.75;
-		if (x < 1 / d1) {
-			return n1 * x * x;
-		} else if (x < 2 / d1) {
-			return n1 * (x -= 1.5 / d1) * x + .75;
-		} else if (x < 2.5 / d1) {
-			return n1 * (x -= 2.25 / d1) * x + .9375;
-		} else {
-			return n1 * (x -= 2.625 / d1) * x + .984375;
-		}
-	}
-
-	$.extend($.easing, {
-		def: 'easeOutQuad',
-		swing: function swing(x) {
-			return $.easing[$.easing.def](x);
-		},
-		easeInQuad: function easeInQuad(x) {
-			return x * x;
-		},
-		easeOutQuad: function easeOutQuad(x) {
-			return 1 - (1 - x) * (1 - x);
-		},
-		easeInOutQuad: function easeInOutQuad(x) {
-			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
-		},
-		easeInCubic: function easeInCubic(x) {
-			return x * x * x;
-		},
-		easeOutCubic: function easeOutCubic(x) {
-			return 1 - pow(1 - x, 3);
-		},
-		easeInOutCubic: function easeInOutCubic(x) {
-			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
-		},
-		easeInQuart: function easeInQuart(x) {
-			return x * x * x * x;
-		},
-		easeOutQuart: function easeOutQuart(x) {
-			return 1 - pow(1 - x, 4);
-		},
-		easeInOutQuart: function easeInOutQuart(x) {
-			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
-		},
-		easeInQuint: function easeInQuint(x) {
-			return x * x * x * x * x;
-		},
-		easeOutQuint: function easeOutQuint(x) {
-			return 1 - pow(1 - x, 5);
-		},
-		easeInOutQuint: function easeInOutQuint(x) {
-			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
-		},
-		easeInSine: function easeInSine(x) {
-			return 1 - cos(x * PI / 2);
-		},
-		easeOutSine: function easeOutSine(x) {
-			return sin(x * PI / 2);
-		},
-		easeInOutSine: function easeInOutSine(x) {
-			return -(cos(PI * x) - 1) / 2;
-		},
-		easeInExpo: function easeInExpo(x) {
-			return x === 0 ? 0 : pow(2, 10 * x - 10);
-		},
-		easeOutExpo: function easeOutExpo(x) {
-			return x === 1 ? 1 : 1 - pow(2, -10 * x);
-		},
-		easeInOutExpo: function easeInOutExpo(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? pow(2, 20 * x - 10) / 2 : (2 - pow(2, -20 * x + 10)) / 2;
-		},
-		easeInCirc: function easeInCirc(x) {
-			return 1 - sqrt(1 - pow(x, 2));
-		},
-		easeOutCirc: function easeOutCirc(x) {
-			return sqrt(1 - pow(x - 1, 2));
-		},
-		easeInOutCirc: function easeInOutCirc(x) {
-			return x < 0.5 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2 : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
-		},
-		easeInElastic: function easeInElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
-		},
-		easeOutElastic: function easeOutElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
-		},
-		easeInOutElastic: function easeInOutElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2 : pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5) / 2 + 1;
-		},
-		easeInBack: function easeInBack(x) {
-			return c3 * x * x * x - c1 * x * x;
-		},
-		easeOutBack: function easeOutBack(x) {
-			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
-		},
-		easeInOutBack: function easeInOutBack(x) {
-			return x < 0.5 ? pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2 : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
-		},
-		easeInBounce: function easeInBounce(x) {
-			return 1 - bounceOut(1 - x);
-		},
-		easeOutBounce: bounceOut,
-		easeInOutBounce: function easeInOutBounce(x) {
-			return x < 0.5 ? (1 - bounceOut(1 - 2 * x)) / 2 : (1 + bounceOut(2 * x - 1)) / 2;
-		}
-	});
-});
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

@@ -38,12 +38,12 @@
             <li>
                <img src="{{ asset('images/slide-2.jpg') }}"> <!-- random image -->
                <div class="caption">
-                  <span class="badge">OFERTA</span>
-                  <h3><a href="#">Villa on Grand Avenue</a></h3>
-                  <p>CocoWalk, 3015 Grand Avenue, Miami, FL 33133, USA.</p>
+                  <span class="badge">LOREM</span>
+                  <h3 class="title-primary"><a href="#">Lorem ipsum dolor</a></h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
                   <div class="desc">
                      <div class="desc__box-icon">
-                        <h4>Bedrooms</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                               <defs>
@@ -54,7 +54,7 @@
                         </div>
                      </div>
                      <div class="desc__box-icon">
-                        <h4>Bathrooms</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" xmlns="http://www.w3.org/2000/svg" width="23.69" height="24" viewBox="0 0 23.69 24">
                              <path d="M1204,601a8,8,0,0,1,16,0v16h-2V601a6,6,0,0,0-12,0v1h-2v-1Zm7,6a6,6,0,0,0-12,0h12Zm-6,2a1,1,0,0,1,1,1v1a1,1,0,0,1-2,0v-1A1,1,0,0,1,1205,609Zm0,5a1,1,0,0,1,1,1v1a1,1,0,0,1-2,0v-1A1,1,0,0,1,1205,614Zm4.94-5.343a1,1,0,0,1,1.28.6l0.69,0.878a1,1,0,0,1-1.88.685l-0.69-.879A1,1,0,0,1,1209.94,608.657Zm2.05,4.638a1,1,0,0,1,1.28.6l0.35,0.94a1.008,1.008,0,0,1-.6,1.282,1,1,0,0,1-1.28-.6l-0.35-.939A1.008,1.008,0,0,1,1211.99,613.295Zm-11.93-4.638a1,1,0,0,1,.6,1.282l-0.69.879a1,1,0,1,1-1.87-.682l0.68-.88A1,1,0,0,1,1200.06,608.657Zm-2.05,4.639a1,1,0,0,1,.6,1.281l-0.34.941a1,1,0,0,1-1.88-.683l0.34-.94A1,1,0,0,1,1198.01,613.3Z" transform="translate(-1196.31 -593)"></path>
@@ -63,7 +63,7 @@
                         </div>
                      </div>
                      <div class="desc__box-icon">
-                        <h4>Area</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
                               <g>
@@ -85,7 +85,7 @@
                      </div>
                   </div>
                   <div class="price">
-                     <h4>Para venta</h4>
+                     <h4>Lorem ipsum</h4>
                      <span>$ 80.000.000</span>
                      <a href="#" title="Mas información" class="btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">arrow_forward</i></a>
                   </div>
@@ -94,12 +94,12 @@
             <li>
                <img src="{{ asset('images/slide-3.jpg') }}"> <!-- random image -->
                <div class="caption">
-                  <span class="badge">OFERTA</span>
-                  <h3><a href="#">Lorem ipsum dolor</a></h3>
+                  <span class="badge">Lorem</span>
+                  <h3 class="title-primary"><a href="#">Lorem ipsum dolor</a></h3>
                   <p>lorem ipsum dolor sitme</p>
                   <div class="desc">
                      <div class="desc__box-icon">
-                        <h4>Bedrooms</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                               <defs>
@@ -110,7 +110,7 @@
                         </div>
                      </div>
                      <div class="desc__box-icon">
-                        <h4>Bathrooms</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" xmlns="http://www.w3.org/2000/svg" width="23.69" height="24" viewBox="0 0 23.69 24">
                              <path d="M1204,601a8,8,0,0,1,16,0v16h-2V601a6,6,0,0,0-12,0v1h-2v-1Zm7,6a6,6,0,0,0-12,0h12Zm-6,2a1,1,0,0,1,1,1v1a1,1,0,0,1-2,0v-1A1,1,0,0,1,1205,609Zm0,5a1,1,0,0,1,1,1v1a1,1,0,0,1-2,0v-1A1,1,0,0,1,1205,614Zm4.94-5.343a1,1,0,0,1,1.28.6l0.69,0.878a1,1,0,0,1-1.88.685l-0.69-.879A1,1,0,0,1,1209.94,608.657Zm2.05,4.638a1,1,0,0,1,1.28.6l0.35,0.94a1.008,1.008,0,0,1-.6,1.282,1,1,0,0,1-1.28-.6l-0.35-.939A1.008,1.008,0,0,1,1211.99,613.295Zm-11.93-4.638a1,1,0,0,1,.6,1.282l-0.69.879a1,1,0,1,1-1.87-.682l0.68-.88A1,1,0,0,1,1200.06,608.657Zm-2.05,4.639a1,1,0,0,1,.6,1.281l-0.34.941a1,1,0,0,1-1.88-.683l0.34-.94A1,1,0,0,1,1198.01,613.3Z" transform="translate(-1196.31 -593)"></path>
@@ -119,7 +119,7 @@
                         </div>
                      </div>
                      <div class="desc__box-icon">
-                        <h4>Area</h4>
+                        <h4>Lorem</h4>
                         <div>
                            <svg class="rh_svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 24 24" enable-background="new 0 0 24 24" xml:space="preserve">
                               <g>
@@ -141,7 +141,7 @@
                      </div>
                   </div>
                   <div class="price">
-                     <h4>Para venta</h4>
+                     <h4>Lorem</h4>
                      <span>$ 80.000.000</span>
                      <a href="#" title="Mas información" class="btn-floating btn-large waves-effect waves-light red right"><i class="material-icons">arrow_forward</i></a>
                   </div>
@@ -229,8 +229,38 @@
                </form>
             </div>
          </section>
-        @yield('content')
+        @yield('content')        
       </main>
+      <footer class="page-footer section" style="padding-bottom: 0 !important;">
+         <div class="container">
+            <div class="row">
+               <div class="col l6 s12">
+                  <img src="{{ asset('images/logo.png') }}" alt="">
+                  <h5 class="white-text">Lorem Ipsum</h5>
+                  <p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum autem, ad, quis ratione voluptatem perspiciatis. Reprehenderit voluptates explicabo velit quia. Laborum ratione fuga incidunt nihil. Molestiae beatae quae earum, voluptatem!</p>
+               </div>
+               <div class="col l4 offset-l2 s12">
+                  <h5 class="white-text">Lorem</h5>
+                  <ul>
+                     <li><a class="white-text" href="#!">Link 1</a></li>
+                     <li><a class="white-text" href="#!">Link 2</a></li>
+                     <li><a class="white-text" href="#!">Link 3</a></li>
+                     <li><a class="white-text" href="#!">Link 4</a></li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div class="footer-copyright">
+            <div class="container">
+               © 2014 Copyright Text
+               <div class="social-icon right">
+                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/facebook.png') }}" alt=""></a>
+                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/instagram.png') }}" alt=""></a>
+                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/youtube.png') }}" alt=""></a>
+               </div>
+            </div>
+         </div>
+      </footer>
       <script src="{{asset('/js/app.js')}}"></script>
    </body>
 </html>

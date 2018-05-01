@@ -25,7 +25,7 @@
 
 // 1. Colors
 // ==========================================================================
-$primary-color: color("materialize-red", "lighten-2") !default;
+$primary-color: #1ea69a !default;
 $primary-color-light: lighten($primary-color, 15%) !default;
 $primary-color-dark: darken($primary-color, 15%) !default;
 
@@ -83,9 +83,9 @@ $h6-fontsize: 1.15rem !default;
 // ==========================================================================
 
 $footer-font-color: #fff !default;
-$footer-bg-color: $primary-color !default;
+$footer-bg-color: #303030 !default;
 $footer-copyright-font-color: rgba(255,255,255,.8) !default;
-$footer-copyright-bg-color: rgba(51,51,51,.08) !default;
+$footer-copyright-bg-color: darken($footer-bg-color, 2%) !default;
 
 // 6. Tables
 // ==========================================================================
@@ -243,3 +243,11 @@ $dropdown-bg-color: #fff !default;
 $dropdown-hover-bg-color: #eee !default;
 $dropdown-color: $secondary-color !default;
 $dropdown-item-height: 50px !default;
+
+// 4. Cards
+// ==========================================================================
+
+$card-padding: 24px !default;
+$card-bg-color: #fff !default;
+$card-link-color: color("orange", "accent-2") !default;
+$card-link-color-light: lighten($card-link-color, 20%) !default;

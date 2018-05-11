@@ -18,5 +18,6 @@ require('./dropdown');
 require('./forms');
 require('./slider');
 require('./waves');
+require('./materialbox');
 
 require('./init');

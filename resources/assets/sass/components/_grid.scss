@@ -9,9 +9,9 @@
   }
 }
 @media #{$large-and-up} {
-  .container {
-    width: 70%;
-  }
+  // .container {
+  //   width: 70%;
+  // }
 }
 .col .row {
   margin-left: (-1 * $gutter-width / 2);
@@ -23,13 +23,13 @@
   padding-bottom: 1rem;
 
   &.no-pad {
-    padding: 0;
+    padding: 0 !important;
   }
   &.no-pad-bot {
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
   }
   &.no-pad-top {
-    padding-top: 0;
+    padding-top: 0 !important;
   }
 }
 

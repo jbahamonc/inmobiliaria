@@ -45,7 +45,7 @@
         background-position: center;
       }
 
-      .caption {
+      .caption:not(.mini) {
         color: #fff;
         position: absolute;
         bottom: 10rem;

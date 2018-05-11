@@ -14,3 +14,14 @@
 Route::get('/', function () {
     return view('home');
 });
+
+Route::prefix('property')->group( function () {
+	Route::get('{title}', 'propertyController@show');
+    Route::post('search', 'propertyController@index');
+});
+
+Route::prefix('servicios')->group( function () {
+	Route::get('{type}', 'servicesController@index');
+});
+
+Route::get('contacto', 'contactoController@showForm');

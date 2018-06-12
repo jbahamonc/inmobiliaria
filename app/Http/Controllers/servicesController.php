@@ -13,8 +13,32 @@ class servicesController extends Controller
      */
     public function index($type)
     {
-        return view('services.general', ['title' => $type, 'no_landing' => false]);
+        $tipo_servicio = \App\Tipo_servicio::where('descripcion', ucfirst($type))->get();
+        $inmuebles = \App\Inmueble::where('tipo_servicio_id', $tipo_servicio[0]->id)->paginate(12);
+        foreach ($inmuebles as $in) {
+            $in->caracteristicas;
+        }
+
+        $other = \App\Inmueble::where('tipo_servicio_id', '<>', $tipo_servicio[0]->id)
+                                ->take(3)
+                                ->get();
+        foreach ($other as $ot) {
+            $ot->caracteristicas;
+        }
+
+        $services = \App\Tipo_servicio::all();
+        $allTypes = \App\Tipo_inmueble::all();
+        return view('services.general',
+                    ['title' => ucfirst($type),
+                    'no_landing' => true,
+                    'search' => true,
+                    'servicio' => $inmuebles,
+                    'other' => $other,
+                    'servicios_menu' => $services,
+                    'tiposIn' => $allTypes,
+                    'm_tipo' => $allTypes]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,7 +58,12 @@ class servicesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $service = $request->input('services');
+        $ser = new \App\Tipo_servicio();
+        $ser->descripcion = $service;
+        $ser->save();
+
+        return redirect('/admin/configuracion');
     }
 
     /**
@@ -79,6 +108,8 @@ class servicesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ser = \App\Tipo_servicio::find($id);
+        $ser->delete();
+        echo 'El servicio se ha eliminado';
     }
 }

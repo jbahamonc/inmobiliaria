@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,8 +70,8 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
-var isBuffer = __webpack_require__(16);
+var bind = __webpack_require__(5);
+var isBuffer = __webpack_require__(14);
 
 /*global toString:true*/
 
@@ -403,6 +403,110 @@ module.exports = function(module) {
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(0);
+var normalizeHeaderName = __webpack_require__(17);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(6);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(6);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10773,111 +10877,13 @@ return jQuery;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(19);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(5);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(5);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
+module.exports = __webpack_require__(13);
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10895,19 +10901,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(20);
-var buildURL = __webpack_require__(22);
-var parseHeaders = __webpack_require__(23);
-var isURLSameOrigin = __webpack_require__(24);
-var createError = __webpack_require__(6);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(25);
+var settle = __webpack_require__(18);
+var buildURL = __webpack_require__(20);
+var parseHeaders = __webpack_require__(21);
+var isURLSameOrigin = __webpack_require__(22);
+var createError = __webpack_require__(7);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(23);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -11004,7 +11010,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(26);
+      var cookies = __webpack_require__(24);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -11082,13 +11088,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(21);
+var enhanceError = __webpack_require__(19);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -11107,7 +11113,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11119,7 +11125,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11145,47 +11151,11 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(10);
-module.exports = __webpack_require__(51);
-
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-__webpack_require__(11);
-__webpack_require__(34);
-__webpack_require__(35);
-__webpack_require__(36);
-__webpack_require__(37);
-__webpack_require__(39);
-__webpack_require__(42);
-__webpack_require__(43);
-__webpack_require__(44);
-__webpack_require__(45);
-__webpack_require__(46);
-__webpack_require__(47);
-__webpack_require__(48);
-__webpack_require__(49);
-
-__webpack_require__(50);
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-window._ = __webpack_require__(12);
+window._ = __webpack_require__(11);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -11194,7 +11164,7 @@ window._ = __webpack_require__(12);
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(2);
+  window.$ = window.jQuery = __webpack_require__(3);
 
   //require('bootstrap-sass');
 } catch (e) {}
@@ -11205,7 +11175,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(14);
+window.axios = __webpack_require__(4);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -11241,7 +11211,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -28351,10 +28321,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13), __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12), __webpack_require__(1)(module)))
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 var g;
@@ -28381,22 +28351,16 @@ module.exports = g;
 
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(15);
-
-/***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
-var Axios = __webpack_require__(17);
-var defaults = __webpack_require__(3);
+var bind = __webpack_require__(5);
+var Axios = __webpack_require__(15);
+var defaults = __webpack_require__(2);
 
 /**
  * Create an instance of Axios
@@ -28429,15 +28393,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(8);
-axios.CancelToken = __webpack_require__(32);
-axios.isCancel = __webpack_require__(7);
+axios.Cancel = __webpack_require__(9);
+axios.CancelToken = __webpack_require__(30);
+axios.isCancel = __webpack_require__(8);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(33);
+axios.spread = __webpack_require__(31);
 
 module.exports = axios;
 
@@ -28446,7 +28410,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /*!
@@ -28473,16 +28437,16 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(3);
+var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(27);
-var dispatchRequest = __webpack_require__(28);
+var InterceptorManager = __webpack_require__(25);
+var dispatchRequest = __webpack_require__(26);
 
 /**
  * Create a new instance of Axios
@@ -28559,7 +28523,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -28749,7 +28713,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 19 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28768,13 +28732,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 20 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(6);
+var createError = __webpack_require__(7);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -28801,7 +28765,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 21 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28829,7 +28793,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28902,7 +28866,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28962,7 +28926,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29037,7 +29001,7 @@ module.exports = (
 
 
 /***/ }),
-/* 25 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29080,7 +29044,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29140,7 +29104,7 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29199,18 +29163,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 28 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(29);
-var isCancel = __webpack_require__(7);
-var defaults = __webpack_require__(3);
-var isAbsoluteURL = __webpack_require__(30);
-var combineURLs = __webpack_require__(31);
+var transformData = __webpack_require__(27);
+var isCancel = __webpack_require__(8);
+var defaults = __webpack_require__(2);
+var isAbsoluteURL = __webpack_require__(28);
+var combineURLs = __webpack_require__(29);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -29292,7 +29256,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 29 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29319,7 +29283,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 30 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29340,7 +29304,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 31 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29361,13 +29325,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(8);
+var Cancel = __webpack_require__(9);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -29425,7 +29389,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29459,544 +29423,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {// Required for Meteor package, the use of window prevents export by Meteor
-(function (window) {
-  if (window.Package) {
-    Materialize = {};
-  } else {
-    window.Materialize = {};
-  }
-})(window);
-
-if (typeof exports !== 'undefined' && !exports.nodeType) {
-  if (typeof module !== 'undefined' && !module.nodeType && module.exports) {
-    exports = module.exports = Materialize;
-  }
-  exports.default = Materialize;
-}
-
-/*
- * raf.js
- * https://github.com/ngryman/raf.js
- *
- * original requestAnimationFrame polyfill by Erik Möller
- * inspired from paul_irish gist and post
- *
- * Copyright (c) 2013 ngryman
- * Licensed under the MIT license.
- */
-(function (window) {
-  var lastTime = 0,
-      vendors = ['webkit', 'moz'],
-      requestAnimationFrame = window.requestAnimationFrame,
-      cancelAnimationFrame = window.cancelAnimationFrame,
-      i = vendors.length;
-
-  // try to un-prefix existing raf
-  while (--i >= 0 && !requestAnimationFrame) {
-    requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
-    cancelAnimationFrame = window[vendors[i] + 'CancelRequestAnimationFrame'];
-  }
-
-  // polyfill with setTimeout fallback
-  // heavily inspired from @darius gist mod: https://gist.github.com/paulirish/1579671#comment-837945
-  if (!requestAnimationFrame || !cancelAnimationFrame) {
-    requestAnimationFrame = function requestAnimationFrame(callback) {
-      var now = +Date.now(),
-          nextTime = Math.max(lastTime + 16, now);
-      return setTimeout(function () {
-        callback(lastTime = nextTime);
-      }, nextTime - now);
-    };
-
-    cancelAnimationFrame = clearTimeout;
-  }
-
-  // export to window
-  window.requestAnimationFrame = requestAnimationFrame;
-  window.cancelAnimationFrame = cancelAnimationFrame;
-})(window);
-
-/**
- * Generate approximated selector string for a jQuery object
- * @param {jQuery} obj  jQuery object to be parsed
- * @returns {string}
- */
-Materialize.objectSelectorString = function (obj) {
-  var tagStr = obj.prop('tagName') || '';
-  var idStr = obj.attr('id') || '';
-  var classStr = obj.attr('class') || '';
-  return (tagStr + idStr + classStr).replace(/\s/g, '');
-};
-
-// Unique Random ID
-Materialize.guid = function () {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-  }
-  return function () {
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  };
-}();
-
-/**
- * Escapes hash from special characters
- * @param {string} hash  String returned from this.hash
- * @returns {string}
- */
-Materialize.escapeHash = function (hash) {
-  return hash.replace(/(:|\.|\[|\]|,|=)/g, "\\$1");
-};
-
-Materialize.elementOrParentIsFixed = function (element) {
-  var $element = $(element);
-  var $checkElements = $element.add($element.parents());
-  var isFixed = false;
-  $checkElements.each(function () {
-    if ($(this).css("position") === "fixed") {
-      isFixed = true;
-      return false;
-    }
-  });
-  return isFixed;
-};
-
-/**
- * Get time in ms
- * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
- * @type {function}
- * @return {number}
- */
-var getTime = Date.now || function () {
-  return new Date().getTime();
-};
-
-/**
- * Returns a function, that, when invoked, will only be triggered at most once
- * during a given window of time. Normally, the throttled function will run
- * as much as it can, without ever going more than once per `wait` duration;
- * but if you'd like to disable the execution on the leading edge, pass
- * `{leading: false}`. To disable execution on the trailing edge, ditto.
- * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
- * @param {function} func
- * @param {number} wait
- * @param {Object=} options
- * @returns {Function}
- */
-Materialize.throttle = function (func, wait, options) {
-  var context, args, result;
-  var timeout = null;
-  var previous = 0;
-  options || (options = {});
-  var later = function later() {
-    previous = options.leading === false ? 0 : getTime();
-    timeout = null;
-    result = func.apply(context, args);
-    context = args = null;
-  };
-  return function () {
-    var now = getTime();
-    if (!previous && options.leading === false) previous = now;
-    var remaining = wait - (now - previous);
-    context = this;
-    args = arguments;
-    if (remaining <= 0) {
-      clearTimeout(timeout);
-      timeout = null;
-      previous = now;
-      result = func.apply(context, args);
-      context = args = null;
-    } else if (!timeout && options.trailing !== false) {
-      timeout = setTimeout(later, remaining);
-    }
-    return result;
-  };
-};
-
-// Velocity has conflicts when loaded with jQuery, this will check for it
-// First, check if in noConflict mode
-var Vel;
-if (jQuery) {
-  Vel = jQuery.Velocity;
-} else if ($) {
-  Vel = $.Velocity;
-} else {
-  Vel = Velocity;
-}
-
-if (Vel) {
-  Materialize.Vel = Vel;
-} else {
-  Materialize.Vel = Vel;
-}
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports) {
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-(function ($, Vel) {
-  'use strict';
-
-  var _defaults = {
-    displayLength: Infinity,
-    inDuration: 300,
-    outDuration: 375,
-    className: undefined,
-    completeCallback: undefined,
-    activationPercent: 0.8
-  };
-
-  var Toast = function () {
-    function Toast(message, displayLength, className, completeCallback) {
-      _classCallCheck(this, Toast);
-
-      if (!message) {
-        return;
-      }
-
-      /**
-       * Options for the toast
-       * @member Toast#options
-       */
-      this.options = {
-        displayLength: displayLength,
-        className: className,
-        completeCallback: completeCallback
-      };
-
-      this.options = $.extend({}, Toast.defaults, this.options);
-      this.message = message;
-
-      /**
-       * Describes current pan state toast
-       * @type {Boolean}
-       */
-      this.panning = false;
-
-      /**
-       * Time remaining until toast is removed
-       */
-      this.timeRemaining = this.options.displayLength;
-
-      if (Toast._toasts.length === 0) {
-        Toast._createContainer();
-      }
-
-      // Create new toast
-      Toast._toasts.push(this);
-      var toastElement = this.createToast();
-      toastElement.M_Toast = this;
-      this.el = toastElement;
-      this._animateIn();
-      this.setTimer();
-    }
-
-    _createClass(Toast, [{
-      key: 'createToast',
-
-
-      /**
-       * Create toast and append it to toast container
-       */
-      value: function createToast() {
-        var toast = document.createElement('div');
-        toast.classList.add('toast');
-
-        // Add custom classes onto toast
-        if (this.options.className) {
-          var classes = this.options.className.split(' ');
-          var i = void 0,
-              count = void 0;
-          for (i = 0, count = classes.length; i < count; i++) {
-            toast.classList.add(classes[i]);
-          }
-        }
-
-        // Set content
-        if ((typeof HTMLElement === 'undefined' ? 'undefined' : _typeof(HTMLElement)) === 'object' ? this.message instanceof HTMLElement : this.message && _typeof(this.message) === 'object' && this.message !== null && this.message.nodeType === 1 && typeof this.message.nodeName === 'string') {
-          toast.appendChild(this.message);
-
-          // Check if it is jQuery object
-        } else if (this.message instanceof jQuery) {
-          $(toast).append(this.message);
-
-          // Insert as text;
-        } else {
-          toast.innerHTML = this.message;
-        }
-
-        // Append toasft
-        Toast._container.appendChild(toast);
-        return toast;
-      }
-
-      /**
-       * Animate in toast
-       */
-
-    }, {
-      key: '_animateIn',
-      value: function _animateIn() {
-        // Animate toast in
-        Vel(this.el, { top: 0, opacity: 1 }, {
-          duration: 300,
-          easing: 'easeOutCubic',
-          queue: false
-        });
-      }
-
-      /**
-       * Create setInterval which automatically removes toast when timeRemaining >= 0
-       * has been reached
-       */
-
-    }, {
-      key: 'setTimer',
-      value: function setTimer() {
-        var _this = this;
-
-        if (this.timeRemaining !== Infinity) {
-          this.counterInterval = setInterval(function () {
-            // If toast is not being dragged, decrease its time remaining
-            if (!_this.panning) {
-              _this.timeRemaining -= 20;
-            }
-
-            // Animate toast out
-            if (_this.timeRemaining <= 0) {
-              _this.remove();
-            }
-          }, 20);
-        }
-      }
-
-      /**
-       * Dismiss toast with animation
-       */
-
-    }, {
-      key: 'remove',
-      value: function remove() {
-        var _this2 = this;
-
-        window.clearInterval(this.counterInterval);
-        var activationDistance = this.el.offsetWidth * this.options.activationPercent;
-
-        if (this.wasSwiped) {
-          this.el.style.transition = 'transform .05s, opacity .05s';
-          this.el.style.transform = 'translateX(' + activationDistance + 'px)';
-          this.el.style.opacity = 0;
-        }
-
-        Vel(this.el, { opacity: 0, marginTop: '-40px' }, {
-          duration: this.options.outDuration,
-          easing: 'easeOutExpo',
-          queue: false,
-          complete: function complete() {
-            // Call the optional callback
-            if (typeof _this2.options.completeCallback === 'function') {
-              _this2.options.completeCallback();
-            }
-            // Remove toast from DOM
-            _this2.el.parentNode.removeChild(_this2.el);
-            Toast._toasts.splice(Toast._toasts.indexOf(_this2), 1);
-            if (Toast._toasts.length === 0) {
-              Toast._removeContainer();
-            }
-          }
-        });
-      }
-    }], [{
-      key: '_createContainer',
-
-
-      /**
-       * Append toast container and add event handlers
-       */
-      value: function _createContainer() {
-        var container = document.createElement('div');
-        container.setAttribute('id', 'toast-container');
-
-        // Add event handler
-        container.addEventListener('touchstart', Toast._onDragStart);
-        container.addEventListener('touchmove', Toast._onDragMove);
-        container.addEventListener('touchend', Toast._onDragEnd);
-
-        container.addEventListener('mousedown', Toast._onDragStart);
-        document.addEventListener('mousemove', Toast._onDragMove);
-        document.addEventListener('mouseup', Toast._onDragEnd);
-
-        document.body.appendChild(container);
-        Toast._container = container;
-      }
-
-      /**
-       * Remove toast container and event handlers
-       */
-
-    }, {
-      key: '_removeContainer',
-      value: function _removeContainer() {
-        // Add event handler
-        document.removeEventListener('mousemove', Toast._onDragMove);
-        document.removeEventListener('mouseup', Toast._onDragEnd);
-
-        Toast._container.parentNode.removeChild(Toast._container);
-        Toast._container = null;
-      }
-
-      /**
-       * Begin drag handler
-       * @param {Event} e
-       */
-
-    }, {
-      key: '_onDragStart',
-      value: function _onDragStart(e) {
-        if (e.target && $(e.target).closest('.toast').length) {
-          var $toast = $(e.target).closest('.toast');
-          var toast = $toast[0].M_Toast;
-          toast.panning = true;
-          Toast._draggedToast = toast;
-          toast.el.classList.add('panning');
-          toast.el.style.transition = '';
-          toast.startingXPos = Toast._xPos(e);
-          toast.time = Date.now();
-          toast.xPos = Toast._xPos(e);
-        }
-      }
-
-      /**
-       * Drag move handler
-       * @param {Event} e
-       */
-
-    }, {
-      key: '_onDragMove',
-      value: function _onDragMove(e) {
-        if (!!Toast._draggedToast) {
-          e.preventDefault();
-          var toast = Toast._draggedToast;
-          toast.deltaX = Math.abs(toast.xPos - Toast._xPos(e));
-          toast.xPos = Toast._xPos(e);
-          toast.velocityX = toast.deltaX / (Date.now() - toast.time);
-          toast.time = Date.now();
-
-          var totalDeltaX = toast.xPos - toast.startingXPos;
-          var activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
-          toast.el.style.transform = 'translateX(' + totalDeltaX + 'px)';
-          toast.el.style.opacity = 1 - Math.abs(totalDeltaX / activationDistance);
-        }
-      }
-
-      /**
-       * End drag handler
-       * @param {Event} e
-       */
-
-    }, {
-      key: '_onDragEnd',
-      value: function _onDragEnd(e) {
-        if (!!Toast._draggedToast) {
-          var toast = Toast._draggedToast;
-          toast.panning = false;
-          toast.el.classList.remove('panning');
-
-          var totalDeltaX = toast.xPos - toast.startingXPos;
-          var activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
-          var shouldBeDismissed = Math.abs(totalDeltaX) > activationDistance || toast.velocityX > 1;
-
-          // Remove toast
-          if (shouldBeDismissed) {
-            toast.wasSwiped = true;
-            toast.remove();
-
-            // Animate toast back to original position
-          } else {
-            toast.el.style.transition = 'transform .2s, opacity .2s';
-            toast.el.style.transform = '';
-            toast.el.style.opacity = '';
-          }
-          Toast._draggedToast = null;
-        }
-      }
-
-      /**
-       * Get x position of mouse or touch event
-       * @param {Event} e
-       */
-
-    }, {
-      key: '_xPos',
-      value: function _xPos(e) {
-        if (e.targetTouches && e.targetTouches.length >= 1) {
-          return e.targetTouches[0].clientX;
-        }
-        // mouse event
-        return e.clientX;
-      }
-
-      /**
-       * Remove all toasts
-       */
-
-    }, {
-      key: 'removeAll',
-      value: function removeAll() {
-        for (var toastIndex in Toast._toasts) {
-          Toast._toasts[toastIndex].remove();
-        }
-      }
-    }, {
-      key: 'defaults',
-      get: function get() {
-        return _defaults;
-      }
-    }]);
-
-    return Toast;
-  }();
-
-  /**
-   * @static
-   * @memberof Toast
-   * @type {Array.<Toast>}
-   */
-
-
-  Toast._toasts = [];
-
-  /**
-   * @static
-   * @memberof Toast
-   */
-  Toast._container = null;
-
-  /**
-   * @static
-   * @memberof Toast
-   * @type {Toast}
-   */
-  Toast._draggedToast = null;
-
-  Materialize.Toast = Toast;
-  Materialize.toast = function (message, displayLength, className, completeCallback) {
-    return new Toast(message, displayLength, className, completeCallback);
-  };
-})(jQuery, Materialize.Vel);
-
-/***/ }),
-/* 36 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -30634,14 +30061,2826 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {// Required for Meteor package, the use of window prevents export by Meteor
+(function (window) {
+  if (window.Package) {
+    Materialize = {};
+  } else {
+    window.Materialize = {};
+  }
+})(window);
+
+if (typeof exports !== 'undefined' && !exports.nodeType) {
+  if (typeof module !== 'undefined' && !module.nodeType && module.exports) {
+    exports = module.exports = Materialize;
+  }
+  exports.default = Materialize;
+}
+
+/*
+ * raf.js
+ * https://github.com/ngryman/raf.js
+ *
+ * original requestAnimationFrame polyfill by Erik Möller
+ * inspired from paul_irish gist and post
+ *
+ * Copyright (c) 2013 ngryman
+ * Licensed under the MIT license.
+ */
+(function (window) {
+  var lastTime = 0,
+      vendors = ['webkit', 'moz'],
+      requestAnimationFrame = window.requestAnimationFrame,
+      cancelAnimationFrame = window.cancelAnimationFrame,
+      i = vendors.length;
+
+  // try to un-prefix existing raf
+  while (--i >= 0 && !requestAnimationFrame) {
+    requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+    cancelAnimationFrame = window[vendors[i] + 'CancelRequestAnimationFrame'];
+  }
+
+  // polyfill with setTimeout fallback
+  // heavily inspired from @darius gist mod: https://gist.github.com/paulirish/1579671#comment-837945
+  if (!requestAnimationFrame || !cancelAnimationFrame) {
+    requestAnimationFrame = function requestAnimationFrame(callback) {
+      var now = +Date.now(),
+          nextTime = Math.max(lastTime + 16, now);
+      return setTimeout(function () {
+        callback(lastTime = nextTime);
+      }, nextTime - now);
+    };
+
+    cancelAnimationFrame = clearTimeout;
+  }
+
+  // export to window
+  window.requestAnimationFrame = requestAnimationFrame;
+  window.cancelAnimationFrame = cancelAnimationFrame;
+})(window);
+
+/**
+ * Generate approximated selector string for a jQuery object
+ * @param {jQuery} obj  jQuery object to be parsed
+ * @returns {string}
+ */
+Materialize.objectSelectorString = function (obj) {
+  var tagStr = obj.prop('tagName') || '';
+  var idStr = obj.attr('id') || '';
+  var classStr = obj.attr('class') || '';
+  return (tagStr + idStr + classStr).replace(/\s/g, '');
+};
+
+// Unique Random ID
+Materialize.guid = function () {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+  }
+  return function () {
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  };
+}();
+
+/**
+ * Escapes hash from special characters
+ * @param {string} hash  String returned from this.hash
+ * @returns {string}
+ */
+Materialize.escapeHash = function (hash) {
+  return hash.replace(/(:|\.|\[|\]|,|=)/g, "\\$1");
+};
+
+Materialize.elementOrParentIsFixed = function (element) {
+  var $element = $(element);
+  var $checkElements = $element.add($element.parents());
+  var isFixed = false;
+  $checkElements.each(function () {
+    if ($(this).css("position") === "fixed") {
+      isFixed = true;
+      return false;
+    }
+  });
+  return isFixed;
+};
+
+/**
+ * Get time in ms
+ * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
+ * @type {function}
+ * @return {number}
+ */
+var getTime = Date.now || function () {
+  return new Date().getTime();
+};
+
+/**
+ * Returns a function, that, when invoked, will only be triggered at most once
+ * during a given window of time. Normally, the throttled function will run
+ * as much as it can, without ever going more than once per `wait` duration;
+ * but if you'd like to disable the execution on the leading edge, pass
+ * `{leading: false}`. To disable execution on the trailing edge, ditto.
+ * @license https://raw.github.com/jashkenas/underscore/master/LICENSE
+ * @param {function} func
+ * @param {number} wait
+ * @param {Object=} options
+ * @returns {Function}
+ */
+Materialize.throttle = function (func, wait, options) {
+  var context, args, result;
+  var timeout = null;
+  var previous = 0;
+  options || (options = {});
+  var later = function later() {
+    previous = options.leading === false ? 0 : getTime();
+    timeout = null;
+    result = func.apply(context, args);
+    context = args = null;
+  };
+  return function () {
+    var now = getTime();
+    if (!previous && options.leading === false) previous = now;
+    var remaining = wait - (now - previous);
+    context = this;
+    args = arguments;
+    if (remaining <= 0) {
+      clearTimeout(timeout);
+      timeout = null;
+      previous = now;
+      result = func.apply(context, args);
+      context = args = null;
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(later, remaining);
+    }
+    return result;
+  };
+};
+
+// Velocity has conflicts when loaded with jQuery, this will check for it
+// First, check if in noConflict mode
+var Vel;
+if (jQuery) {
+  Vel = jQuery.Velocity;
+} else if ($) {
+  Vel = $.Velocity;
+} else {
+  Vel = Velocity;
+}
+
+if (Vel) {
+  Materialize.Vel = Vel;
+} else {
+  Materialize.Vel = Velocity;
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(function ($, Vel) {
+  'use strict';
+
+  var _defaults = {
+    displayLength: Infinity,
+    inDuration: 300,
+    outDuration: 375,
+    className: undefined,
+    completeCallback: undefined,
+    activationPercent: 0.8
+  };
+
+  var Toast = function () {
+    function Toast(message, displayLength, className, completeCallback) {
+      _classCallCheck(this, Toast);
+
+      if (!message) {
+        return;
+      }
+
+      /**
+       * Options for the toast
+       * @member Toast#options
+       */
+      this.options = {
+        displayLength: displayLength,
+        className: className,
+        completeCallback: completeCallback
+      };
+
+      this.options = $.extend({}, Toast.defaults, this.options);
+      this.message = message;
+
+      /**
+       * Describes current pan state toast
+       * @type {Boolean}
+       */
+      this.panning = false;
+
+      /**
+       * Time remaining until toast is removed
+       */
+      this.timeRemaining = this.options.displayLength;
+
+      if (Toast._toasts.length === 0) {
+        Toast._createContainer();
+      }
+
+      // Create new toast
+      Toast._toasts.push(this);
+      var toastElement = this.createToast();
+      toastElement.M_Toast = this;
+      this.el = toastElement;
+      this._animateIn();
+      this.setTimer();
+    }
+
+    _createClass(Toast, [{
+      key: 'createToast',
+
+
+      /**
+       * Create toast and append it to toast container
+       */
+      value: function createToast() {
+        var toast = document.createElement('div');
+        toast.classList.add('toast');
+
+        // Add custom classes onto toast
+        if (this.options.className) {
+          var classes = this.options.className.split(' ');
+          var i = void 0,
+              count = void 0;
+          for (i = 0, count = classes.length; i < count; i++) {
+            toast.classList.add(classes[i]);
+          }
+        }
+
+        // Set content
+        if ((typeof HTMLElement === 'undefined' ? 'undefined' : _typeof(HTMLElement)) === 'object' ? this.message instanceof HTMLElement : this.message && _typeof(this.message) === 'object' && this.message !== null && this.message.nodeType === 1 && typeof this.message.nodeName === 'string') {
+          toast.appendChild(this.message);
+
+          // Check if it is jQuery object
+        } else if (this.message instanceof jQuery) {
+          $(toast).append(this.message);
+
+          // Insert as text;
+        } else {
+          toast.innerHTML = this.message;
+        }
+
+        // Append toasft
+        Toast._container.appendChild(toast);
+        return toast;
+      }
+
+      /**
+       * Animate in toast
+       */
+
+    }, {
+      key: '_animateIn',
+      value: function _animateIn() {
+        // Animate toast in
+        Vel(this.el, { top: 0, opacity: 1 }, {
+          duration: 300,
+          easing: 'easeOutCubic',
+          queue: false
+        });
+      }
+
+      /**
+       * Create setInterval which automatically removes toast when timeRemaining >= 0
+       * has been reached
+       */
+
+    }, {
+      key: 'setTimer',
+      value: function setTimer() {
+        var _this = this;
+
+        if (this.timeRemaining !== Infinity) {
+          this.counterInterval = setInterval(function () {
+            // If toast is not being dragged, decrease its time remaining
+            if (!_this.panning) {
+              _this.timeRemaining -= 20;
+            }
+
+            // Animate toast out
+            if (_this.timeRemaining <= 0) {
+              _this.remove();
+            }
+          }, 20);
+        }
+      }
+
+      /**
+       * Dismiss toast with animation
+       */
+
+    }, {
+      key: 'remove',
+      value: function remove() {
+        var _this2 = this;
+
+        window.clearInterval(this.counterInterval);
+        var activationDistance = this.el.offsetWidth * this.options.activationPercent;
+
+        if (this.wasSwiped) {
+          this.el.style.transition = 'transform .05s, opacity .05s';
+          this.el.style.transform = 'translateX(' + activationDistance + 'px)';
+          this.el.style.opacity = 0;
+        }
+
+        Vel(this.el, { opacity: 0, marginTop: '-40px' }, {
+          duration: this.options.outDuration,
+          easing: 'easeOutExpo',
+          queue: false,
+          complete: function complete() {
+            // Call the optional callback
+            if (typeof _this2.options.completeCallback === 'function') {
+              _this2.options.completeCallback();
+            }
+            // Remove toast from DOM
+            _this2.el.parentNode.removeChild(_this2.el);
+            Toast._toasts.splice(Toast._toasts.indexOf(_this2), 1);
+            if (Toast._toasts.length === 0) {
+              Toast._removeContainer();
+            }
+          }
+        });
+      }
+    }], [{
+      key: '_createContainer',
+
+
+      /**
+       * Append toast container and add event handlers
+       */
+      value: function _createContainer() {
+        var container = document.createElement('div');
+        container.setAttribute('id', 'toast-container');
+
+        // Add event handler
+        container.addEventListener('touchstart', Toast._onDragStart);
+        container.addEventListener('touchmove', Toast._onDragMove);
+        container.addEventListener('touchend', Toast._onDragEnd);
+
+        container.addEventListener('mousedown', Toast._onDragStart);
+        document.addEventListener('mousemove', Toast._onDragMove);
+        document.addEventListener('mouseup', Toast._onDragEnd);
+
+        document.body.appendChild(container);
+        Toast._container = container;
+      }
+
+      /**
+       * Remove toast container and event handlers
+       */
+
+    }, {
+      key: '_removeContainer',
+      value: function _removeContainer() {
+        // Add event handler
+        document.removeEventListener('mousemove', Toast._onDragMove);
+        document.removeEventListener('mouseup', Toast._onDragEnd);
+
+        Toast._container.parentNode.removeChild(Toast._container);
+        Toast._container = null;
+      }
+
+      /**
+       * Begin drag handler
+       * @param {Event} e
+       */
+
+    }, {
+      key: '_onDragStart',
+      value: function _onDragStart(e) {
+        if (e.target && $(e.target).closest('.toast').length) {
+          var $toast = $(e.target).closest('.toast');
+          var toast = $toast[0].M_Toast;
+          toast.panning = true;
+          Toast._draggedToast = toast;
+          toast.el.classList.add('panning');
+          toast.el.style.transition = '';
+          toast.startingXPos = Toast._xPos(e);
+          toast.time = Date.now();
+          toast.xPos = Toast._xPos(e);
+        }
+      }
+
+      /**
+       * Drag move handler
+       * @param {Event} e
+       */
+
+    }, {
+      key: '_onDragMove',
+      value: function _onDragMove(e) {
+        if (!!Toast._draggedToast) {
+          e.preventDefault();
+          var toast = Toast._draggedToast;
+          toast.deltaX = Math.abs(toast.xPos - Toast._xPos(e));
+          toast.xPos = Toast._xPos(e);
+          toast.velocityX = toast.deltaX / (Date.now() - toast.time);
+          toast.time = Date.now();
+
+          var totalDeltaX = toast.xPos - toast.startingXPos;
+          var activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
+          toast.el.style.transform = 'translateX(' + totalDeltaX + 'px)';
+          toast.el.style.opacity = 1 - Math.abs(totalDeltaX / activationDistance);
+        }
+      }
+
+      /**
+       * End drag handler
+       * @param {Event} e
+       */
+
+    }, {
+      key: '_onDragEnd',
+      value: function _onDragEnd(e) {
+        if (!!Toast._draggedToast) {
+          var toast = Toast._draggedToast;
+          toast.panning = false;
+          toast.el.classList.remove('panning');
+
+          var totalDeltaX = toast.xPos - toast.startingXPos;
+          var activationDistance = toast.el.offsetWidth * toast.options.activationPercent;
+          var shouldBeDismissed = Math.abs(totalDeltaX) > activationDistance || toast.velocityX > 1;
+
+          // Remove toast
+          if (shouldBeDismissed) {
+            toast.wasSwiped = true;
+            toast.remove();
+
+            // Animate toast back to original position
+          } else {
+            toast.el.style.transition = 'transform .2s, opacity .2s';
+            toast.el.style.transform = '';
+            toast.el.style.opacity = '';
+          }
+          Toast._draggedToast = null;
+        }
+      }
+
+      /**
+       * Get x position of mouse or touch event
+       * @param {Event} e
+       */
+
+    }, {
+      key: '_xPos',
+      value: function _xPos(e) {
+        if (e.targetTouches && e.targetTouches.length >= 1) {
+          return e.targetTouches[0].clientX;
+        }
+        // mouse event
+        return e.clientX;
+      }
+
+      /**
+       * Remove all toasts
+       */
+
+    }, {
+      key: 'removeAll',
+      value: function removeAll() {
+        for (var toastIndex in Toast._toasts) {
+          Toast._toasts[toastIndex].remove();
+        }
+      }
+    }, {
+      key: 'defaults',
+      get: function get() {
+        return _defaults;
+      }
+    }]);
+
+    return Toast;
+  }();
+
+  /**
+   * @static
+   * @memberof Toast
+   * @type {Array.<Toast>}
+   */
+
+
+  Toast._toasts = [];
+
+  /**
+   * @static
+   * @memberof Toast
+   */
+  Toast._container = null;
+
+  /**
+   * @static
+   * @memberof Toast
+   * @type {Toast}
+   */
+  Toast._draggedToast = null;
+
+  Materialize.Toast = Toast;
+  Materialize.toast = function (message, displayLength, className, completeCallback) {
+    return new Toast(message, displayLength, className, completeCallback);
+  };
+})(jQuery, Materialize.Vel);
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*
+ * jQuery Easing v1.4.0 - http://gsgd.co.uk/sandbox/jquery/easing/
+ * Open source under the BSD License.
+ * Copyright © 2008 George McGinley Smith
+ * All rights reserved.
+ * https://raw.github.com/gdsmith/jquery-easing/master/LICENSE
+*/
+
+(function (factory) {
+	if (true) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
+			return factory($);
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
+		exports = factory(require('jquery'));
+	} else {
+		factory(jQuery);
+	}
+})(function ($) {
+
+	// Preserve the original jQuery "swing" easing as "jswing"
+	$.easing['jswing'] = $.easing['swing'];
+
+	var pow = Math.pow,
+	    sqrt = Math.sqrt,
+	    sin = Math.sin,
+	    cos = Math.cos,
+	    PI = Math.PI,
+	    c1 = 1.70158,
+	    c2 = c1 * 1.525,
+	    c3 = c1 + 1,
+	    c4 = 2 * PI / 3,
+	    c5 = 2 * PI / 4.5;
+
+	// x is the fraction of animation progress, in the range 0..1
+	function bounceOut(x) {
+		var n1 = 7.5625,
+		    d1 = 2.75;
+		if (x < 1 / d1) {
+			return n1 * x * x;
+		} else if (x < 2 / d1) {
+			return n1 * (x -= 1.5 / d1) * x + .75;
+		} else if (x < 2.5 / d1) {
+			return n1 * (x -= 2.25 / d1) * x + .9375;
+		} else {
+			return n1 * (x -= 2.625 / d1) * x + .984375;
+		}
+	}
+
+	$.extend($.easing, {
+		def: 'easeOutQuad',
+		swing: function swing(x) {
+			return $.easing[$.easing.def](x);
+		},
+		easeInQuad: function easeInQuad(x) {
+			return x * x;
+		},
+		easeOutQuad: function easeOutQuad(x) {
+			return 1 - (1 - x) * (1 - x);
+		},
+		easeInOutQuad: function easeInOutQuad(x) {
+			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
+		},
+		easeInCubic: function easeInCubic(x) {
+			return x * x * x;
+		},
+		easeOutCubic: function easeOutCubic(x) {
+			return 1 - pow(1 - x, 3);
+		},
+		easeInOutCubic: function easeInOutCubic(x) {
+			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
+		},
+		easeInQuart: function easeInQuart(x) {
+			return x * x * x * x;
+		},
+		easeOutQuart: function easeOutQuart(x) {
+			return 1 - pow(1 - x, 4);
+		},
+		easeInOutQuart: function easeInOutQuart(x) {
+			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
+		},
+		easeInQuint: function easeInQuint(x) {
+			return x * x * x * x * x;
+		},
+		easeOutQuint: function easeOutQuint(x) {
+			return 1 - pow(1 - x, 5);
+		},
+		easeInOutQuint: function easeInOutQuint(x) {
+			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
+		},
+		easeInSine: function easeInSine(x) {
+			return 1 - cos(x * PI / 2);
+		},
+		easeOutSine: function easeOutSine(x) {
+			return sin(x * PI / 2);
+		},
+		easeInOutSine: function easeInOutSine(x) {
+			return -(cos(PI * x) - 1) / 2;
+		},
+		easeInExpo: function easeInExpo(x) {
+			return x === 0 ? 0 : pow(2, 10 * x - 10);
+		},
+		easeOutExpo: function easeOutExpo(x) {
+			return x === 1 ? 1 : 1 - pow(2, -10 * x);
+		},
+		easeInOutExpo: function easeInOutExpo(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? pow(2, 20 * x - 10) / 2 : (2 - pow(2, -20 * x + 10)) / 2;
+		},
+		easeInCirc: function easeInCirc(x) {
+			return 1 - sqrt(1 - pow(x, 2));
+		},
+		easeOutCirc: function easeOutCirc(x) {
+			return sqrt(1 - pow(x - 1, 2));
+		},
+		easeInOutCirc: function easeInOutCirc(x) {
+			return x < 0.5 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2 : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
+		},
+		easeInElastic: function easeInElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+		},
+		easeOutElastic: function easeOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+		},
+		easeInOutElastic: function easeInOutElastic(x) {
+			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2 : pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5) / 2 + 1;
+		},
+		easeInBack: function easeInBack(x) {
+			return c3 * x * x * x - c1 * x * x;
+		},
+		easeOutBack: function easeOutBack(x) {
+			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+		},
+		easeInOutBack: function easeInOutBack(x) {
+			return x < 0.5 ? pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2 : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+		},
+		easeInBounce: function easeInBounce(x) {
+			return 1 - bounceOut(1 - x);
+		},
+		easeOutBounce: bounceOut,
+		easeInOutBounce: function easeInOutBounce(x) {
+			return x < 0.5 ? (1 - bounceOut(1 - 2 * x)) / 2 : (1 + bounceOut(2 * x - 1)) / 2;
+		}
+	});
+});
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports) {
+
+(function ($) {
+
+  // Add posibility to scroll to selected option
+  // usefull for select for example
+  $.fn.scrollTo = function (elem) {
+    $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+    return this;
+  };
+
+  $.fn.dropdown = function (options) {
+    var defaults = {
+      inDuration: 300,
+      outDuration: 225,
+      constrainWidth: true, // Constrains width of dropdown to the activator
+      hover: false,
+      gutter: 0, // Spacing from edge
+      belowOrigin: false,
+      alignment: 'left',
+      stopPropagation: false
+    };
+
+    // Open dropdown.
+    if (options === "open") {
+      this.each(function () {
+        $(this).trigger('open');
+      });
+      return false;
+    }
+
+    // Close dropdown.
+    if (options === "close") {
+      this.each(function () {
+        $(this).trigger('close');
+      });
+      return false;
+    }
+
+    this.each(function () {
+      var origin = $(this);
+      var curr_options = $.extend({}, defaults, options);
+      var isFocused = false;
+
+      // Dropdown menu
+      var activates = $("#" + origin.attr('data-activates'));
+
+      function updateOptions() {
+        if (origin.data('induration') !== undefined) curr_options.inDuration = origin.data('induration');
+        if (origin.data('outduration') !== undefined) curr_options.outDuration = origin.data('outduration');
+        if (origin.data('constrainwidth') !== undefined) curr_options.constrainWidth = origin.data('constrainwidth');
+        if (origin.data('hover') !== undefined) curr_options.hover = origin.data('hover');
+        if (origin.data('gutter') !== undefined) curr_options.gutter = origin.data('gutter');
+        if (origin.data('beloworigin') !== undefined) curr_options.belowOrigin = origin.data('beloworigin');
+        if (origin.data('alignment') !== undefined) curr_options.alignment = origin.data('alignment');
+        if (origin.data('stoppropagation') !== undefined) curr_options.stopPropagation = origin.data('stoppropagation');
+      }
+
+      updateOptions();
+
+      // Attach dropdown to its activator
+      origin.after(activates);
+
+      /*
+        Helper function to position and resize dropdown.
+        Used in hover and click handler.
+      */
+      function placeDropdown(eventType) {
+        // Check for simultaneous focus and click events.
+        if (eventType === 'focus') {
+          isFocused = true;
+        }
+
+        // Check html data attributes
+        updateOptions();
+
+        // Set Dropdown state
+        activates.addClass('active');
+        origin.addClass('active');
+
+        var originWidth = origin[0].getBoundingClientRect().width;
+
+        // Constrain width
+        if (curr_options.constrainWidth === true) {
+          activates.css('width', originWidth);
+        } else {
+          activates.css('white-space', 'nowrap');
+        }
+
+        // Offscreen detection
+        var windowHeight = window.innerHeight;
+        var originHeight = origin.innerHeight();
+        var offsetLeft = origin.offset().left;
+        var offsetTop = origin.offset().top - $(window).scrollTop();
+        var currAlignment = curr_options.alignment;
+        var gutterSpacing = 0;
+        var leftPosition = 0;
+
+        // Below Origin
+        var verticalOffset = 0;
+        if (curr_options.belowOrigin === true) {
+          verticalOffset = originHeight;
+        }
+
+        // Check for scrolling positioned container.
+        var scrollYOffset = 0;
+        var scrollXOffset = 0;
+        var wrapper = origin.parent();
+        if (!wrapper.is('body')) {
+          if (wrapper[0].scrollHeight > wrapper[0].clientHeight) {
+            scrollYOffset = wrapper[0].scrollTop;
+          }
+          if (wrapper[0].scrollWidth > wrapper[0].clientWidth) {
+            scrollXOffset = wrapper[0].scrollLeft;
+          }
+        }
+
+        if (offsetLeft + activates.innerWidth() > $(window).width()) {
+          // Dropdown goes past screen on right, force right alignment
+          currAlignment = 'right';
+        } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
+          // Dropdown goes past screen on left, force left alignment
+          currAlignment = 'left';
+        }
+        // Vertical bottom offscreen detection
+        if (offsetTop + activates.innerHeight() > windowHeight) {
+          // If going upwards still goes offscreen, just crop height of dropdown.
+          if (offsetTop + originHeight - activates.innerHeight() < 0) {
+            var adjustedHeight = windowHeight - offsetTop - verticalOffset;
+            activates.css('max-height', adjustedHeight);
+          } else {
+            // Flow upwards.
+            if (!verticalOffset) {
+              verticalOffset += originHeight;
+            }
+            verticalOffset -= activates.innerHeight();
+          }
+        }
+
+        // Handle edge alignment
+        if (currAlignment === 'left') {
+          gutterSpacing = curr_options.gutter;
+          leftPosition = origin.position().left + gutterSpacing;
+        } else if (currAlignment === 'right') {
+          // Material icons fix
+          activates.stop(true, true).css({
+            opacity: 0,
+            left: 0
+          });
+
+          var offsetRight = origin.position().left + originWidth - activates.width();
+          gutterSpacing = -curr_options.gutter;
+          leftPosition = offsetRight + gutterSpacing;
+        }
+
+        // Position dropdown
+        activates.css({
+          position: 'absolute',
+          top: origin.position().top + verticalOffset + scrollYOffset,
+          left: leftPosition + scrollXOffset
+        });
+
+        // Show dropdown
+        activates.slideDown({
+          queue: false,
+          duration: curr_options.inDuration,
+          easing: 'easeOutCubic',
+          complete: function complete() {
+            $(this).css('height', '');
+          }
+        }).animate({ opacity: 1 }, { queue: false, duration: curr_options.inDuration, easing: 'easeOutSine' });
+
+        // Add click close handler to document
+        setTimeout(function () {
+          $(document).on('click.' + activates.attr('id'), function (e) {
+            hideDropdown();
+            $(document).off('click.' + activates.attr('id'));
+          });
+        }, 0);
+      }
+
+      function hideDropdown() {
+        // Check for simultaneous focus and click events.
+        isFocused = false;
+        activates.fadeOut(curr_options.outDuration);
+        activates.removeClass('active');
+        origin.removeClass('active');
+        $(document).off('click.' + activates.attr('id'));
+        setTimeout(function () {
+          activates.css('max-height', '');
+        }, curr_options.outDuration);
+      }
+
+      // Hover
+      if (curr_options.hover) {
+        var open = false;
+        origin.off('click.' + origin.attr('id'));
+        // Hover handler to show dropdown
+        origin.on('mouseenter', function (e) {
+          // Mouse over
+          if (open === false) {
+            placeDropdown();
+            open = true;
+          }
+        });
+        origin.on('mouseleave', function (e) {
+          // If hover on origin then to something other than dropdown content, then close
+          var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
+          if (!$(toEl).closest('.dropdown-content').is(activates)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        activates.on('mouseleave', function (e) {
+          // Mouse out
+          var toEl = e.toElement || e.relatedTarget;
+          if (!$(toEl).closest('.dropdown-button').is(origin)) {
+            activates.stop(true, true);
+            hideDropdown();
+            open = false;
+          }
+        });
+
+        // Click
+      } else {
+        // Click handler to show dropdown
+        origin.off('click.' + origin.attr('id'));
+        origin.on('click.' + origin.attr('id'), function (e) {
+          if (!isFocused) {
+            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
+              e.preventDefault(); // Prevents button click from moving window
+              if (curr_options.stopPropagation) {
+                e.stopPropagation();
+              }
+              placeDropdown('click');
+            }
+            // If origin is clicked and menu is open, close menu
+            else if (origin.hasClass('active')) {
+                hideDropdown();
+                $(document).off('click.' + activates.attr('id'));
+              }
+          }
+        });
+      } // End else
+
+      // Listen to open and close event - useful for select component
+      origin.on('open', function (e, eventType) {
+        placeDropdown(eventType);
+      });
+      origin.on('close', hideDropdown);
+    });
+  }; // End dropdown plugin
+
+  $(document).ready(function () {
+    $('.dropdown-button').dropdown();
+  });
+})(jQuery);
+
+/***/ }),
 /* 37 */
+/***/ (function(module, exports) {
+
+(function ($) {
+  $(document).ready(function () {
+
+    // Function to update labels of text fields
+    Materialize.updateTextFields = function () {
+      var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+      $(input_selector).each(function (index, element) {
+        var $this = $(this);
+        if ($(element).val().length > 0 || $(element).is(':focus') || element.autofocus || $this.attr('placeholder') !== undefined) {
+          $this.siblings('label').addClass('active');
+        } else if ($(element)[0].validity) {
+          $this.siblings('label').toggleClass('active', $(element)[0].validity.badInput === true);
+        } else {
+          $this.siblings('label').removeClass('active');
+        }
+      });
+    };
+
+    // Text based inputs
+    var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+
+    // Add active if form auto complete
+    $(document).on('change', input_selector, function () {
+      if ($(this).val().length !== 0 || $(this).attr('placeholder') !== undefined) {
+        $(this).siblings('label').addClass('active');
+      }
+      validate_field($(this));
+    });
+
+    // Add active if input element has been pre-populated on document ready
+    $(document).ready(function () {
+      Materialize.updateTextFields();
+    });
+
+    // HTML DOM FORM RESET handling
+    $(document).on('reset', function (e) {
+      var formReset = $(e.target);
+      if (formReset.is('form')) {
+        formReset.find(input_selector).removeClass('valid').removeClass('invalid');
+        formReset.find(input_selector).each(function () {
+          if ($(this).attr('value') === '') {
+            $(this).siblings('label').removeClass('active');
+          }
+        });
+
+        // Reset select
+        formReset.find('select.initialized').each(function () {
+          var reset_text = formReset.find('option[selected]').text();
+          formReset.siblings('input.select-dropdown').val(reset_text);
+        });
+      }
+    });
+
+    // Add active when element has focus
+    $(document).on('focus', input_selector, function () {
+      $(this).siblings('label, .prefix').addClass('active');
+    });
+
+    $(document).on('blur', input_selector, function () {
+      var $inputElement = $(this);
+      var selector = ".prefix";
+
+      if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
+        selector += ", label";
+      }
+
+      $inputElement.siblings(selector).removeClass('active');
+
+      validate_field($inputElement);
+    });
+
+    window.validate_field = function (object) {
+      var hasLength = object.attr('data-length') !== undefined;
+      var lenAttr = parseInt(object.attr('data-length'));
+      var len = object.val().length;
+
+      if (object.val().length === 0 && object[0].validity.badInput === false && !object.is(':required')) {
+        if (object.hasClass('validate')) {
+          object.removeClass('valid');
+          object.removeClass('invalid');
+        }
+      } else {
+        if (object.hasClass('validate')) {
+          // Check for character counter attributes
+          if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
+            object.removeClass('invalid');
+            object.addClass('valid');
+          } else {
+            object.removeClass('valid');
+            object.addClass('invalid');
+          }
+        }
+      }
+    };
+
+    // Radio and Checkbox focus class
+    var radio_checkbox = 'input[type=radio], input[type=checkbox]';
+    $(document).on('keyup.radio', radio_checkbox, function (e) {
+      // TAB, check if tabbing to radio or checkbox.
+      if (e.which === 9) {
+        $(this).addClass('tabbed');
+        var $this = $(this);
+        $this.one('blur', function (e) {
+
+          $(this).removeClass('tabbed');
+        });
+        return;
+      }
+    });
+
+    // Textarea Auto Resize
+    var hiddenDiv = $('.hiddendiv').first();
+    if (!hiddenDiv.length) {
+      hiddenDiv = $('<div class="hiddendiv common"></div>');
+      $('body').append(hiddenDiv);
+    }
+    var text_area_selector = '.materialize-textarea';
+
+    function textareaAutoResize($textarea) {
+      // Set font properties of hiddenDiv
+
+      var fontFamily = $textarea.css('font-family');
+      var fontSize = $textarea.css('font-size');
+      var lineHeight = $textarea.css('line-height');
+      var padding = $textarea.css('padding');
+
+      if (fontSize) {
+        hiddenDiv.css('font-size', fontSize);
+      }
+      if (fontFamily) {
+        hiddenDiv.css('font-family', fontFamily);
+      }
+      if (lineHeight) {
+        hiddenDiv.css('line-height', lineHeight);
+      }
+      if (padding) {
+        hiddenDiv.css('padding', padding);
+      }
+
+      // Set original-height, if none
+      if (!$textarea.data('original-height')) {
+        $textarea.data('original-height', $textarea.height());
+      }
+
+      if ($textarea.attr('wrap') === 'off') {
+        hiddenDiv.css('overflow-wrap', 'normal').css('white-space', 'pre');
+      }
+
+      hiddenDiv.text($textarea.val() + '\n');
+      var content = hiddenDiv.html().replace(/\n/g, '<br>');
+      hiddenDiv.html(content);
+
+      // When textarea is hidden, width goes crazy.
+      // Approximate with half of window size
+
+      if ($textarea.is(':visible')) {
+        hiddenDiv.css('width', $textarea.width());
+      } else {
+        hiddenDiv.css('width', $(window).width() / 2);
+      }
+
+      /**
+       * Resize if the new height is greater than the
+       * original height of the textarea
+       */
+      if ($textarea.data('original-height') <= hiddenDiv.height()) {
+        $textarea.css('height', hiddenDiv.height());
+      } else if ($textarea.val().length < $textarea.data('previous-length')) {
+        /**
+         * In case the new height is less than original height, it
+         * means the textarea has less text than before
+         * So we set the height to the original one
+         */
+        $textarea.css('height', $textarea.data('original-height'));
+      }
+      $textarea.data('previous-length', $textarea.val().length);
+    }
+
+    $(text_area_selector).each(function () {
+      var $textarea = $(this);
+      /**
+       * Instead of resizing textarea on document load,
+       * store the original height and the original length
+       */
+      $textarea.data('original-height', $textarea.height());
+      $textarea.data('previous-length', $textarea.val().length);
+    });
+
+    $('body').on('keyup keydown autoresize', text_area_selector, function () {
+      textareaAutoResize($(this));
+    });
+
+    // File Input Path
+    $(document).on('change', '.file-field input[type="file"]', function () {
+      var file_field = $(this).closest('.file-field');
+      var path_input = file_field.find('input.file-path');
+      var files = $(this)[0].files;
+      var file_names = [];
+      for (var i = 0; i < files.length; i++) {
+        file_names.push(files[i].name);
+      }
+      path_input.val(file_names.join(", "));
+      path_input.trigger('change');
+    });
+
+    /****************
+    *  Range Input  *
+    ****************/
+
+    var range_type = 'input[type=range]';
+    var range_mousedown = false;
+    var left;
+
+    $(range_type).each(function () {
+      var thumb = $('<span class="thumb"><span class="value"></span></span>');
+      $(this).after(thumb);
+    });
+
+    var showRangeBubble = function showRangeBubble(thumb) {
+      var paddingLeft = parseInt(thumb.parent().css('padding-left'));
+      var marginLeft = -7 + paddingLeft + 'px';
+      thumb.velocity({ height: "30px", width: "30px", top: "-30px", marginLeft: marginLeft }, { duration: 300, easing: 'easeOutExpo' });
+    };
+
+    var calcRangeOffset = function calcRangeOffset(range) {
+      var width = range.width() - 15;
+      var max = parseFloat(range.attr('max'));
+      var min = parseFloat(range.attr('min'));
+      var percent = (parseFloat(range.val()) - min) / (max - min);
+      return percent * width;
+    };
+
+    var range_wrapper = '.range-field';
+    $(document).on('change', range_type, function (e) {
+      var thumb = $(this).siblings('.thumb');
+      thumb.find('.value').html($(this).val());
+
+      if (!thumb.hasClass('active')) {
+        showRangeBubble(thumb);
+      }
+
+      var offsetLeft = calcRangeOffset($(this));
+      thumb.addClass('active').css('left', offsetLeft);
+    });
+
+    $(document).on('mousedown touchstart', range_type, function (e) {
+      var thumb = $(this).siblings('.thumb');
+
+      // If thumb indicator does not exist yet, create it
+      if (thumb.length <= 0) {
+        thumb = $('<span class="thumb"><span class="value"></span></span>');
+        $(this).after(thumb);
+      }
+
+      // Set indicator value
+      thumb.find('.value').html($(this).val());
+
+      range_mousedown = true;
+      $(this).addClass('active');
+
+      if (!thumb.hasClass('active')) {
+        showRangeBubble(thumb);
+      }
+
+      if (e.type !== 'input') {
+        var offsetLeft = calcRangeOffset($(this));
+        thumb.addClass('active').css('left', offsetLeft);
+      }
+    });
+
+    $(document).on('mouseup touchend', range_wrapper, function () {
+      range_mousedown = false;
+      $(this).removeClass('active');
+    });
+
+    $(document).on('input mousemove touchmove', range_wrapper, function (e) {
+      var thumb = $(this).children('.thumb');
+      var left;
+      var input = $(this).find(range_type);
+
+      if (range_mousedown) {
+        if (!thumb.hasClass('active')) {
+          showRangeBubble(thumb);
+        }
+
+        var offsetLeft = calcRangeOffset(input);
+        thumb.addClass('active').css('left', offsetLeft);
+        thumb.find('.value').html(thumb.siblings(range_type).val());
+      }
+    });
+
+    $(document).on('mouseout touchleave', range_wrapper, function () {
+      if (!range_mousedown) {
+
+        var thumb = $(this).children('.thumb');
+        var paddingLeft = parseInt($(this).css('padding-left'));
+        var marginLeft = 7 + paddingLeft + 'px';
+
+        if (thumb.hasClass('active')) {
+          thumb.velocity({ height: '0', width: '0', top: '10px', marginLeft: marginLeft }, { duration: 100 });
+        }
+        thumb.removeClass('active');
+      }
+    });
+
+    /**************************
+     * Auto complete plugin  *
+     *************************/
+    $.fn.autocomplete = function (options) {
+      // Defaults
+      var defaults = {
+        data: {},
+        limit: Infinity,
+        onAutocomplete: null,
+        minLength: 1
+      };
+
+      options = $.extend(defaults, options);
+
+      return this.each(function () {
+        var $input = $(this);
+        var data = options.data,
+            count = 0,
+            activeIndex = -1,
+            oldVal,
+            $inputDiv = $input.closest('.input-field'); // Div to append on
+
+        // Check if data isn't empty
+        if (!$.isEmptyObject(data)) {
+          var $autocomplete = $('<ul class="autocomplete-content dropdown-content"></ul>');
+          var $oldAutocomplete;
+
+          // Append autocomplete element.
+          // Prevent double structure init.
+          if ($inputDiv.length) {
+            $oldAutocomplete = $inputDiv.children('.autocomplete-content.dropdown-content').first();
+            if (!$oldAutocomplete.length) {
+              $inputDiv.append($autocomplete); // Set ul in body
+            }
+          } else {
+            $oldAutocomplete = $input.next('.autocomplete-content.dropdown-content');
+            if (!$oldAutocomplete.length) {
+              $input.after($autocomplete);
+            }
+          }
+          if ($oldAutocomplete.length) {
+            $autocomplete = $oldAutocomplete;
+          }
+
+          // Highlight partial match.
+          var highlight = function highlight(string, $el) {
+            var img = $el.find('img');
+            var matchStart = $el.text().toLowerCase().indexOf("" + string.toLowerCase() + ""),
+                matchEnd = matchStart + string.length - 1,
+                beforeMatch = $el.text().slice(0, matchStart),
+                matchText = $el.text().slice(matchStart, matchEnd + 1),
+                afterMatch = $el.text().slice(matchEnd + 1);
+            $el.html("<span>" + beforeMatch + "<span class='highlight'>" + matchText + "</span>" + afterMatch + "</span>");
+            if (img.length) {
+              $el.prepend(img);
+            }
+          };
+
+          // Reset current element position
+          var resetCurrentElement = function resetCurrentElement() {
+            activeIndex = -1;
+            $autocomplete.find('.active').removeClass('active');
+          };
+
+          // Remove autocomplete elements
+          var removeAutocomplete = function removeAutocomplete() {
+            $autocomplete.empty();
+            resetCurrentElement();
+            oldVal = undefined;
+          };
+
+          $input.off('blur.autocomplete').on('blur.autocomplete', function () {
+            removeAutocomplete();
+          });
+
+          // Perform search
+          $input.off('keyup.autocomplete focus.autocomplete').on('keyup.autocomplete focus.autocomplete', function (e) {
+            // Reset count.
+            count = 0;
+            var val = $input.val().toLowerCase();
+
+            // Don't capture enter or arrow key usage.
+            if (e.which === 13 || e.which === 38 || e.which === 40) {
+              return;
+            }
+
+            // Check if the input isn't empty
+            if (oldVal !== val) {
+              removeAutocomplete();
+
+              if (val.length >= options.minLength) {
+                for (var key in data) {
+                  if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
+                    // Break if past limit
+                    if (count >= options.limit) {
+                      break;
+                    }
+
+                    var autocompleteOption = $('<li></li>');
+                    if (!!data[key]) {
+                      autocompleteOption.append('<img src="' + data[key] + '" class="right circle"><span>' + key + '</span>');
+                    } else {
+                      autocompleteOption.append('<span>' + key + '</span>');
+                    }
+
+                    $autocomplete.append(autocompleteOption);
+                    highlight(val, autocompleteOption);
+                    count++;
+                  }
+                }
+              }
+            }
+
+            // Update oldVal
+            oldVal = val;
+          });
+
+          $input.off('keydown.autocomplete').on('keydown.autocomplete', function (e) {
+            // Arrow keys and enter key usage
+            var keyCode = e.which,
+                liElement,
+                numItems = $autocomplete.children('li').length,
+                $active = $autocomplete.children('.active').first();
+
+            // select element on Enter
+            if (keyCode === 13 && activeIndex >= 0) {
+              liElement = $autocomplete.children('li').eq(activeIndex);
+              if (liElement.length) {
+                liElement.trigger('mousedown.autocomplete');
+                e.preventDefault();
+              }
+              return;
+            }
+
+            // Capture up and down key
+            if (keyCode === 38 || keyCode === 40) {
+              e.preventDefault();
+
+              if (keyCode === 38 && activeIndex > 0) {
+                activeIndex--;
+              }
+
+              if (keyCode === 40 && activeIndex < numItems - 1) {
+                activeIndex++;
+              }
+
+              $active.removeClass('active');
+              if (activeIndex >= 0) {
+                $autocomplete.children('li').eq(activeIndex).addClass('active');
+              }
+            }
+          });
+
+          // Set input value
+          $autocomplete.off('mousedown.autocomplete touchstart.autocomplete').on('mousedown.autocomplete touchstart.autocomplete', 'li', function () {
+            var text = $(this).text().trim();
+            $input.val(text);
+            $input.trigger('change');
+            removeAutocomplete();
+
+            // Handle onAutocomplete callback.
+            if (typeof options.onAutocomplete === "function") {
+              options.onAutocomplete.call(this, text);
+            }
+          });
+
+          // Empty data
+        } else {
+          $input.off('keyup.autocomplete focus.autocomplete');
+        }
+      });
+    };
+  }); // End of $(document).ready
+
+  /*******************
+   *  Select Plugin  *
+   ******************/
+  $.fn.material_select = function (callback) {
+    $(this).each(function () {
+      var $select = $(this);
+
+      if ($select.hasClass('browser-default')) {
+        return; // Continue to next (return false breaks out of entire loop)
+      }
+
+      var multiple = $select.attr('multiple') ? true : false,
+          lastID = $select.attr('data-select-id'); // Tear down structure if Select needs to be rebuilt
+
+      if (lastID) {
+        $select.parent().find('span.caret').remove();
+        $select.parent().find('input').remove();
+
+        $select.unwrap();
+        $('ul#select-options-' + lastID).remove();
+      }
+
+      // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
+      if (callback === 'destroy') {
+        $select.removeAttr('data-select-id').removeClass('initialized');
+        $(window).off('click.select');
+        return;
+      }
+
+      var uniqueID = Materialize.guid();
+      $select.attr('data-select-id', uniqueID);
+      var wrapper = $('<div class="select-wrapper"></div>');
+      wrapper.addClass($select.attr('class'));
+      if ($select.is(':disabled')) wrapper.addClass('disabled');
+      var options = $('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
+          selectChildren = $select.children('option, optgroup'),
+          valuesSelected = [],
+          optionsHover = false;
+
+      var label = $select.find('option:selected').html() || $select.find('option:first').html() || "";
+
+      // Function that renders and appends the option taking into
+      // account type and possible image icon.
+      var appendOptionWithIcon = function appendOptionWithIcon(select, option, type) {
+        // Add disabled attr if disabled
+        var disabledClass = option.is(':disabled') ? 'disabled ' : '';
+        var optgroupClass = type === 'optgroup-option' ? 'optgroup-option ' : '';
+        var multipleCheckbox = multiple ? '<input type="checkbox"' + disabledClass + '/><label></label>' : '';
+
+        // add icons
+        var icon_url = option.data('icon');
+        var classes = option.attr('class');
+        if (!!icon_url) {
+          var classString = '';
+          if (!!classes) classString = ' class="' + classes + '"';
+
+          // Check for multiple type.
+          options.append($('<li class="' + disabledClass + optgroupClass + '"><img alt="" src="' + icon_url + '"' + classString + '><span>' + multipleCheckbox + option.html() + '</span></li>'));
+          return true;
+        }
+
+        // Check for multiple type.
+        options.append($('<li class="' + disabledClass + optgroupClass + '"><span>' + multipleCheckbox + option.html() + '</span></li>'));
+      };
+
+      /* Create dropdown structure. */
+      if (selectChildren.length) {
+        selectChildren.each(function () {
+          if ($(this).is('option')) {
+            // Direct descendant option.
+            if (multiple) {
+              appendOptionWithIcon($select, $(this), 'multiple');
+            } else {
+              appendOptionWithIcon($select, $(this));
+            }
+          } else if ($(this).is('optgroup')) {
+            // Optgroup.
+            var selectOptions = $(this).children('option');
+            options.append($('<li class="optgroup"><span>' + $(this).attr('label') + '</span></li>'));
+
+            selectOptions.each(function () {
+              appendOptionWithIcon($select, $(this), 'optgroup-option');
+            });
+          }
+        });
+      }
+
+      options.find('li:not(.optgroup)').each(function (i) {
+        $(this).click(function (e) {
+          // Check if option element is disabled
+          if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
+            var selected = true;
+
+            if (multiple) {
+              $('input[type="checkbox"]', this).prop('checked', function (i, v) {
+                return !v;
+              });
+              selected = toggleEntryFromArray(valuesSelected, i, $select);
+              $newSelect.trigger('focus');
+            } else {
+              options.find('li').removeClass('active');
+              $(this).toggleClass('active');
+              $newSelect.val($(this).text());
+            }
+
+            activateOption(options, $(this));
+            $select.find('option').eq(i).prop('selected', selected);
+            // Trigger onchange() event
+            $select.trigger('change');
+            if (typeof callback !== 'undefined') callback();
+          }
+
+          e.stopPropagation();
+        });
+      });
+
+      // Wrap Elements
+      $select.wrap(wrapper);
+      // Add Select Display Element
+      var dropdownIcon = $('<span class="caret">&#9660;</span>');
+
+      // escape double quotes
+      var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
+
+      var $newSelect = $('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
+      $select.before($newSelect);
+      $newSelect.before(dropdownIcon);
+
+      $newSelect.after(options);
+      // Check if section element is disabled
+      if (!$select.is(':disabled')) {
+        $newSelect.dropdown({ 'hover': false });
+      }
+
+      // Copy tabindex
+      if ($select.attr('tabindex')) {
+        $($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
+      }
+
+      $select.addClass('initialized');
+
+      $newSelect.on({
+        'focus': function focus() {
+          if ($('ul.select-dropdown').not(options[0]).is(':visible')) {
+            $('input.select-dropdown').trigger('close');
+            $(window).off('click.select');
+          }
+          if (!options.is(':visible')) {
+            $(this).trigger('open', ['focus']);
+            var label = $(this).val();
+            if (multiple && label.indexOf(',') >= 0) {
+              label = label.split(',')[0];
+            }
+
+            var selectedOption = options.find('li').filter(function () {
+              return $(this).text().toLowerCase() === label.toLowerCase();
+            })[0];
+            activateOption(options, selectedOption, true);
+
+            $(window).off('click.select').on('click.select', function () {
+              multiple && (optionsHover || $newSelect.trigger('close'));
+              $(window).off('click.select');
+            });
+          }
+        },
+        'click': function click(e) {
+          e.stopPropagation();
+        }
+      });
+
+      $newSelect.on('blur', function () {
+        if (!multiple) {
+          $(this).trigger('close');
+          $(window).off('click.select');
+        }
+        options.find('li.selected').removeClass('selected');
+      });
+
+      options.hover(function () {
+        optionsHover = true;
+      }, function () {
+        optionsHover = false;
+      });
+
+      // Add initial multiple selections.
+      if (multiple) {
+        $select.find("option:selected:not(:disabled)").each(function () {
+          var index = this.index;
+
+          toggleEntryFromArray(valuesSelected, index, $select);
+          options.find("li:not(.optgroup)").eq(index).find(":checkbox").prop("checked", true);
+        });
+      }
+
+      /**
+       * Make option as selected and scroll to selected position
+       * @param {jQuery} collection  Select options jQuery element
+       * @param {Element} newOption  element of the new option
+       * @param {Boolean} firstActivation  If on first activation of select
+       */
+      var activateOption = function activateOption(collection, newOption, firstActivation) {
+        if (newOption) {
+          collection.find('li.selected').removeClass('selected');
+          var option = $(newOption);
+          option.addClass('selected');
+          if (!multiple || !!firstActivation) {
+            options.scrollTo(option);
+          }
+        }
+      };
+
+      // Allow user to search by typing
+      // this array is cleared after 1 second
+      var filterQuery = [],
+          onKeyDown = function onKeyDown(e) {
+        // TAB - switch to another input
+        if (e.which == 9) {
+          $newSelect.trigger('close');
+          return;
+        }
+
+        // ARROW DOWN WHEN SELECT IS CLOSED - open select options
+        if (e.which == 40 && !options.is(':visible')) {
+          $newSelect.trigger('open');
+          return;
+        }
+
+        // ENTER WHEN SELECT IS CLOSED - submit form
+        if (e.which == 13 && !options.is(':visible')) {
+          return;
+        }
+
+        e.preventDefault();
+
+        // CASE WHEN USER TYPE LETTERS
+        var letter = String.fromCharCode(e.which).toLowerCase(),
+            nonLetters = [9, 13, 27, 38, 40];
+        if (letter && nonLetters.indexOf(e.which) === -1) {
+          filterQuery.push(letter);
+
+          var string = filterQuery.join(''),
+              newOption = options.find('li').filter(function () {
+            return $(this).text().toLowerCase().indexOf(string) === 0;
+          })[0];
+
+          if (newOption) {
+            activateOption(options, newOption);
+          }
+        }
+
+        // ENTER - select option and close when select options are opened
+        if (e.which == 13) {
+          var activeOption = options.find('li.selected:not(.disabled)')[0];
+          if (activeOption) {
+            $(activeOption).trigger('click');
+            if (!multiple) {
+              $newSelect.trigger('close');
+            }
+          }
+        }
+
+        // ARROW DOWN - move to next not disabled option
+        if (e.which == 40) {
+          if (options.find('li.selected').length) {
+            newOption = options.find('li.selected').next('li:not(.disabled)')[0];
+          } else {
+            newOption = options.find('li:not(.disabled)')[0];
+          }
+          activateOption(options, newOption);
+        }
+
+        // ESC - close options
+        if (e.which == 27) {
+          $newSelect.trigger('close');
+        }
+
+        // ARROW UP - move to previous not disabled option
+        if (e.which == 38) {
+          newOption = options.find('li.selected').prev('li:not(.disabled)')[0];
+          if (newOption) activateOption(options, newOption);
+        }
+
+        // Automaticaly clean filter query so user can search again by starting letters
+        setTimeout(function () {
+          filterQuery = [];
+        }, 1000);
+      };
+
+      $newSelect.on('keydown', onKeyDown);
+    });
+
+    function toggleEntryFromArray(entriesArray, entryIndex, select) {
+      var index = entriesArray.indexOf(entryIndex),
+          notAdded = index === -1;
+
+      if (notAdded) {
+        entriesArray.push(entryIndex);
+      } else {
+        entriesArray.splice(index, 1);
+      }
+
+      select.siblings('ul.dropdown-content').find('li:not(.optgroup)').eq(entryIndex).toggleClass('active');
+
+      // use notAdded instead of true (to detect if the option is selected or not)
+      select.find('option').eq(entryIndex).prop('selected', notAdded);
+      setValueToInput(entriesArray, select);
+
+      return notAdded;
+    }
+
+    function setValueToInput(entriesArray, select) {
+      var value = '';
+
+      for (var i = 0, count = entriesArray.length; i < count; i++) {
+        var text = select.find('option').eq(entriesArray[i]).text();
+
+        i === 0 ? value += text : value += ', ' + text;
+      }
+
+      if (value === '') {
+        value = select.find('option:disabled').eq(0).text();
+      }
+
+      select.siblings('input.select-dropdown').val(value);
+    }
+  };
+})(jQuery);
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*!
+ * Waves v0.6.4
+ * http://fian.my.id/Waves
+ *
+ * Copyright 2014 Alfiana E. Sibuea and other contributors
+ * Released under the MIT license
+ * https://github.com/fians/Waves/blob/master/LICENSE
+ */
+
+;(function (window) {
+    'use strict';
+
+    var Waves = Waves || {};
+    var $$ = document.querySelectorAll.bind(document);
+
+    // Find exact position of element
+    function isWindow(obj) {
+        return obj !== null && obj === obj.window;
+    }
+
+    function getWindow(elem) {
+        return isWindow(elem) ? elem : elem.nodeType === 9 && elem.defaultView;
+    }
+
+    function offset(elem) {
+        var docElem,
+            win,
+            box = { top: 0, left: 0 },
+            doc = elem && elem.ownerDocument;
+
+        docElem = doc.documentElement;
+
+        if (_typeof(elem.getBoundingClientRect) !== ( true ? 'undefined' : _typeof(undefined))) {
+            box = elem.getBoundingClientRect();
+        }
+        win = getWindow(doc);
+        return {
+            top: box.top + win.pageYOffset - docElem.clientTop,
+            left: box.left + win.pageXOffset - docElem.clientLeft
+        };
+    }
+
+    function convertStyle(obj) {
+        var style = '';
+
+        for (var a in obj) {
+            if (obj.hasOwnProperty(a)) {
+                style += a + ':' + obj[a] + ';';
+            }
+        }
+
+        return style;
+    }
+
+    var Effect = {
+
+        // Effect delay
+        duration: 750,
+
+        show: function show(e, element) {
+
+            // Disable right click
+            if (e.button === 2) {
+                return false;
+            }
+
+            var el = element || this;
+
+            // Create ripple
+            var ripple = document.createElement('div');
+            ripple.className = 'waves-ripple';
+            el.appendChild(ripple);
+
+            // Get click coordinate and element witdh
+            var pos = offset(el);
+            var relativeY = e.pageY - pos.top;
+            var relativeX = e.pageX - pos.left;
+            var scale = 'scale(' + el.clientWidth / 100 * 10 + ')';
+
+            // Support for touch devices
+            if ('touches' in e) {
+                relativeY = e.touches[0].pageY - pos.top;
+                relativeX = e.touches[0].pageX - pos.left;
+            }
+
+            // Attach data to element
+            ripple.setAttribute('data-hold', Date.now());
+            ripple.setAttribute('data-scale', scale);
+            ripple.setAttribute('data-x', relativeX);
+            ripple.setAttribute('data-y', relativeY);
+
+            // Set ripple position
+            var rippleStyle = {
+                'top': relativeY + 'px',
+                'left': relativeX + 'px'
+            };
+
+            ripple.className = ripple.className + ' waves-notransition';
+            ripple.setAttribute('style', convertStyle(rippleStyle));
+            ripple.className = ripple.className.replace('waves-notransition', '');
+
+            // Scale the ripple
+            rippleStyle['-webkit-transform'] = scale;
+            rippleStyle['-moz-transform'] = scale;
+            rippleStyle['-ms-transform'] = scale;
+            rippleStyle['-o-transform'] = scale;
+            rippleStyle.transform = scale;
+            rippleStyle.opacity = '1';
+
+            rippleStyle['-webkit-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['-moz-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['-o-transition-duration'] = Effect.duration + 'ms';
+            rippleStyle['transition-duration'] = Effect.duration + 'ms';
+
+            rippleStyle['-webkit-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['-moz-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['-o-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+            rippleStyle['transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
+
+            ripple.setAttribute('style', convertStyle(rippleStyle));
+        },
+
+        hide: function hide(e) {
+            TouchHandler.touchup(e);
+
+            var el = this;
+            var width = el.clientWidth * 1.4;
+
+            // Get first ripple
+            var ripple = null;
+            var ripples = el.getElementsByClassName('waves-ripple');
+            if (ripples.length > 0) {
+                ripple = ripples[ripples.length - 1];
+            } else {
+                return false;
+            }
+
+            var relativeX = ripple.getAttribute('data-x');
+            var relativeY = ripple.getAttribute('data-y');
+            var scale = ripple.getAttribute('data-scale');
+
+            // Get delay beetween mousedown and mouse leave
+            var diff = Date.now() - Number(ripple.getAttribute('data-hold'));
+            var delay = 350 - diff;
+
+            if (delay < 0) {
+                delay = 0;
+            }
+
+            // Fade out ripple after delay
+            setTimeout(function () {
+                var style = {
+                    'top': relativeY + 'px',
+                    'left': relativeX + 'px',
+                    'opacity': '0',
+
+                    // Duration
+                    '-webkit-transition-duration': Effect.duration + 'ms',
+                    '-moz-transition-duration': Effect.duration + 'ms',
+                    '-o-transition-duration': Effect.duration + 'ms',
+                    'transition-duration': Effect.duration + 'ms',
+                    '-webkit-transform': scale,
+                    '-moz-transform': scale,
+                    '-ms-transform': scale,
+                    '-o-transform': scale,
+                    'transform': scale
+                };
+
+                ripple.setAttribute('style', convertStyle(style));
+
+                setTimeout(function () {
+                    try {
+                        el.removeChild(ripple);
+                    } catch (e) {
+                        return false;
+                    }
+                }, Effect.duration);
+            }, delay);
+        },
+
+        // Little hack to make <input> can perform waves effect
+        wrapInput: function wrapInput(elements) {
+            for (var a = 0; a < elements.length; a++) {
+                var el = elements[a];
+
+                if (el.tagName.toLowerCase() === 'input') {
+                    var parent = el.parentNode;
+
+                    // If input already have parent just pass through
+                    if (parent.tagName.toLowerCase() === 'i' && parent.className.indexOf('waves-effect') !== -1) {
+                        continue;
+                    }
+
+                    // Put element class and style to the specified parent
+                    var wrapper = document.createElement('i');
+                    wrapper.className = el.className + ' waves-input-wrapper';
+
+                    var elementStyle = el.getAttribute('style');
+
+                    if (!elementStyle) {
+                        elementStyle = '';
+                    }
+
+                    wrapper.setAttribute('style', elementStyle);
+
+                    el.className = 'waves-button-input';
+                    el.removeAttribute('style');
+
+                    // Put element as child
+                    parent.replaceChild(wrapper, el);
+                    wrapper.appendChild(el);
+                }
+            }
+        }
+    };
+
+    /**
+     * Disable mousedown event for 500ms during and after touch
+     */
+    var TouchHandler = {
+        /* uses an integer rather than bool so there's no issues with
+         * needing to clear timeouts if another touch event occurred
+         * within the 500ms. Cannot mouseup between touchstart and
+         * touchend, nor in the 500ms after touchend. */
+        touches: 0,
+        allowEvent: function allowEvent(e) {
+            var allow = true;
+
+            if (e.type === 'touchstart') {
+                TouchHandler.touches += 1; //push
+            } else if (e.type === 'touchend' || e.type === 'touchcancel') {
+                setTimeout(function () {
+                    if (TouchHandler.touches > 0) {
+                        TouchHandler.touches -= 1; //pop after 500ms
+                    }
+                }, 500);
+            } else if (e.type === 'mousedown' && TouchHandler.touches > 0) {
+                allow = false;
+            }
+
+            return allow;
+        },
+        touchup: function touchup(e) {
+            TouchHandler.allowEvent(e);
+        }
+    };
+
+    /**
+     * Delegated click handler for .waves-effect element.
+     * returns null when .waves-effect element not in "click tree"
+     */
+    function getWavesEffectElement(e) {
+        if (TouchHandler.allowEvent(e) === false) {
+            return null;
+        }
+
+        var element = null;
+        var target = e.target || e.srcElement;
+
+        while (target.parentNode !== null) {
+            if (!(target instanceof SVGElement) && target.className.indexOf('waves-effect') !== -1) {
+                element = target;
+                break;
+            }
+            target = target.parentNode;
+        }
+        return element;
+    }
+
+    /**
+     * Bubble the click and show effect if .waves-effect elem was found
+     */
+    function showEffect(e) {
+        var element = getWavesEffectElement(e);
+
+        if (element !== null) {
+            Effect.show(e, element);
+
+            if ('ontouchstart' in window) {
+                element.addEventListener('touchend', Effect.hide, false);
+                element.addEventListener('touchcancel', Effect.hide, false);
+            }
+
+            element.addEventListener('mouseup', Effect.hide, false);
+            element.addEventListener('mouseleave', Effect.hide, false);
+            element.addEventListener('dragend', Effect.hide, false);
+        }
+    }
+
+    Waves.displayEffect = function (options) {
+        options = options || {};
+
+        if ('duration' in options) {
+            Effect.duration = options.duration;
+        }
+
+        //Wrap input inside <i> tag
+        Effect.wrapInput($$('.waves-effect'));
+
+        if ('ontouchstart' in window) {
+            document.body.addEventListener('touchstart', showEffect, false);
+        }
+
+        document.body.addEventListener('mousedown', showEffect, false);
+    };
+
+    /**
+     * Attach Waves to an input element (or any element which doesn't
+     * bubble mouseup/mousedown events).
+     *   Intended to be used with dynamically loaded forms/inputs, or
+     * where the user doesn't want a delegated click handler.
+     */
+    Waves.attach = function (element) {
+        //FUTURE: automatically add waves classes and allow users
+        // to specify them with an options param? Eg. light/classic/button
+        if (element.tagName.toLowerCase() === 'input') {
+            Effect.wrapInput([element]);
+            element = element.parentNode;
+        }
+
+        if ('ontouchstart' in window) {
+            element.addEventListener('touchstart', showEffect, false);
+        }
+
+        element.addEventListener('mousedown', showEffect, false);
+    };
+
+    window.Waves = Waves;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Waves.displayEffect();
+    }, false);
+})(window);
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports) {
+
+(function ($) {
+
+  $.fn.materialbox = function () {
+
+    return this.each(function () {
+
+      if ($(this).hasClass('initialized')) {
+        return;
+      }
+
+      $(this).addClass('initialized');
+
+      var overlayActive = false;
+      var doneAnimating = true;
+      var inDuration = 275;
+      var outDuration = 200;
+      var origin = $(this);
+      var placeholder = $('<div></div>').addClass('material-placeholder');
+      var originalWidth = 0;
+      var originalHeight = 0;
+      var ancestorsChanged;
+      var ancestor;
+      var originInlineStyles = origin.attr('style');
+      origin.wrap(placeholder);
+
+      // Start click handler
+      origin.on('click', function () {
+        var placeholder = origin.parent('.material-placeholder');
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
+        var originalWidth = origin.width();
+        var originalHeight = origin.height();
+
+        // If already modal, return to original
+        if (doneAnimating === false) {
+          returnToOriginal();
+          return false;
+        } else if (overlayActive && doneAnimating === true) {
+          returnToOriginal();
+          return false;
+        }
+
+        // Set states
+        doneAnimating = false;
+        origin.addClass('active');
+        overlayActive = true;
+
+        // Set positioning for placeholder
+        placeholder.css({
+          width: placeholder[0].getBoundingClientRect().width,
+          height: placeholder[0].getBoundingClientRect().height,
+          position: 'relative',
+          top: 0,
+          left: 0
+        });
+
+        // Find ancestor with overflow: hidden; and remove it
+        ancestorsChanged = undefined;
+        ancestor = placeholder[0].parentNode;
+        var count = 0;
+        while (ancestor !== null && !$(ancestor).is(document)) {
+          var curr = $(ancestor);
+          if (curr.css('overflow') !== 'visible') {
+            curr.css('overflow', 'visible');
+            if (ancestorsChanged === undefined) {
+              ancestorsChanged = curr;
+            } else {
+              ancestorsChanged = ancestorsChanged.add(curr);
+            }
+          }
+          ancestor = ancestor.parentNode;
+        }
+
+        // Set css on origin
+        origin.css({
+          position: 'absolute',
+          'z-index': 1000,
+          'will-change': 'left, top, width, height'
+        }).data('width', originalWidth).data('height', originalHeight);
+
+        // Add overlay
+        var overlay = $('<div id="materialbox-overlay"></div>').css({
+          opacity: 0
+        }).click(function () {
+          if (doneAnimating === true) returnToOriginal();
+        });
+
+        // Put before in origin image to preserve z-index layering.
+        origin.before(overlay);
+
+        // Set dimensions if needed
+        var overlayOffset = overlay[0].getBoundingClientRect();
+        overlay.css({
+          width: windowWidth,
+          height: windowHeight,
+          left: -1 * overlayOffset.left,
+          top: -1 * overlayOffset.top
+        });
+
+        // Animate Overlay
+        overlay.velocity({ opacity: 1 }, { duration: inDuration, queue: false, easing: 'easeOutQuad' });
+
+        // Add and animate caption if it exists
+        if (origin.data('caption') !== "") {
+          var $photo_caption = $('<div class="materialbox-caption"></div>');
+          $photo_caption.text(origin.data('caption'));
+          $('body').append($photo_caption);
+          $photo_caption.css({ "display": "inline" });
+          $photo_caption.velocity({ opacity: 1 }, { duration: inDuration, queue: false, easing: 'easeOutQuad' });
+        }
+
+        // Resize Image
+        var ratio = 0;
+        var widthPercent = originalWidth / windowWidth;
+        var heightPercent = originalHeight / windowHeight;
+        var newWidth = 0;
+        var newHeight = 0;
+
+        if (widthPercent > heightPercent) {
+          ratio = originalHeight / originalWidth;
+          newWidth = windowWidth * 0.9;
+          newHeight = windowWidth * 0.9 * ratio;
+        } else {
+          ratio = originalWidth / originalHeight;
+          newWidth = windowHeight * 0.9 * ratio;
+          newHeight = windowHeight * 0.9;
+        }
+
+        // Animate image + set z-index
+        if (origin.hasClass('responsive-img')) {
+          origin.velocity({ 'max-width': newWidth, 'width': originalWidth }, { duration: 0, queue: false,
+            complete: function complete() {
+              origin.css({ left: 0, top: 0 }).velocity({
+                height: newHeight,
+                width: newWidth,
+                left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+                top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+              }, {
+                duration: inDuration,
+                queue: false,
+                easing: 'easeOutQuad',
+                complete: function complete() {
+                  doneAnimating = true;
+                }
+              });
+            } // End Complete
+          }); // End Velocity
+        } else {
+          origin.css('left', 0).css('top', 0).velocity({
+            height: newHeight,
+            width: newWidth,
+            left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+            top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+          }, {
+            duration: inDuration,
+            queue: false,
+            easing: 'easeOutQuad',
+            complete: function complete() {
+              doneAnimating = true;
+            }
+          }); // End Velocity
+        }
+
+        // Handle Exit triggers
+        $(window).on('scroll.materialbox', function () {
+          if (overlayActive) {
+            returnToOriginal();
+          }
+        });
+
+        $(window).on('resize.materialbox', function () {
+          if (overlayActive) {
+            returnToOriginal();
+          }
+        });
+
+        $(document).on('keyup.materialbox', function (e) {
+          // ESC key
+          if (e.keyCode === 27 && doneAnimating === true && overlayActive) {
+            returnToOriginal();
+          }
+        });
+      }); // End click handler
+
+
+      // This function returns the modaled image to the original spot
+      function returnToOriginal() {
+
+        doneAnimating = false;
+
+        var placeholder = origin.parent('.material-placeholder');
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
+        var originalWidth = origin.data('width');
+        var originalHeight = origin.data('height');
+
+        origin.velocity("stop", true);
+        $('#materialbox-overlay').velocity("stop", true);
+        $('.materialbox-caption').velocity("stop", true);
+
+        // disable exit handlers
+        $(window).off('scroll.materialbox');
+        $(document).off('keyup.materialbox');
+        $(window).off('resize.materialbox');
+
+        $('#materialbox-overlay').velocity({ opacity: 0 }, {
+          duration: outDuration, // Delay prevents animation overlapping
+          queue: false, easing: 'easeOutQuad',
+          complete: function complete() {
+            // Remove Overlay
+            overlayActive = false;
+            $(this).remove();
+          }
+        });
+
+        // Resize Image
+        origin.velocity({
+          width: originalWidth,
+          height: originalHeight,
+          left: 0,
+          top: 0
+        }, {
+          duration: outDuration,
+          queue: false, easing: 'easeOutQuad',
+          complete: function complete() {
+            placeholder.css({
+              height: '',
+              width: '',
+              position: '',
+              top: '',
+              left: ''
+            });
+
+            origin.removeAttr('style');
+            origin.attr('style', originInlineStyles);
+
+            // Remove class
+            origin.removeClass('active');
+            doneAnimating = true;
+
+            // Remove overflow overrides on ancestors
+            if (ancestorsChanged) {
+              ancestorsChanged.css('overflow', '');
+            }
+          }
+        });
+
+        // Remove Caption + reset css settings on image
+        $('.materialbox-caption').velocity({ opacity: 0 }, {
+          duration: outDuration, // Delay prevents animation overlapping
+          queue: false, easing: 'easeOutQuad',
+          complete: function complete() {
+            $(this).remove();
+          }
+        });
+      }
+    });
+  };
+
+  $(document).ready(function () {
+    $('.materialboxed').materialbox();
+  });
+})(jQuery);
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(function ($, Vel) {
+  'use strict';
+
+  var _defaults = {
+    opacity: 0.5,
+    inDuration: 250,
+    outDuration: 250,
+    ready: undefined,
+    complete: undefined,
+    dismissible: true,
+    startingTop: '4%',
+    endingTop: '10%'
+  };
+
+  /**
+   * @class
+   *
+   */
+
+  var Modal = function () {
+    /**
+     * Construct Modal instance and set up overlay
+     * @constructor
+     * @param {jQuery} $el
+     * @param {Object} options
+     */
+    function Modal($el, options) {
+      _classCallCheck(this, Modal);
+
+      // If exists, destroy and reinitialize
+      if (!!$el[0].M_Modal) {
+        $el[0].M_Modal.destroy();
+      }
+
+      /**
+       * The jQuery element
+       * @type {jQuery}
+       */
+      this.$el = $el;
+
+      /**
+       * Options for the modal
+       * @member Modal#options
+       * @prop {Number} [opacity=0.5] - Opacity of the modal overlay
+       * @prop {Number} [inDuration=250] - Length in ms of enter transition
+       * @prop {Number} [outDuration=250] - Length in ms of exit transition
+       * @prop {Function} ready - Callback function called when modal is finished entering
+       * @prop {Function} complete - Callback function called when modal is finished exiting
+       * @prop {Boolean} [dismissible=true] - Allow modal to be dismissed by keyboard or overlay click
+       * @prop {String} [startingTop='4%'] - startingTop
+       * @prop {String} [endingTop='10%'] - endingTop
+       */
+      this.options = $.extend({}, Modal.defaults, options);
+
+      /**
+       * Describes open/close state of modal
+       * @type {Boolean}
+       */
+      this.isOpen = false;
+
+      this.$el[0].M_Modal = this;
+      this.id = $el.attr('id');
+      this.openingTrigger = undefined;
+      this.$overlay = $('<div class="modal-overlay"></div>');
+
+      Modal._increment++;
+      Modal._count++;
+      this.$overlay[0].style.zIndex = 1000 + Modal._increment * 2;
+      this.$el[0].style.zIndex = 1000 + Modal._increment * 2 + 1;
+      this.setupEventHandlers();
+    }
+
+    _createClass(Modal, [{
+      key: 'getInstance',
+
+
+      /**
+       * Get Instance
+       */
+      value: function getInstance() {
+        return this;
+      }
+
+      /**
+       * Teardown component
+       */
+
+    }, {
+      key: 'destroy',
+      value: function destroy() {
+        this.removeEventHandlers();
+        this.$el[0].removeAttribute('style');
+        if (!!this.$overlay[0].parentNode) {
+          this.$overlay[0].parentNode.removeChild(this.$overlay[0]);
+        }
+        this.$el[0].M_Modal = undefined;
+        Modal._count--;
+      }
+
+      /**
+       * Setup Event Handlers
+       */
+
+    }, {
+      key: 'setupEventHandlers',
+      value: function setupEventHandlers() {
+        this.handleOverlayClickBound = this.handleOverlayClick.bind(this);
+        this.handleModalCloseClickBound = this.handleModalCloseClick.bind(this);
+
+        if (Modal._count === 1) {
+          document.body.addEventListener('click', this.handleTriggerClick);
+        }
+        this.$overlay[0].addEventListener('click', this.handleOverlayClickBound);
+        this.$el[0].addEventListener('click', this.handleModalCloseClickBound);
+      }
+
+      /**
+       * Remove Event Handlers
+       */
+
+    }, {
+      key: 'removeEventHandlers',
+      value: function removeEventHandlers() {
+        if (Modal._count === 0) {
+          document.body.removeEventListener('click', this.handleTriggerClick);
+        }
+        this.$overlay[0].removeEventListener('click', this.handleOverlayClickBound);
+        this.$el[0].removeEventListener('click', this.handleModalCloseClickBound);
+      }
+
+      /**
+       * Handle Trigger Click
+       * @param {Event} e
+       */
+
+    }, {
+      key: 'handleTriggerClick',
+      value: function handleTriggerClick(e) {
+        var $trigger = $(e.target).closest('.modal-trigger');
+        if (e.target && $trigger.length) {
+          var modalId = $trigger[0].getAttribute('href');
+          if (modalId) {
+            modalId = modalId.slice(1);
+          } else {
+            modalId = $trigger[0].getAttribute('data-target');
+          }
+          var modalInstance = document.getElementById(modalId).M_Modal;
+          if (modalInstance) {
+            modalInstance.open($trigger);
+          }
+          e.preventDefault();
+        }
+      }
+
+      /**
+       * Handle Overlay Click
+       */
+
+    }, {
+      key: 'handleOverlayClick',
+      value: function handleOverlayClick() {
+        if (this.options.dismissible) {
+          this.close();
+        }
+      }
+
+      /**
+       * Handle Modal Close Click
+       * @param {Event} e
+       */
+
+    }, {
+      key: 'handleModalCloseClick',
+      value: function handleModalCloseClick(e) {
+        var $closeTrigger = $(e.target).closest('.modal-close');
+        if (e.target && $closeTrigger.length) {
+          this.close();
+        }
+      }
+
+      /**
+       * Handle Keydown
+       * @param {Event} e
+       */
+
+    }, {
+      key: 'handleKeydown',
+      value: function handleKeydown(e) {
+        // ESC key
+        if (e.keyCode === 27 && this.options.dismissible) {
+          this.close();
+        }
+      }
+
+      /**
+       * Animate in modal
+       */
+
+    }, {
+      key: 'animateIn',
+      value: function animateIn() {
+        var _this = this;
+
+        // Set initial styles
+        $.extend(this.$el[0].style, {
+          display: 'block',
+          opacity: 0
+        });
+        $.extend(this.$overlay[0].style, {
+          display: 'block',
+          opacity: 0
+        });
+
+        // Animate overlay
+        Vel(this.$overlay[0], { opacity: this.options.opacity }, { duration: this.options.inDuration, queue: false, ease: 'easeOutCubic' });
+
+        // Define modal animation options
+        var enterVelocityOptions = {
+          duration: this.options.inDuration,
+          queue: false,
+          ease: 'easeOutCubic',
+          // Handle modal ready callback
+          complete: function complete() {
+            if (typeof _this.options.ready === 'function') {
+              _this.options.ready.call(_this, _this.$el, _this.openingTrigger);
+            }
+          }
+        };
+
+        // Bottom sheet animation
+        if (this.$el[0].classList.contains('bottom-sheet')) {
+          Vel(this.$el[0], { bottom: 0, opacity: 1 }, enterVelocityOptions);
+
+          // Normal modal animation
+        } else {
+          Vel.hook(this.$el[0], 'scaleX', 0.7);
+          this.$el[0].style.top = this.options.startingTop;
+          Vel(this.$el[0], { top: this.options.endingTop, opacity: 1, scaleX: 1 }, enterVelocityOptions);
+        }
+      }
+
+      /**
+       * Animate out modal
+       */
+
+    }, {
+      key: 'animateOut',
+      value: function animateOut() {
+        var _this2 = this;
+
+        // Animate overlay
+        Vel(this.$overlay[0], { opacity: 0 }, { duration: this.options.outDuration, queue: false, ease: 'easeOutQuart' });
+
+        // Define modal animation options
+        var exitVelocityOptions = {
+          duration: this.options.outDuration,
+          queue: false,
+          ease: 'easeOutCubic',
+          // Handle modal ready callback
+          complete: function complete() {
+            _this2.$el[0].style.display = 'none';
+            // Call complete callback
+            if (typeof _this2.options.complete === 'function') {
+              _this2.options.complete.call(_this2, _this2.$el);
+            }
+            _this2.$overlay[0].parentNode.removeChild(_this2.$overlay[0]);
+          }
+        };
+
+        // Bottom sheet animation
+        if (this.$el[0].classList.contains('bottom-sheet')) {
+          Vel(this.$el[0], { bottom: '-100%', opacity: 0 }, exitVelocityOptions);
+
+          // Normal modal animation
+        } else {
+          Vel(this.$el[0], { top: this.options.startingTop, opacity: 0, scaleX: 0.7 }, exitVelocityOptions);
+        }
+      }
+
+      /**
+       * Open Modal
+       * @param {jQuery} [$trigger]
+       */
+
+    }, {
+      key: 'open',
+      value: function open($trigger) {
+        if (this.isOpen) {
+          return;
+        }
+
+        this.isOpen = true;
+        var body = document.body;
+        body.style.overflow = 'hidden';
+        this.$el[0].classList.add('open');
+        body.appendChild(this.$overlay[0]);
+
+        // Set opening trigger, undefined indicates modal was opened by javascript
+        this.openingTrigger = !!$trigger ? $trigger : undefined;
+
+        if (this.options.dismissible) {
+          this.handleKeydownBound = this.handleKeydown.bind(this);
+          document.addEventListener('keydown', this.handleKeydownBound);
+        }
+
+        this.animateIn();
+
+        return this;
+      }
+
+      /**
+       * Close Modal
+       */
+
+    }, {
+      key: 'close',
+      value: function close() {
+        if (!this.isOpen) {
+          return;
+        }
+
+        this.isOpen = false;
+        this.$el[0].classList.remove('open');
+        document.body.style.overflow = '';
+
+        if (this.options.dismissible) {
+          document.removeEventListener('keydown', this.handleKeydownBound);
+        }
+
+        this.animateOut();
+
+        return this;
+      }
+    }], [{
+      key: 'init',
+      value: function init($els, options) {
+        var arr = [];
+        $els.each(function () {
+          arr.push(new Modal($(this), options));
+        });
+        return arr;
+      }
+    }, {
+      key: 'defaults',
+      get: function get() {
+        return _defaults;
+      }
+    }]);
+
+    return Modal;
+  }();
+
+  /**
+   * @static
+   * @memberof Modal
+   */
+
+
+  Modal._increment = 0;
+
+  /**
+   * @static
+   * @memberof Modal
+   */
+  Modal._count = 0;
+
+  Materialize.Modal = Modal;
+
+  $.fn.modal = function (methodOrOptions) {
+    // Call plugin method if valid method name is passed in
+    if (Modal.prototype[methodOrOptions]) {
+      // Getter methods
+      if (methodOrOptions.slice(0, 3) === 'get') {
+        return this.first()[0].M_Modal[methodOrOptions]();
+
+        // Void methods
+      } else {
+        return this.each(function () {
+          this.M_Modal[methodOrOptions]();
+        });
+      }
+
+      // Initialize plugin if options or no argument is passed in
+    } else if ((typeof methodOrOptions === 'undefined' ? 'undefined' : _typeof(methodOrOptions)) === 'object' || !methodOrOptions) {
+      Modal.init(this, arguments[0]);
+      return this;
+
+      // Return error if an unrecognized  method name is passed in
+    } else {
+      $.error('Method ' + methodOrOptions + ' does not exist on jQuery.modal');
+    }
+  };
+})(jQuery, Materialize.Vel);
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(42);
+__webpack_require__(52);
+module.exports = __webpack_require__(53);
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+__webpack_require__(10);
+__webpack_require__(32);
+__webpack_require__(33);
+__webpack_require__(34);
+__webpack_require__(43);
+__webpack_require__(45);
+__webpack_require__(48);
+__webpack_require__(49);
+__webpack_require__(35);
+__webpack_require__(36);
+__webpack_require__(37);
+__webpack_require__(50);
+__webpack_require__(38);
+__webpack_require__(39);
+__webpack_require__(40);
+
+__webpack_require__(51);
+
+/***/ }),
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 (function (factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(38)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(44)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -30677,7 +32916,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 38 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -33327,7 +35566,7 @@ if (true) {
 
 
 /***/ }),
-/* 39 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -33752,14 +35991,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && 
       }
     }, destroy: function destroy() {
       this.element && lc(this, !1), this.handlers = {}, this.session = {}, this.input.destroy(), this.element = null;
-    } }, n(hc, { INPUT_START: O, INPUT_MOVE: P, INPUT_END: Q, INPUT_CANCEL: R, STATE_POSSIBLE: Rb, STATE_BEGAN: Sb, STATE_CHANGED: Tb, STATE_ENDED: Ub, STATE_RECOGNIZED: Vb, STATE_CANCELLED: Wb, STATE_FAILED: Xb, DIRECTION_NONE: S, DIRECTION_LEFT: T, DIRECTION_RIGHT: U, DIRECTION_UP: V, DIRECTION_DOWN: W, DIRECTION_HORIZONTAL: X, DIRECTION_VERTICAL: Y, DIRECTION_ALL: Z, Manager: kc, Input: ab, TouchAction: Pb, TouchInput: Eb, MouseInput: rb, PointerEventInput: wb, TouchMouseInput: Gb, SingleTouchInput: Ab, Recognizer: Yb, AttrRecognizer: ac, Tap: gc, Pan: bc, Swipe: fc, Pinch: cc, Rotate: ec, Press: dc, on: t, off: u, each: m, merge: o, extend: n, inherit: p, bindFn: q, prefixed: B }), ( false ? "undefined" : _typeof(__webpack_require__(40))) == g && __webpack_require__(41) ? !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+    } }, n(hc, { INPUT_START: O, INPUT_MOVE: P, INPUT_END: Q, INPUT_CANCEL: R, STATE_POSSIBLE: Rb, STATE_BEGAN: Sb, STATE_CHANGED: Tb, STATE_ENDED: Ub, STATE_RECOGNIZED: Vb, STATE_CANCELLED: Wb, STATE_FAILED: Xb, DIRECTION_NONE: S, DIRECTION_LEFT: T, DIRECTION_RIGHT: U, DIRECTION_UP: V, DIRECTION_DOWN: W, DIRECTION_HORIZONTAL: X, DIRECTION_VERTICAL: Y, DIRECTION_ALL: Z, Manager: kc, Input: ab, TouchAction: Pb, TouchInput: Eb, MouseInput: rb, PointerEventInput: wb, TouchMouseInput: Gb, SingleTouchInput: Ab, Recognizer: Yb, AttrRecognizer: ac, Tap: gc, Pan: bc, Swipe: fc, Pinch: cc, Rotate: ec, Press: dc, on: t, off: u, each: m, merge: o, extend: n, inherit: p, bindFn: q, prefixed: B }), ( false ? "undefined" : _typeof(__webpack_require__(46))) == g && __webpack_require__(47) ? !(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
     return hc;
   }).call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "undefined" != typeof module && module.exports ? module.exports = hc : a[c] = hc;
 }(window, document, "Hammer");
 
 /***/ }),
-/* 40 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = function() {
@@ -33768,7 +36007,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 41 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -33777,7 +36016,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 42 */
+/* 48 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -34180,7 +36419,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 43 */
+/* 49 */
 /***/ (function(module, exports) {
 
 (function ($) {
@@ -34438,1232 +36677,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-/*
- * jQuery Easing v1.4.0 - http://gsgd.co.uk/sandbox/jquery/easing/
- * Open source under the BSD License.
- * Copyright © 2008 George McGinley Smith
- * All rights reserved.
- * https://raw.github.com/gdsmith/jquery-easing/master/LICENSE
-*/
-
-(function (factory) {
-	if (true) {
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_RESULT__ = (function ($) {
-			return factory($);
-		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if ((typeof module === "undefined" ? "undefined" : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
-		exports = factory(require('jquery'));
-	} else {
-		factory(jQuery);
-	}
-})(function ($) {
-
-	// Preserve the original jQuery "swing" easing as "jswing"
-	$.easing['jswing'] = $.easing['swing'];
-
-	var pow = Math.pow,
-	    sqrt = Math.sqrt,
-	    sin = Math.sin,
-	    cos = Math.cos,
-	    PI = Math.PI,
-	    c1 = 1.70158,
-	    c2 = c1 * 1.525,
-	    c3 = c1 + 1,
-	    c4 = 2 * PI / 3,
-	    c5 = 2 * PI / 4.5;
-
-	// x is the fraction of animation progress, in the range 0..1
-	function bounceOut(x) {
-		var n1 = 7.5625,
-		    d1 = 2.75;
-		if (x < 1 / d1) {
-			return n1 * x * x;
-		} else if (x < 2 / d1) {
-			return n1 * (x -= 1.5 / d1) * x + .75;
-		} else if (x < 2.5 / d1) {
-			return n1 * (x -= 2.25 / d1) * x + .9375;
-		} else {
-			return n1 * (x -= 2.625 / d1) * x + .984375;
-		}
-	}
-
-	$.extend($.easing, {
-		def: 'easeOutQuad',
-		swing: function swing(x) {
-			return $.easing[$.easing.def](x);
-		},
-		easeInQuad: function easeInQuad(x) {
-			return x * x;
-		},
-		easeOutQuad: function easeOutQuad(x) {
-			return 1 - (1 - x) * (1 - x);
-		},
-		easeInOutQuad: function easeInOutQuad(x) {
-			return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
-		},
-		easeInCubic: function easeInCubic(x) {
-			return x * x * x;
-		},
-		easeOutCubic: function easeOutCubic(x) {
-			return 1 - pow(1 - x, 3);
-		},
-		easeInOutCubic: function easeInOutCubic(x) {
-			return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
-		},
-		easeInQuart: function easeInQuart(x) {
-			return x * x * x * x;
-		},
-		easeOutQuart: function easeOutQuart(x) {
-			return 1 - pow(1 - x, 4);
-		},
-		easeInOutQuart: function easeInOutQuart(x) {
-			return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
-		},
-		easeInQuint: function easeInQuint(x) {
-			return x * x * x * x * x;
-		},
-		easeOutQuint: function easeOutQuint(x) {
-			return 1 - pow(1 - x, 5);
-		},
-		easeInOutQuint: function easeInOutQuint(x) {
-			return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
-		},
-		easeInSine: function easeInSine(x) {
-			return 1 - cos(x * PI / 2);
-		},
-		easeOutSine: function easeOutSine(x) {
-			return sin(x * PI / 2);
-		},
-		easeInOutSine: function easeInOutSine(x) {
-			return -(cos(PI * x) - 1) / 2;
-		},
-		easeInExpo: function easeInExpo(x) {
-			return x === 0 ? 0 : pow(2, 10 * x - 10);
-		},
-		easeOutExpo: function easeOutExpo(x) {
-			return x === 1 ? 1 : 1 - pow(2, -10 * x);
-		},
-		easeInOutExpo: function easeInOutExpo(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? pow(2, 20 * x - 10) / 2 : (2 - pow(2, -20 * x + 10)) / 2;
-		},
-		easeInCirc: function easeInCirc(x) {
-			return 1 - sqrt(1 - pow(x, 2));
-		},
-		easeOutCirc: function easeOutCirc(x) {
-			return sqrt(1 - pow(x - 1, 2));
-		},
-		easeInOutCirc: function easeInOutCirc(x) {
-			return x < 0.5 ? (1 - sqrt(1 - pow(2 * x, 2))) / 2 : (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
-		},
-		easeInElastic: function easeInElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
-		},
-		easeOutElastic: function easeOutElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
-		},
-		easeInOutElastic: function easeInOutElastic(x) {
-			return x === 0 ? 0 : x === 1 ? 1 : x < 0.5 ? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2 : pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5) / 2 + 1;
-		},
-		easeInBack: function easeInBack(x) {
-			return c3 * x * x * x - c1 * x * x;
-		},
-		easeOutBack: function easeOutBack(x) {
-			return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
-		},
-		easeInOutBack: function easeInOutBack(x) {
-			return x < 0.5 ? pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2 : (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
-		},
-		easeInBounce: function easeInBounce(x) {
-			return 1 - bounceOut(1 - x);
-		},
-		easeOutBounce: bounceOut,
-		easeInOutBounce: function easeInOutBounce(x) {
-			return x < 0.5 ? (1 - bounceOut(1 - 2 * x)) / 2 : (1 + bounceOut(2 * x - 1)) / 2;
-		}
-	});
-});
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports) {
-
-(function ($) {
-
-  // Add posibility to scroll to selected option
-  // usefull for select for example
-  $.fn.scrollTo = function (elem) {
-    $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
-    return this;
-  };
-
-  $.fn.dropdown = function (options) {
-    var defaults = {
-      inDuration: 300,
-      outDuration: 225,
-      constrainWidth: true, // Constrains width of dropdown to the activator
-      hover: false,
-      gutter: 0, // Spacing from edge
-      belowOrigin: false,
-      alignment: 'left',
-      stopPropagation: false
-    };
-
-    // Open dropdown.
-    if (options === "open") {
-      this.each(function () {
-        $(this).trigger('open');
-      });
-      return false;
-    }
-
-    // Close dropdown.
-    if (options === "close") {
-      this.each(function () {
-        $(this).trigger('close');
-      });
-      return false;
-    }
-
-    this.each(function () {
-      var origin = $(this);
-      var curr_options = $.extend({}, defaults, options);
-      var isFocused = false;
-
-      // Dropdown menu
-      var activates = $("#" + origin.attr('data-activates'));
-
-      function updateOptions() {
-        if (origin.data('induration') !== undefined) curr_options.inDuration = origin.data('induration');
-        if (origin.data('outduration') !== undefined) curr_options.outDuration = origin.data('outduration');
-        if (origin.data('constrainwidth') !== undefined) curr_options.constrainWidth = origin.data('constrainwidth');
-        if (origin.data('hover') !== undefined) curr_options.hover = origin.data('hover');
-        if (origin.data('gutter') !== undefined) curr_options.gutter = origin.data('gutter');
-        if (origin.data('beloworigin') !== undefined) curr_options.belowOrigin = origin.data('beloworigin');
-        if (origin.data('alignment') !== undefined) curr_options.alignment = origin.data('alignment');
-        if (origin.data('stoppropagation') !== undefined) curr_options.stopPropagation = origin.data('stoppropagation');
-      }
-
-      updateOptions();
-
-      // Attach dropdown to its activator
-      origin.after(activates);
-
-      /*
-        Helper function to position and resize dropdown.
-        Used in hover and click handler.
-      */
-      function placeDropdown(eventType) {
-        // Check for simultaneous focus and click events.
-        if (eventType === 'focus') {
-          isFocused = true;
-        }
-
-        // Check html data attributes
-        updateOptions();
-
-        // Set Dropdown state
-        activates.addClass('active');
-        origin.addClass('active');
-
-        var originWidth = origin[0].getBoundingClientRect().width;
-
-        // Constrain width
-        if (curr_options.constrainWidth === true) {
-          activates.css('width', originWidth);
-        } else {
-          activates.css('white-space', 'nowrap');
-        }
-
-        // Offscreen detection
-        var windowHeight = window.innerHeight;
-        var originHeight = origin.innerHeight();
-        var offsetLeft = origin.offset().left;
-        var offsetTop = origin.offset().top - $(window).scrollTop();
-        var currAlignment = curr_options.alignment;
-        var gutterSpacing = 0;
-        var leftPosition = 0;
-
-        // Below Origin
-        var verticalOffset = 0;
-        if (curr_options.belowOrigin === true) {
-          verticalOffset = originHeight;
-        }
-
-        // Check for scrolling positioned container.
-        var scrollYOffset = 0;
-        var scrollXOffset = 0;
-        var wrapper = origin.parent();
-        if (!wrapper.is('body')) {
-          if (wrapper[0].scrollHeight > wrapper[0].clientHeight) {
-            scrollYOffset = wrapper[0].scrollTop;
-          }
-          if (wrapper[0].scrollWidth > wrapper[0].clientWidth) {
-            scrollXOffset = wrapper[0].scrollLeft;
-          }
-        }
-
-        if (offsetLeft + activates.innerWidth() > $(window).width()) {
-          // Dropdown goes past screen on right, force right alignment
-          currAlignment = 'right';
-        } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
-          // Dropdown goes past screen on left, force left alignment
-          currAlignment = 'left';
-        }
-        // Vertical bottom offscreen detection
-        if (offsetTop + activates.innerHeight() > windowHeight) {
-          // If going upwards still goes offscreen, just crop height of dropdown.
-          if (offsetTop + originHeight - activates.innerHeight() < 0) {
-            var adjustedHeight = windowHeight - offsetTop - verticalOffset;
-            activates.css('max-height', adjustedHeight);
-          } else {
-            // Flow upwards.
-            if (!verticalOffset) {
-              verticalOffset += originHeight;
-            }
-            verticalOffset -= activates.innerHeight();
-          }
-        }
-
-        // Handle edge alignment
-        if (currAlignment === 'left') {
-          gutterSpacing = curr_options.gutter;
-          leftPosition = origin.position().left + gutterSpacing;
-        } else if (currAlignment === 'right') {
-          // Material icons fix
-          activates.stop(true, true).css({
-            opacity: 0,
-            left: 0
-          });
-
-          var offsetRight = origin.position().left + originWidth - activates.width();
-          gutterSpacing = -curr_options.gutter;
-          leftPosition = offsetRight + gutterSpacing;
-        }
-
-        // Position dropdown
-        activates.css({
-          position: 'absolute',
-          top: origin.position().top + verticalOffset + scrollYOffset,
-          left: leftPosition + scrollXOffset
-        });
-
-        // Show dropdown
-        activates.slideDown({
-          queue: false,
-          duration: curr_options.inDuration,
-          easing: 'easeOutCubic',
-          complete: function complete() {
-            $(this).css('height', '');
-          }
-        }).animate({ opacity: 1 }, { queue: false, duration: curr_options.inDuration, easing: 'easeOutSine' });
-
-        // Add click close handler to document
-        setTimeout(function () {
-          $(document).on('click.' + activates.attr('id'), function (e) {
-            hideDropdown();
-            $(document).off('click.' + activates.attr('id'));
-          });
-        }, 0);
-      }
-
-      function hideDropdown() {
-        // Check for simultaneous focus and click events.
-        isFocused = false;
-        activates.fadeOut(curr_options.outDuration);
-        activates.removeClass('active');
-        origin.removeClass('active');
-        $(document).off('click.' + activates.attr('id'));
-        setTimeout(function () {
-          activates.css('max-height', '');
-        }, curr_options.outDuration);
-      }
-
-      // Hover
-      if (curr_options.hover) {
-        var open = false;
-        origin.off('click.' + origin.attr('id'));
-        // Hover handler to show dropdown
-        origin.on('mouseenter', function (e) {
-          // Mouse over
-          if (open === false) {
-            placeDropdown();
-            open = true;
-          }
-        });
-        origin.on('mouseleave', function (e) {
-          // If hover on origin then to something other than dropdown content, then close
-          var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
-          if (!$(toEl).closest('.dropdown-content').is(activates)) {
-            activates.stop(true, true);
-            hideDropdown();
-            open = false;
-          }
-        });
-
-        activates.on('mouseleave', function (e) {
-          // Mouse out
-          var toEl = e.toElement || e.relatedTarget;
-          if (!$(toEl).closest('.dropdown-button').is(origin)) {
-            activates.stop(true, true);
-            hideDropdown();
-            open = false;
-          }
-        });
-
-        // Click
-      } else {
-        // Click handler to show dropdown
-        origin.off('click.' + origin.attr('id'));
-        origin.on('click.' + origin.attr('id'), function (e) {
-          if (!isFocused) {
-            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
-              e.preventDefault(); // Prevents button click from moving window
-              if (curr_options.stopPropagation) {
-                e.stopPropagation();
-              }
-              placeDropdown('click');
-            }
-            // If origin is clicked and menu is open, close menu
-            else if (origin.hasClass('active')) {
-                hideDropdown();
-                $(document).off('click.' + activates.attr('id'));
-              }
-          }
-        });
-      } // End else
-
-      // Listen to open and close event - useful for select component
-      origin.on('open', function (e, eventType) {
-        placeDropdown(eventType);
-      });
-      origin.on('close', hideDropdown);
-    });
-  }; // End dropdown plugin
-
-  $(document).ready(function () {
-    $('.dropdown-button').dropdown();
-  });
-})(jQuery);
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports) {
-
-(function ($) {
-  $(document).ready(function () {
-
-    // Function to update labels of text fields
-    Materialize.updateTextFields = function () {
-      var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
-      $(input_selector).each(function (index, element) {
-        var $this = $(this);
-        if ($(element).val().length > 0 || $(element).is(':focus') || element.autofocus || $this.attr('placeholder') !== undefined) {
-          $this.siblings('label').addClass('active');
-        } else if ($(element)[0].validity) {
-          $this.siblings('label').toggleClass('active', $(element)[0].validity.badInput === true);
-        } else {
-          $this.siblings('label').removeClass('active');
-        }
-      });
-    };
-
-    // Text based inputs
-    var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
-
-    // Add active if form auto complete
-    $(document).on('change', input_selector, function () {
-      if ($(this).val().length !== 0 || $(this).attr('placeholder') !== undefined) {
-        $(this).siblings('label').addClass('active');
-      }
-      validate_field($(this));
-    });
-
-    // Add active if input element has been pre-populated on document ready
-    $(document).ready(function () {
-      Materialize.updateTextFields();
-    });
-
-    // HTML DOM FORM RESET handling
-    $(document).on('reset', function (e) {
-      var formReset = $(e.target);
-      if (formReset.is('form')) {
-        formReset.find(input_selector).removeClass('valid').removeClass('invalid');
-        formReset.find(input_selector).each(function () {
-          if ($(this).attr('value') === '') {
-            $(this).siblings('label').removeClass('active');
-          }
-        });
-
-        // Reset select
-        formReset.find('select.initialized').each(function () {
-          var reset_text = formReset.find('option[selected]').text();
-          formReset.siblings('input.select-dropdown').val(reset_text);
-        });
-      }
-    });
-
-    // Add active when element has focus
-    $(document).on('focus', input_selector, function () {
-      $(this).siblings('label, .prefix').addClass('active');
-    });
-
-    $(document).on('blur', input_selector, function () {
-      var $inputElement = $(this);
-      var selector = ".prefix";
-
-      if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
-        selector += ", label";
-      }
-
-      $inputElement.siblings(selector).removeClass('active');
-
-      validate_field($inputElement);
-    });
-
-    window.validate_field = function (object) {
-      var hasLength = object.attr('data-length') !== undefined;
-      var lenAttr = parseInt(object.attr('data-length'));
-      var len = object.val().length;
-
-      if (object.val().length === 0 && object[0].validity.badInput === false && !object.is(':required')) {
-        if (object.hasClass('validate')) {
-          object.removeClass('valid');
-          object.removeClass('invalid');
-        }
-      } else {
-        if (object.hasClass('validate')) {
-          // Check for character counter attributes
-          if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
-            object.removeClass('invalid');
-            object.addClass('valid');
-          } else {
-            object.removeClass('valid');
-            object.addClass('invalid');
-          }
-        }
-      }
-    };
-
-    // Radio and Checkbox focus class
-    var radio_checkbox = 'input[type=radio], input[type=checkbox]';
-    $(document).on('keyup.radio', radio_checkbox, function (e) {
-      // TAB, check if tabbing to radio or checkbox.
-      if (e.which === 9) {
-        $(this).addClass('tabbed');
-        var $this = $(this);
-        $this.one('blur', function (e) {
-
-          $(this).removeClass('tabbed');
-        });
-        return;
-      }
-    });
-
-    // Textarea Auto Resize
-    var hiddenDiv = $('.hiddendiv').first();
-    if (!hiddenDiv.length) {
-      hiddenDiv = $('<div class="hiddendiv common"></div>');
-      $('body').append(hiddenDiv);
-    }
-    var text_area_selector = '.materialize-textarea';
-
-    function textareaAutoResize($textarea) {
-      // Set font properties of hiddenDiv
-
-      var fontFamily = $textarea.css('font-family');
-      var fontSize = $textarea.css('font-size');
-      var lineHeight = $textarea.css('line-height');
-      var padding = $textarea.css('padding');
-
-      if (fontSize) {
-        hiddenDiv.css('font-size', fontSize);
-      }
-      if (fontFamily) {
-        hiddenDiv.css('font-family', fontFamily);
-      }
-      if (lineHeight) {
-        hiddenDiv.css('line-height', lineHeight);
-      }
-      if (padding) {
-        hiddenDiv.css('padding', padding);
-      }
-
-      // Set original-height, if none
-      if (!$textarea.data('original-height')) {
-        $textarea.data('original-height', $textarea.height());
-      }
-
-      if ($textarea.attr('wrap') === 'off') {
-        hiddenDiv.css('overflow-wrap', 'normal').css('white-space', 'pre');
-      }
-
-      hiddenDiv.text($textarea.val() + '\n');
-      var content = hiddenDiv.html().replace(/\n/g, '<br>');
-      hiddenDiv.html(content);
-
-      // When textarea is hidden, width goes crazy.
-      // Approximate with half of window size
-
-      if ($textarea.is(':visible')) {
-        hiddenDiv.css('width', $textarea.width());
-      } else {
-        hiddenDiv.css('width', $(window).width() / 2);
-      }
-
-      /**
-       * Resize if the new height is greater than the
-       * original height of the textarea
-       */
-      if ($textarea.data('original-height') <= hiddenDiv.height()) {
-        $textarea.css('height', hiddenDiv.height());
-      } else if ($textarea.val().length < $textarea.data('previous-length')) {
-        /**
-         * In case the new height is less than original height, it
-         * means the textarea has less text than before
-         * So we set the height to the original one
-         */
-        $textarea.css('height', $textarea.data('original-height'));
-      }
-      $textarea.data('previous-length', $textarea.val().length);
-    }
-
-    $(text_area_selector).each(function () {
-      var $textarea = $(this);
-      /**
-       * Instead of resizing textarea on document load,
-       * store the original height and the original length
-       */
-      $textarea.data('original-height', $textarea.height());
-      $textarea.data('previous-length', $textarea.val().length);
-    });
-
-    $('body').on('keyup keydown autoresize', text_area_selector, function () {
-      textareaAutoResize($(this));
-    });
-
-    // File Input Path
-    $(document).on('change', '.file-field input[type="file"]', function () {
-      var file_field = $(this).closest('.file-field');
-      var path_input = file_field.find('input.file-path');
-      var files = $(this)[0].files;
-      var file_names = [];
-      for (var i = 0; i < files.length; i++) {
-        file_names.push(files[i].name);
-      }
-      path_input.val(file_names.join(", "));
-      path_input.trigger('change');
-    });
-
-    /****************
-    *  Range Input  *
-    ****************/
-
-    var range_type = 'input[type=range]';
-    var range_mousedown = false;
-    var left;
-
-    $(range_type).each(function () {
-      var thumb = $('<span class="thumb"><span class="value"></span></span>');
-      $(this).after(thumb);
-    });
-
-    var showRangeBubble = function showRangeBubble(thumb) {
-      var paddingLeft = parseInt(thumb.parent().css('padding-left'));
-      var marginLeft = -7 + paddingLeft + 'px';
-      thumb.velocity({ height: "30px", width: "30px", top: "-30px", marginLeft: marginLeft }, { duration: 300, easing: 'easeOutExpo' });
-    };
-
-    var calcRangeOffset = function calcRangeOffset(range) {
-      var width = range.width() - 15;
-      var max = parseFloat(range.attr('max'));
-      var min = parseFloat(range.attr('min'));
-      var percent = (parseFloat(range.val()) - min) / (max - min);
-      return percent * width;
-    };
-
-    var range_wrapper = '.range-field';
-    $(document).on('change', range_type, function (e) {
-      var thumb = $(this).siblings('.thumb');
-      thumb.find('.value').html($(this).val());
-
-      if (!thumb.hasClass('active')) {
-        showRangeBubble(thumb);
-      }
-
-      var offsetLeft = calcRangeOffset($(this));
-      thumb.addClass('active').css('left', offsetLeft);
-    });
-
-    $(document).on('mousedown touchstart', range_type, function (e) {
-      var thumb = $(this).siblings('.thumb');
-
-      // If thumb indicator does not exist yet, create it
-      if (thumb.length <= 0) {
-        thumb = $('<span class="thumb"><span class="value"></span></span>');
-        $(this).after(thumb);
-      }
-
-      // Set indicator value
-      thumb.find('.value').html($(this).val());
-
-      range_mousedown = true;
-      $(this).addClass('active');
-
-      if (!thumb.hasClass('active')) {
-        showRangeBubble(thumb);
-      }
-
-      if (e.type !== 'input') {
-        var offsetLeft = calcRangeOffset($(this));
-        thumb.addClass('active').css('left', offsetLeft);
-      }
-    });
-
-    $(document).on('mouseup touchend', range_wrapper, function () {
-      range_mousedown = false;
-      $(this).removeClass('active');
-    });
-
-    $(document).on('input mousemove touchmove', range_wrapper, function (e) {
-      var thumb = $(this).children('.thumb');
-      var left;
-      var input = $(this).find(range_type);
-
-      if (range_mousedown) {
-        if (!thumb.hasClass('active')) {
-          showRangeBubble(thumb);
-        }
-
-        var offsetLeft = calcRangeOffset(input);
-        thumb.addClass('active').css('left', offsetLeft);
-        thumb.find('.value').html(thumb.siblings(range_type).val());
-      }
-    });
-
-    $(document).on('mouseout touchleave', range_wrapper, function () {
-      if (!range_mousedown) {
-
-        var thumb = $(this).children('.thumb');
-        var paddingLeft = parseInt($(this).css('padding-left'));
-        var marginLeft = 7 + paddingLeft + 'px';
-
-        if (thumb.hasClass('active')) {
-          thumb.velocity({ height: '0', width: '0', top: '10px', marginLeft: marginLeft }, { duration: 100 });
-        }
-        thumb.removeClass('active');
-      }
-    });
-
-    /**************************
-     * Auto complete plugin  *
-     *************************/
-    $.fn.autocomplete = function (options) {
-      // Defaults
-      var defaults = {
-        data: {},
-        limit: Infinity,
-        onAutocomplete: null,
-        minLength: 1
-      };
-
-      options = $.extend(defaults, options);
-
-      return this.each(function () {
-        var $input = $(this);
-        var data = options.data,
-            count = 0,
-            activeIndex = -1,
-            oldVal,
-            $inputDiv = $input.closest('.input-field'); // Div to append on
-
-        // Check if data isn't empty
-        if (!$.isEmptyObject(data)) {
-          var $autocomplete = $('<ul class="autocomplete-content dropdown-content"></ul>');
-          var $oldAutocomplete;
-
-          // Append autocomplete element.
-          // Prevent double structure init.
-          if ($inputDiv.length) {
-            $oldAutocomplete = $inputDiv.children('.autocomplete-content.dropdown-content').first();
-            if (!$oldAutocomplete.length) {
-              $inputDiv.append($autocomplete); // Set ul in body
-            }
-          } else {
-            $oldAutocomplete = $input.next('.autocomplete-content.dropdown-content');
-            if (!$oldAutocomplete.length) {
-              $input.after($autocomplete);
-            }
-          }
-          if ($oldAutocomplete.length) {
-            $autocomplete = $oldAutocomplete;
-          }
-
-          // Highlight partial match.
-          var highlight = function highlight(string, $el) {
-            var img = $el.find('img');
-            var matchStart = $el.text().toLowerCase().indexOf("" + string.toLowerCase() + ""),
-                matchEnd = matchStart + string.length - 1,
-                beforeMatch = $el.text().slice(0, matchStart),
-                matchText = $el.text().slice(matchStart, matchEnd + 1),
-                afterMatch = $el.text().slice(matchEnd + 1);
-            $el.html("<span>" + beforeMatch + "<span class='highlight'>" + matchText + "</span>" + afterMatch + "</span>");
-            if (img.length) {
-              $el.prepend(img);
-            }
-          };
-
-          // Reset current element position
-          var resetCurrentElement = function resetCurrentElement() {
-            activeIndex = -1;
-            $autocomplete.find('.active').removeClass('active');
-          };
-
-          // Remove autocomplete elements
-          var removeAutocomplete = function removeAutocomplete() {
-            $autocomplete.empty();
-            resetCurrentElement();
-            oldVal = undefined;
-          };
-
-          $input.off('blur.autocomplete').on('blur.autocomplete', function () {
-            removeAutocomplete();
-          });
-
-          // Perform search
-          $input.off('keyup.autocomplete focus.autocomplete').on('keyup.autocomplete focus.autocomplete', function (e) {
-            // Reset count.
-            count = 0;
-            var val = $input.val().toLowerCase();
-
-            // Don't capture enter or arrow key usage.
-            if (e.which === 13 || e.which === 38 || e.which === 40) {
-              return;
-            }
-
-            // Check if the input isn't empty
-            if (oldVal !== val) {
-              removeAutocomplete();
-
-              if (val.length >= options.minLength) {
-                for (var key in data) {
-                  if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
-                    // Break if past limit
-                    if (count >= options.limit) {
-                      break;
-                    }
-
-                    var autocompleteOption = $('<li></li>');
-                    if (!!data[key]) {
-                      autocompleteOption.append('<img src="' + data[key] + '" class="right circle"><span>' + key + '</span>');
-                    } else {
-                      autocompleteOption.append('<span>' + key + '</span>');
-                    }
-
-                    $autocomplete.append(autocompleteOption);
-                    highlight(val, autocompleteOption);
-                    count++;
-                  }
-                }
-              }
-            }
-
-            // Update oldVal
-            oldVal = val;
-          });
-
-          $input.off('keydown.autocomplete').on('keydown.autocomplete', function (e) {
-            // Arrow keys and enter key usage
-            var keyCode = e.which,
-                liElement,
-                numItems = $autocomplete.children('li').length,
-                $active = $autocomplete.children('.active').first();
-
-            // select element on Enter
-            if (keyCode === 13 && activeIndex >= 0) {
-              liElement = $autocomplete.children('li').eq(activeIndex);
-              if (liElement.length) {
-                liElement.trigger('mousedown.autocomplete');
-                e.preventDefault();
-              }
-              return;
-            }
-
-            // Capture up and down key
-            if (keyCode === 38 || keyCode === 40) {
-              e.preventDefault();
-
-              if (keyCode === 38 && activeIndex > 0) {
-                activeIndex--;
-              }
-
-              if (keyCode === 40 && activeIndex < numItems - 1) {
-                activeIndex++;
-              }
-
-              $active.removeClass('active');
-              if (activeIndex >= 0) {
-                $autocomplete.children('li').eq(activeIndex).addClass('active');
-              }
-            }
-          });
-
-          // Set input value
-          $autocomplete.off('mousedown.autocomplete touchstart.autocomplete').on('mousedown.autocomplete touchstart.autocomplete', 'li', function () {
-            var text = $(this).text().trim();
-            $input.val(text);
-            $input.trigger('change');
-            removeAutocomplete();
-
-            // Handle onAutocomplete callback.
-            if (typeof options.onAutocomplete === "function") {
-              options.onAutocomplete.call(this, text);
-            }
-          });
-
-          // Empty data
-        } else {
-          $input.off('keyup.autocomplete focus.autocomplete');
-        }
-      });
-    };
-  }); // End of $(document).ready
-
-  /*******************
-   *  Select Plugin  *
-   ******************/
-  $.fn.material_select = function (callback) {
-    $(this).each(function () {
-      var $select = $(this);
-
-      if ($select.hasClass('browser-default')) {
-        return; // Continue to next (return false breaks out of entire loop)
-      }
-
-      var multiple = $select.attr('multiple') ? true : false,
-          lastID = $select.attr('data-select-id'); // Tear down structure if Select needs to be rebuilt
-
-      if (lastID) {
-        $select.parent().find('span.caret').remove();
-        $select.parent().find('input').remove();
-
-        $select.unwrap();
-        $('ul#select-options-' + lastID).remove();
-      }
-
-      // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
-      if (callback === 'destroy') {
-        $select.removeAttr('data-select-id').removeClass('initialized');
-        $(window).off('click.select');
-        return;
-      }
-
-      var uniqueID = Materialize.guid();
-      $select.attr('data-select-id', uniqueID);
-      var wrapper = $('<div class="select-wrapper"></div>');
-      wrapper.addClass($select.attr('class'));
-      if ($select.is(':disabled')) wrapper.addClass('disabled');
-      var options = $('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
-          selectChildren = $select.children('option, optgroup'),
-          valuesSelected = [],
-          optionsHover = false;
-
-      var label = $select.find('option:selected').html() || $select.find('option:first').html() || "";
-
-      // Function that renders and appends the option taking into
-      // account type and possible image icon.
-      var appendOptionWithIcon = function appendOptionWithIcon(select, option, type) {
-        // Add disabled attr if disabled
-        var disabledClass = option.is(':disabled') ? 'disabled ' : '';
-        var optgroupClass = type === 'optgroup-option' ? 'optgroup-option ' : '';
-        var multipleCheckbox = multiple ? '<input type="checkbox"' + disabledClass + '/><label></label>' : '';
-
-        // add icons
-        var icon_url = option.data('icon');
-        var classes = option.attr('class');
-        if (!!icon_url) {
-          var classString = '';
-          if (!!classes) classString = ' class="' + classes + '"';
-
-          // Check for multiple type.
-          options.append($('<li class="' + disabledClass + optgroupClass + '"><img alt="" src="' + icon_url + '"' + classString + '><span>' + multipleCheckbox + option.html() + '</span></li>'));
-          return true;
-        }
-
-        // Check for multiple type.
-        options.append($('<li class="' + disabledClass + optgroupClass + '"><span>' + multipleCheckbox + option.html() + '</span></li>'));
-      };
-
-      /* Create dropdown structure. */
-      if (selectChildren.length) {
-        selectChildren.each(function () {
-          if ($(this).is('option')) {
-            // Direct descendant option.
-            if (multiple) {
-              appendOptionWithIcon($select, $(this), 'multiple');
-            } else {
-              appendOptionWithIcon($select, $(this));
-            }
-          } else if ($(this).is('optgroup')) {
-            // Optgroup.
-            var selectOptions = $(this).children('option');
-            options.append($('<li class="optgroup"><span>' + $(this).attr('label') + '</span></li>'));
-
-            selectOptions.each(function () {
-              appendOptionWithIcon($select, $(this), 'optgroup-option');
-            });
-          }
-        });
-      }
-
-      options.find('li:not(.optgroup)').each(function (i) {
-        $(this).click(function (e) {
-          // Check if option element is disabled
-          if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
-            var selected = true;
-
-            if (multiple) {
-              $('input[type="checkbox"]', this).prop('checked', function (i, v) {
-                return !v;
-              });
-              selected = toggleEntryFromArray(valuesSelected, i, $select);
-              $newSelect.trigger('focus');
-            } else {
-              options.find('li').removeClass('active');
-              $(this).toggleClass('active');
-              $newSelect.val($(this).text());
-            }
-
-            activateOption(options, $(this));
-            $select.find('option').eq(i).prop('selected', selected);
-            // Trigger onchange() event
-            $select.trigger('change');
-            if (typeof callback !== 'undefined') callback();
-          }
-
-          e.stopPropagation();
-        });
-      });
-
-      // Wrap Elements
-      $select.wrap(wrapper);
-      // Add Select Display Element
-      var dropdownIcon = $('<span class="caret">&#9660;</span>');
-
-      // escape double quotes
-      var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
-
-      var $newSelect = $('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
-      $select.before($newSelect);
-      $newSelect.before(dropdownIcon);
-
-      $newSelect.after(options);
-      // Check if section element is disabled
-      if (!$select.is(':disabled')) {
-        $newSelect.dropdown({ 'hover': false });
-      }
-
-      // Copy tabindex
-      if ($select.attr('tabindex')) {
-        $($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
-      }
-
-      $select.addClass('initialized');
-
-      $newSelect.on({
-        'focus': function focus() {
-          if ($('ul.select-dropdown').not(options[0]).is(':visible')) {
-            $('input.select-dropdown').trigger('close');
-            $(window).off('click.select');
-          }
-          if (!options.is(':visible')) {
-            $(this).trigger('open', ['focus']);
-            var label = $(this).val();
-            if (multiple && label.indexOf(',') >= 0) {
-              label = label.split(',')[0];
-            }
-
-            var selectedOption = options.find('li').filter(function () {
-              return $(this).text().toLowerCase() === label.toLowerCase();
-            })[0];
-            activateOption(options, selectedOption, true);
-
-            $(window).off('click.select').on('click.select', function () {
-              multiple && (optionsHover || $newSelect.trigger('close'));
-              $(window).off('click.select');
-            });
-          }
-        },
-        'click': function click(e) {
-          e.stopPropagation();
-        }
-      });
-
-      $newSelect.on('blur', function () {
-        if (!multiple) {
-          $(this).trigger('close');
-          $(window).off('click.select');
-        }
-        options.find('li.selected').removeClass('selected');
-      });
-
-      options.hover(function () {
-        optionsHover = true;
-      }, function () {
-        optionsHover = false;
-      });
-
-      // Add initial multiple selections.
-      if (multiple) {
-        $select.find("option:selected:not(:disabled)").each(function () {
-          var index = this.index;
-
-          toggleEntryFromArray(valuesSelected, index, $select);
-          options.find("li:not(.optgroup)").eq(index).find(":checkbox").prop("checked", true);
-        });
-      }
-
-      /**
-       * Make option as selected and scroll to selected position
-       * @param {jQuery} collection  Select options jQuery element
-       * @param {Element} newOption  element of the new option
-       * @param {Boolean} firstActivation  If on first activation of select
-       */
-      var activateOption = function activateOption(collection, newOption, firstActivation) {
-        if (newOption) {
-          collection.find('li.selected').removeClass('selected');
-          var option = $(newOption);
-          option.addClass('selected');
-          if (!multiple || !!firstActivation) {
-            options.scrollTo(option);
-          }
-        }
-      };
-
-      // Allow user to search by typing
-      // this array is cleared after 1 second
-      var filterQuery = [],
-          onKeyDown = function onKeyDown(e) {
-        // TAB - switch to another input
-        if (e.which == 9) {
-          $newSelect.trigger('close');
-          return;
-        }
-
-        // ARROW DOWN WHEN SELECT IS CLOSED - open select options
-        if (e.which == 40 && !options.is(':visible')) {
-          $newSelect.trigger('open');
-          return;
-        }
-
-        // ENTER WHEN SELECT IS CLOSED - submit form
-        if (e.which == 13 && !options.is(':visible')) {
-          return;
-        }
-
-        e.preventDefault();
-
-        // CASE WHEN USER TYPE LETTERS
-        var letter = String.fromCharCode(e.which).toLowerCase(),
-            nonLetters = [9, 13, 27, 38, 40];
-        if (letter && nonLetters.indexOf(e.which) === -1) {
-          filterQuery.push(letter);
-
-          var string = filterQuery.join(''),
-              newOption = options.find('li').filter(function () {
-            return $(this).text().toLowerCase().indexOf(string) === 0;
-          })[0];
-
-          if (newOption) {
-            activateOption(options, newOption);
-          }
-        }
-
-        // ENTER - select option and close when select options are opened
-        if (e.which == 13) {
-          var activeOption = options.find('li.selected:not(.disabled)')[0];
-          if (activeOption) {
-            $(activeOption).trigger('click');
-            if (!multiple) {
-              $newSelect.trigger('close');
-            }
-          }
-        }
-
-        // ARROW DOWN - move to next not disabled option
-        if (e.which == 40) {
-          if (options.find('li.selected').length) {
-            newOption = options.find('li.selected').next('li:not(.disabled)')[0];
-          } else {
-            newOption = options.find('li:not(.disabled)')[0];
-          }
-          activateOption(options, newOption);
-        }
-
-        // ESC - close options
-        if (e.which == 27) {
-          $newSelect.trigger('close');
-        }
-
-        // ARROW UP - move to previous not disabled option
-        if (e.which == 38) {
-          newOption = options.find('li.selected').prev('li:not(.disabled)')[0];
-          if (newOption) activateOption(options, newOption);
-        }
-
-        // Automaticaly clean filter query so user can search again by starting letters
-        setTimeout(function () {
-          filterQuery = [];
-        }, 1000);
-      };
-
-      $newSelect.on('keydown', onKeyDown);
-    });
-
-    function toggleEntryFromArray(entriesArray, entryIndex, select) {
-      var index = entriesArray.indexOf(entryIndex),
-          notAdded = index === -1;
-
-      if (notAdded) {
-        entriesArray.push(entryIndex);
-      } else {
-        entriesArray.splice(index, 1);
-      }
-
-      select.siblings('ul.dropdown-content').find('li:not(.optgroup)').eq(entryIndex).toggleClass('active');
-
-      // use notAdded instead of true (to detect if the option is selected or not)
-      select.find('option').eq(entryIndex).prop('selected', notAdded);
-      setValueToInput(entriesArray, select);
-
-      return notAdded;
-    }
-
-    function setValueToInput(entriesArray, select) {
-      var value = '';
-
-      for (var i = 0, count = entriesArray.length; i < count; i++) {
-        var text = select.find('option').eq(entriesArray[i]).text();
-
-        i === 0 ? value += text : value += ', ' + text;
-      }
-
-      if (value === '') {
-        value = select.find('option:disabled').eq(0).text();
-      }
-
-      select.siblings('input.select-dropdown').val(value);
-    }
-  };
-})(jQuery);
-
-/***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -35965,627 +36979,50 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
 
-/*!
- * Waves v0.6.4
- * http://fian.my.id/Waves
- *
- * Copyright 2014 Alfiana E. Sibuea and other contributors
- * Released under the MIT license
- * https://github.com/fians/Waves/blob/master/LICENSE
- */
-
-;(function (window) {
-    'use strict';
-
-    var Waves = Waves || {};
-    var $$ = document.querySelectorAll.bind(document);
-
-    // Find exact position of element
-    function isWindow(obj) {
-        return obj !== null && obj === obj.window;
-    }
-
-    function getWindow(elem) {
-        return isWindow(elem) ? elem : elem.nodeType === 9 && elem.defaultView;
-    }
-
-    function offset(elem) {
-        var docElem,
-            win,
-            box = { top: 0, left: 0 },
-            doc = elem && elem.ownerDocument;
-
-        docElem = doc.documentElement;
-
-        if (_typeof(elem.getBoundingClientRect) !== ( true ? 'undefined' : _typeof(undefined))) {
-            box = elem.getBoundingClientRect();
-        }
-        win = getWindow(doc);
-        return {
-            top: box.top + win.pageYOffset - docElem.clientTop,
-            left: box.left + win.pageXOffset - docElem.clientLeft
-        };
-    }
-
-    function convertStyle(obj) {
-        var style = '';
-
-        for (var a in obj) {
-            if (obj.hasOwnProperty(a)) {
-                style += a + ':' + obj[a] + ';';
-            }
-        }
-
-        return style;
-    }
-
-    var Effect = {
-
-        // Effect delay
-        duration: 750,
-
-        show: function show(e, element) {
-
-            // Disable right click
-            if (e.button === 2) {
-                return false;
-            }
-
-            var el = element || this;
-
-            // Create ripple
-            var ripple = document.createElement('div');
-            ripple.className = 'waves-ripple';
-            el.appendChild(ripple);
-
-            // Get click coordinate and element witdh
-            var pos = offset(el);
-            var relativeY = e.pageY - pos.top;
-            var relativeX = e.pageX - pos.left;
-            var scale = 'scale(' + el.clientWidth / 100 * 10 + ')';
-
-            // Support for touch devices
-            if ('touches' in e) {
-                relativeY = e.touches[0].pageY - pos.top;
-                relativeX = e.touches[0].pageX - pos.left;
-            }
-
-            // Attach data to element
-            ripple.setAttribute('data-hold', Date.now());
-            ripple.setAttribute('data-scale', scale);
-            ripple.setAttribute('data-x', relativeX);
-            ripple.setAttribute('data-y', relativeY);
-
-            // Set ripple position
-            var rippleStyle = {
-                'top': relativeY + 'px',
-                'left': relativeX + 'px'
-            };
-
-            ripple.className = ripple.className + ' waves-notransition';
-            ripple.setAttribute('style', convertStyle(rippleStyle));
-            ripple.className = ripple.className.replace('waves-notransition', '');
-
-            // Scale the ripple
-            rippleStyle['-webkit-transform'] = scale;
-            rippleStyle['-moz-transform'] = scale;
-            rippleStyle['-ms-transform'] = scale;
-            rippleStyle['-o-transform'] = scale;
-            rippleStyle.transform = scale;
-            rippleStyle.opacity = '1';
-
-            rippleStyle['-webkit-transition-duration'] = Effect.duration + 'ms';
-            rippleStyle['-moz-transition-duration'] = Effect.duration + 'ms';
-            rippleStyle['-o-transition-duration'] = Effect.duration + 'ms';
-            rippleStyle['transition-duration'] = Effect.duration + 'ms';
-
-            rippleStyle['-webkit-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
-            rippleStyle['-moz-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
-            rippleStyle['-o-transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
-            rippleStyle['transition-timing-function'] = 'cubic-bezier(0.250, 0.460, 0.450, 0.940)';
-
-            ripple.setAttribute('style', convertStyle(rippleStyle));
-        },
-
-        hide: function hide(e) {
-            TouchHandler.touchup(e);
-
-            var el = this;
-            var width = el.clientWidth * 1.4;
-
-            // Get first ripple
-            var ripple = null;
-            var ripples = el.getElementsByClassName('waves-ripple');
-            if (ripples.length > 0) {
-                ripple = ripples[ripples.length - 1];
-            } else {
-                return false;
-            }
-
-            var relativeX = ripple.getAttribute('data-x');
-            var relativeY = ripple.getAttribute('data-y');
-            var scale = ripple.getAttribute('data-scale');
-
-            // Get delay beetween mousedown and mouse leave
-            var diff = Date.now() - Number(ripple.getAttribute('data-hold'));
-            var delay = 350 - diff;
-
-            if (delay < 0) {
-                delay = 0;
-            }
-
-            // Fade out ripple after delay
-            setTimeout(function () {
-                var style = {
-                    'top': relativeY + 'px',
-                    'left': relativeX + 'px',
-                    'opacity': '0',
-
-                    // Duration
-                    '-webkit-transition-duration': Effect.duration + 'ms',
-                    '-moz-transition-duration': Effect.duration + 'ms',
-                    '-o-transition-duration': Effect.duration + 'ms',
-                    'transition-duration': Effect.duration + 'ms',
-                    '-webkit-transform': scale,
-                    '-moz-transform': scale,
-                    '-ms-transform': scale,
-                    '-o-transform': scale,
-                    'transform': scale
-                };
-
-                ripple.setAttribute('style', convertStyle(style));
-
-                setTimeout(function () {
-                    try {
-                        el.removeChild(ripple);
-                    } catch (e) {
-                        return false;
-                    }
-                }, Effect.duration);
-            }, delay);
-        },
-
-        // Little hack to make <input> can perform waves effect
-        wrapInput: function wrapInput(elements) {
-            for (var a = 0; a < elements.length; a++) {
-                var el = elements[a];
-
-                if (el.tagName.toLowerCase() === 'input') {
-                    var parent = el.parentNode;
-
-                    // If input already have parent just pass through
-                    if (parent.tagName.toLowerCase() === 'i' && parent.className.indexOf('waves-effect') !== -1) {
-                        continue;
-                    }
-
-                    // Put element class and style to the specified parent
-                    var wrapper = document.createElement('i');
-                    wrapper.className = el.className + ' waves-input-wrapper';
-
-                    var elementStyle = el.getAttribute('style');
-
-                    if (!elementStyle) {
-                        elementStyle = '';
-                    }
-
-                    wrapper.setAttribute('style', elementStyle);
-
-                    el.className = 'waves-button-input';
-                    el.removeAttribute('style');
-
-                    // Put element as child
-                    parent.replaceChild(wrapper, el);
-                    wrapper.appendChild(el);
-                }
-            }
-        }
-    };
-
-    /**
-     * Disable mousedown event for 500ms during and after touch
-     */
-    var TouchHandler = {
-        /* uses an integer rather than bool so there's no issues with
-         * needing to clear timeouts if another touch event occurred
-         * within the 500ms. Cannot mouseup between touchstart and
-         * touchend, nor in the 500ms after touchend. */
-        touches: 0,
-        allowEvent: function allowEvent(e) {
-            var allow = true;
-
-            if (e.type === 'touchstart') {
-                TouchHandler.touches += 1; //push
-            } else if (e.type === 'touchend' || e.type === 'touchcancel') {
-                setTimeout(function () {
-                    if (TouchHandler.touches > 0) {
-                        TouchHandler.touches -= 1; //pop after 500ms
-                    }
-                }, 500);
-            } else if (e.type === 'mousedown' && TouchHandler.touches > 0) {
-                allow = false;
-            }
-
-            return allow;
-        },
-        touchup: function touchup(e) {
-            TouchHandler.allowEvent(e);
-        }
-    };
-
-    /**
-     * Delegated click handler for .waves-effect element.
-     * returns null when .waves-effect element not in "click tree"
-     */
-    function getWavesEffectElement(e) {
-        if (TouchHandler.allowEvent(e) === false) {
-            return null;
-        }
-
-        var element = null;
-        var target = e.target || e.srcElement;
-
-        while (target.parentNode !== null) {
-            if (!(target instanceof SVGElement) && target.className.indexOf('waves-effect') !== -1) {
-                element = target;
-                break;
-            }
-            target = target.parentNode;
-        }
-        return element;
-    }
-
-    /**
-     * Bubble the click and show effect if .waves-effect elem was found
-     */
-    function showEffect(e) {
-        var element = getWavesEffectElement(e);
-
-        if (element !== null) {
-            Effect.show(e, element);
-
-            if ('ontouchstart' in window) {
-                element.addEventListener('touchend', Effect.hide, false);
-                element.addEventListener('touchcancel', Effect.hide, false);
-            }
-
-            element.addEventListener('mouseup', Effect.hide, false);
-            element.addEventListener('mouseleave', Effect.hide, false);
-            element.addEventListener('dragend', Effect.hide, false);
-        }
-    }
-
-    Waves.displayEffect = function (options) {
-        options = options || {};
-
-        if ('duration' in options) {
-            Effect.duration = options.duration;
-        }
-
-        //Wrap input inside <i> tag
-        Effect.wrapInput($$('.waves-effect'));
-
-        if ('ontouchstart' in window) {
-            document.body.addEventListener('touchstart', showEffect, false);
-        }
-
-        document.body.addEventListener('mousedown', showEffect, false);
-    };
-
-    /**
-     * Attach Waves to an input element (or any element which doesn't
-     * bubble mouseup/mousedown events).
-     *   Intended to be used with dynamically loaded forms/inputs, or
-     * where the user doesn't want a delegated click handler.
-     */
-    Waves.attach = function (element) {
-        //FUTURE: automatically add waves classes and allow users
-        // to specify them with an options param? Eg. light/classic/button
-        if (element.tagName.toLowerCase() === 'input') {
-            Effect.wrapInput([element]);
-            element = element.parentNode;
-        }
-
-        if ('ontouchstart' in window) {
-            element.addEventListener('touchstart', showEffect, false);
-        }
-
-        element.addEventListener('mousedown', showEffect, false);
-    };
-
-    window.Waves = Waves;
-
-    document.addEventListener('DOMContentLoaded', function () {
-        Waves.displayEffect();
-    }, false);
-})(window);
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports) {
-
-(function ($) {
-
-  $.fn.materialbox = function () {
-
-    return this.each(function () {
-
-      if ($(this).hasClass('initialized')) {
-        return;
-      }
-
-      $(this).addClass('initialized');
-
-      var overlayActive = false;
-      var doneAnimating = true;
-      var inDuration = 275;
-      var outDuration = 200;
-      var origin = $(this);
-      var placeholder = $('<div></div>').addClass('material-placeholder');
-      var originalWidth = 0;
-      var originalHeight = 0;
-      var ancestorsChanged;
-      var ancestor;
-      var originInlineStyles = origin.attr('style');
-      origin.wrap(placeholder);
-
-      // Start click handler
-      origin.on('click', function () {
-        var placeholder = origin.parent('.material-placeholder');
-        var windowWidth = window.innerWidth;
-        var windowHeight = window.innerHeight;
-        var originalWidth = origin.width();
-        var originalHeight = origin.height();
-
-        // If already modal, return to original
-        if (doneAnimating === false) {
-          returnToOriginal();
-          return false;
-        } else if (overlayActive && doneAnimating === true) {
-          returnToOriginal();
-          return false;
-        }
-
-        // Set states
-        doneAnimating = false;
-        origin.addClass('active');
-        overlayActive = true;
-
-        // Set positioning for placeholder
-        placeholder.css({
-          width: placeholder[0].getBoundingClientRect().width,
-          height: placeholder[0].getBoundingClientRect().height,
-          position: 'relative',
-          top: 0,
-          left: 0
-        });
-
-        // Find ancestor with overflow: hidden; and remove it
-        ancestorsChanged = undefined;
-        ancestor = placeholder[0].parentNode;
-        var count = 0;
-        while (ancestor !== null && !$(ancestor).is(document)) {
-          var curr = $(ancestor);
-          if (curr.css('overflow') !== 'visible') {
-            curr.css('overflow', 'visible');
-            if (ancestorsChanged === undefined) {
-              ancestorsChanged = curr;
-            } else {
-              ancestorsChanged = ancestorsChanged.add(curr);
-            }
-          }
-          ancestor = ancestor.parentNode;
-        }
-
-        // Set css on origin
-        origin.css({
-          position: 'absolute',
-          'z-index': 1000,
-          'will-change': 'left, top, width, height'
-        }).data('width', originalWidth).data('height', originalHeight);
-
-        // Add overlay
-        var overlay = $('<div id="materialbox-overlay"></div>').css({
-          opacity: 0
-        }).click(function () {
-          if (doneAnimating === true) returnToOriginal();
-        });
-
-        // Put before in origin image to preserve z-index layering.
-        origin.before(overlay);
-
-        // Set dimensions if needed
-        var overlayOffset = overlay[0].getBoundingClientRect();
-        overlay.css({
-          width: windowWidth,
-          height: windowHeight,
-          left: -1 * overlayOffset.left,
-          top: -1 * overlayOffset.top
-        });
-
-        // Animate Overlay
-        overlay.velocity({ opacity: 1 }, { duration: inDuration, queue: false, easing: 'easeOutQuad' });
-
-        // Add and animate caption if it exists
-        if (origin.data('caption') !== "") {
-          var $photo_caption = $('<div class="materialbox-caption"></div>');
-          $photo_caption.text(origin.data('caption'));
-          $('body').append($photo_caption);
-          $photo_caption.css({ "display": "inline" });
-          $photo_caption.velocity({ opacity: 1 }, { duration: inDuration, queue: false, easing: 'easeOutQuad' });
-        }
-
-        // Resize Image
-        var ratio = 0;
-        var widthPercent = originalWidth / windowWidth;
-        var heightPercent = originalHeight / windowHeight;
-        var newWidth = 0;
-        var newHeight = 0;
-
-        if (widthPercent > heightPercent) {
-          ratio = originalHeight / originalWidth;
-          newWidth = windowWidth * 0.9;
-          newHeight = windowWidth * 0.9 * ratio;
-        } else {
-          ratio = originalWidth / originalHeight;
-          newWidth = windowHeight * 0.9 * ratio;
-          newHeight = windowHeight * 0.9;
-        }
-
-        // Animate image + set z-index
-        if (origin.hasClass('responsive-img')) {
-          origin.velocity({ 'max-width': newWidth, 'width': originalWidth }, { duration: 0, queue: false,
-            complete: function complete() {
-              origin.css({ left: 0, top: 0 }).velocity({
-                height: newHeight,
-                width: newWidth,
-                left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-                top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
-              }, {
-                duration: inDuration,
-                queue: false,
-                easing: 'easeOutQuad',
-                complete: function complete() {
-                  doneAnimating = true;
-                }
-              });
-            } // End Complete
-          }); // End Velocity
-        } else {
-          origin.css('left', 0).css('top', 0).velocity({
-            height: newHeight,
-            width: newWidth,
-            left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-            top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
-          }, {
-            duration: inDuration,
-            queue: false,
-            easing: 'easeOutQuad',
-            complete: function complete() {
-              doneAnimating = true;
-            }
-          }); // End Velocity
-        }
-
-        // Handle Exit triggers
-        $(window).on('scroll.materialbox', function () {
-          if (overlayActive) {
-            returnToOriginal();
-          }
-        });
-
-        $(window).on('resize.materialbox', function () {
-          if (overlayActive) {
-            returnToOriginal();
-          }
-        });
-
-        $(document).on('keyup.materialbox', function (e) {
-          // ESC key
-          if (e.keyCode === 27 && doneAnimating === true && overlayActive) {
-            returnToOriginal();
-          }
-        });
-      }); // End click handler
-
-
-      // This function returns the modaled image to the original spot
-      function returnToOriginal() {
-
-        doneAnimating = false;
-
-        var placeholder = origin.parent('.material-placeholder');
-        var windowWidth = window.innerWidth;
-        var windowHeight = window.innerHeight;
-        var originalWidth = origin.data('width');
-        var originalHeight = origin.data('height');
-
-        origin.velocity("stop", true);
-        $('#materialbox-overlay').velocity("stop", true);
-        $('.materialbox-caption').velocity("stop", true);
-
-        // disable exit handlers
-        $(window).off('scroll.materialbox');
-        $(document).off('keyup.materialbox');
-        $(window).off('resize.materialbox');
-
-        $('#materialbox-overlay').velocity({ opacity: 0 }, {
-          duration: outDuration, // Delay prevents animation overlapping
-          queue: false, easing: 'easeOutQuad',
-          complete: function complete() {
-            // Remove Overlay
-            overlayActive = false;
-            $(this).remove();
-          }
-        });
-
-        // Resize Image
-        origin.velocity({
-          width: originalWidth,
-          height: originalHeight,
-          left: 0,
-          top: 0
-        }, {
-          duration: outDuration,
-          queue: false, easing: 'easeOutQuad',
-          complete: function complete() {
-            placeholder.css({
-              height: '',
-              width: '',
-              position: '',
-              top: '',
-              left: ''
-            });
-
-            origin.removeAttr('style');
-            origin.attr('style', originInlineStyles);
-
-            // Remove class
-            origin.removeClass('active');
-            doneAnimating = true;
-
-            // Remove overflow overrides on ancestors
-            if (ancestorsChanged) {
-              ancestorsChanged.css('overflow', '');
-            }
-          }
-        });
-
-        // Remove Caption + reset css settings on image
-        $('.materialbox-caption').velocity({ opacity: 0 }, {
-          duration: outDuration, // Delay prevents animation overlapping
-          queue: false, easing: 'easeOutQuad',
-          complete: function complete() {
-            $(this).remove();
-          }
-        });
-      }
-    });
-  };
-
-  $(document).ready(function () {
-    $('.materialboxed').materialbox();
-  });
-})(jQuery);
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports) {
 
 $(function () {
-    $(".sidenav").sideNav();
+    $(".sidenav-trigger").sideNav();
     $('.slider').slider({ indicators: false });
     $('select').material_select();
     $('.materialboxed').materialbox();
     $(".dropdown-button").dropdown();
+    $('#modal1').modal();
+
+    $("#btn_request").on("click", function () {
+        $(".preloader-content").removeClass('hide');
+        var frm = document.getElementById('frm_request');
+        var form = new FormData(frm);
+        __WEBPACK_IMPORTED_MODULE_0_axios___default()({
+            method: 'POST',
+            url: '/property/request',
+            data: form
+        }).then(function (response) {
+            if (response.status == 200) {
+                $("#modal1").modal('close');
+                Materialize.toast('Su información ha sido enviada...', 4000);
+                $(".preloader-content").addClass('hide');
+                frm.reset();
+            }
+        });
+    });
 });
 
 /***/ }),
-/* 51 */
+/* 52 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 53 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

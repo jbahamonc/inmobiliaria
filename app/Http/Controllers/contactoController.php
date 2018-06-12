@@ -8,6 +8,12 @@ class contactoController extends Controller
 {
     public function showForm()
     {
-        return view('contact.contact', ['title' => "Resultado de la busqueda", 'no_landing' => false, 'search' => false]);
+        $services = \App\Tipo_servicio::all();
+        return view('contact.contact',
+                    ['title' => "Contacta con nosotros",
+                    'no_landing' => true,
+                    'search' => false,
+                    'servicios_menu' => $services,
+                    'ok' => (isset($ok) && $ok == 1)? 1:0]);
     }
 }

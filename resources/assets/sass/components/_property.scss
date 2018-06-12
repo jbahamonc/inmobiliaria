@@ -95,11 +95,65 @@
 
 .card.horizontal {
 	.card-image {
-		max-width: 40%;
-		width: 40%;
+		max-width: 30%;
+		width: 30%;
 		img {
 			position: absolute;
 			height: 100%;
 		}
+	}
+}
+
+.card.inline {
+	.card-content {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.desc_property {
+		padding-right: 1.5rem;
+		flex: 1 1 auto;
+		border-right: 1px solid rgba(128,128,128,.2);
+	}
+
+	.price_property {
+		padding-left: 1.5rem;
+	}
+}
+
+@media #{$medium-and-down} {
+	.collection-item {
+
+		.desc {
+			flex-wrap: wrap;
+
+			&__box-icon {
+				margin-bottom: 1rem;
+			}
+		}
+	}
+}
+
+@media #{$small-and-down} {
+	.title-property {
+		flex-direction: column;
+		text-align: center;
+
+		.info-property {
+			margin-bottom: 1.5rem;
+		}
+	}
+
+	.title-property .price {
+		border: 0;
+		padding: 0;
+	}
+
+	.property-section {
+		height: 7rem;
+	}
+
+	.card.horizontal .card-image {
+		display: none;
 	}
 }

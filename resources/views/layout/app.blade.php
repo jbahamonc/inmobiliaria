@@ -4,6 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- Shared with Facebook -->
+        <meta property="og:title" content="{{ isset($title)? ucfirst($title):'' }}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="{{ isset($property->descripcion)? $property->descripcion:'' }}" />
+        <meta property="og:image" content="{{ isset($property->imagen)? asset('images/'. $property->imagen) : '' }}" />
+        <meta property="og:url" content="{{  url()->current() }}" />
         <title>@yield('title')</title>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
@@ -12,16 +19,8 @@
         <link rel="stylesheet" href="/css/app.css">
    </head>
    <body>
-    @if (!isset($no_landing))
-        @component('components.landing')
-            no salio
-        @endcomponent
-    @else
-        @component('components.landing-mini')
-            no salio
-        @endcomponent
-    @endif
-    <main class="{{ !isset($no_landing)? 'full' : '' }}">
+    @yield('landing')
+    <main class="{{ !$no_landing? 'full' : '' }}">
         @if (isset($search) && $search)
             <section class="search">
                 <div class="container">
@@ -29,71 +28,77 @@
                        {{ csrf_field() }}
                       <div class="search__fields">
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Zona</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
+                               <select name="zona">
+                                  <option value="Cualquiera" selected>Cualquiera</option>
+                                  <option value="Norte">Norte</option>
+                                  <option value="Sur">Sur</option>
+                                  <option value="Oriente">Oriente</option>
+                                  <option value="Occidente">Occidente</option>
+                                  <option value="Centro">Centro</option>
+                                  <option value="Centro">Nororiente</option>
+                                  <option value="Centro">Noroccidente</option>
+                                  <option value="Centro">Suroccidente</option>
+                                  <option value="Centro">Suroriente</option>
                                </select>
                             </div>
                          </div>
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Gestión</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
+                               <select name="gestion">
+                                  <option value="0" selected>Cualquiera</option>
+                                  @foreach ($servicios_menu as $ms)
+                                  <option value="{{ $ms->id }}">{{ ucfirst($ms->descripcion) }}</option>
+                                  @endforeach
                                </select>
                             </div>
                          </div>
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Tipo Inmueble</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
+                               <select name="tipo_inmueble">
+                                  <option value="0" selected>Cualquiera</option>
+                                  @foreach ($m_tipo as $mt)
+                                  <option value="{{ $mt->id }}">{{ ucfirst($mt->descripcion) }}</option>
+                                  @endforeach
                                </select>
                             </div>
                          </div>
                       </div>
                       <div class="search__fields">
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Habitaciones</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
-                               </select>
+                                <select name="habitaciones">
+                                    <option value="0" selected>Cualquiera</option>
+                                    @for ($i=1; $i <= 10; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                          </div>
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Baños</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
-                               </select>
+                               <select name="baños">
+                                    <option value="0" selected>Cualquiera</option>
+                                    @for ($i=1; $i <= 10; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                          </div>
                          <div class="search__fields__option">
-                            <label for="">Main Location</label>
+                            <label for="">Estrato</label>
                             <div class="input-field no-m-t">
-                               <select>
-                                  <option value="" disabled selected>Any</option>
-                                  <option value="1">Option 1</option>
-                                  <option value="2">Option 2</option>
-                                  <option value="3">Option 3</option>
-                               </select>
+                                <select name="estrato">
+                                    <option value="0" selected>Cualquiera</option>
+                                    @for ($i=1; $i <= 8; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
                             </div>
                          </div>
                       </div>
@@ -111,23 +116,22 @@
             <div class="row">
                <div class="col l6 s12">
                   <img src="{{ asset('images/logo.png') }}" alt="">
-                  <h5 class="white-text">Lorem Ipsum</h5>
+                  <h5 class="white-text">Inmobiliaria Púrpura</h5>
                   <p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum autem, ad, quis ratione voluptatem perspiciatis. Reprehenderit voluptates explicabo velit quia. Laborum ratione fuga incidunt nihil. Molestiae beatae quae earum, voluptatem!</p>
                </div>
                <div class="col l4 offset-l2 s12">
-                  <h5 class="white-text">Lorem</h5>
-                  <ul>
-                     <li><a class="white-text" href="#!">Link 1</a></li>
-                     <li><a class="white-text" href="#!">Link 2</a></li>
-                     <li><a class="white-text" href="#!">Link 3</a></li>
-                     <li><a class="white-text" href="#!">Link 4</a></li>
-                  </ul>
-               </div>
+                    <h5 class="white-text">Enlaces</h5>
+                    <ul>
+                        <li><a class="white-text" href="/">Inicio</a></li>
+                        <li><a class="white-text" href="/acerca">Acerca</a></li>
+                        <li><a class="white-text" href="/contacto">Contacto</a></li>
+                    </ul>
+                </div>
             </div>
-         </div>
-         <div class="footer-copyright">
+        </div>
+        <div class="footer-copyright">
             <div class="container">
-               © 2014 Copyright Text
+               © 2018 Inmobiliaria Púrpura
                <div class="social-icon right">
                   <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/facebook.png') }}" alt=""></a>
                   <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/instagram.png') }}" alt=""></a>

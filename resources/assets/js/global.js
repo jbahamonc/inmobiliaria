@@ -173,5 +173,5 @@ if (jQuery) {
 if (Vel) {
   Materialize.Vel = Vel;
 } else {
-  Materialize.Vel = Vel;
+  Materialize.Vel = Velocity;
 }

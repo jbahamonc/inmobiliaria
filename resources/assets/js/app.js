@@ -6,9 +6,9 @@
  */
 
 require('./bootstrap');
+require('./velocity.min');
 require('./global');
 require('./toasts');
-require('./velocity.min');
 require('./jquery.hammer');
 require('./hammer.min');
 require('./sideNav');
@@ -19,5 +19,6 @@ require('./forms');
 require('./slider');
 require('./waves');
 require('./materialbox');
+require('./modal');
 
 require('./init');

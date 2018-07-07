@@ -132,6 +132,11 @@
 			}
 		}
 	}
+
+	.card.inline .desc_property {
+		padding-right: 0;
+		border-right: 0;
+	}
 }
 
 @media #{$small-and-down} {
@@ -156,4 +161,10 @@
 	.card.horizontal .card-image {
 		display: none;
 	}
+}
+
+@media #{$xsmall-and-down} {
+    .title-type {
+        font-size: 3rem;
+    }
 }

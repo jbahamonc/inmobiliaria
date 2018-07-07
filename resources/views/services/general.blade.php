@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title')
-{{ $title }} - Name company
+{{ $title }} - Inmobiliaria Purpura
 @endsection
 
 @section('landing')
@@ -25,17 +25,23 @@
                 <div class="row">
                     @if (!$servicio->isEmpty())
                         @foreach($servicio as $i)
-                            <div class="col s12 col m6">
+                            <div class="col s12 m10 l6">
                                 <div class="card hoverable">
+                                    @if ($i->oferta == 1)
+                                    <span class="badge">Oferta</span>
+                                    @endif
                                     <div class="card-image">
-                                        <img src="{{ ($i->imagen == 'default.jpg')? asset('storage/propertys/'. $i->imagen) : asset('storage/'. $i->imagen) }}">
+                                        <img src="{{ ($i->imagen == 'default.jpg')? asset('images/'. $i->imagen) : asset('storage/'. $i->imagen) }}">
                                         <a href="/property/{{ $i->id }}" class="btn-floating btn-large pulse halfway-fab waves-effect waves-light red">
                                             <i class="material-icons">near_me</i>
                                         </a>
                                     </div>
                                     <div class="card-content">
-                                        <a href="/property/{{ $i->id }}"><span class="card-title title-primary">
-                                            <b>{{ ucfirst($i->nombre) }}</b></span></a>
+                                        <a href="/property/{{ $i->id }}">
+                                            <span class="card-title title-primary truncate">
+                                                <b>{{ ucfirst($i->nombre) }}</b>
+                                            </span>
+                                        </a>
                                         <p class="text-muted">{{ $i->descripcion }}</p>
                                         <div class="desc">
                                             @for ($j=0; $j<3; $j++)
@@ -68,7 +74,11 @@
                 <h5 style="margin: 0 0 2rem;">Tipo de Inmueble</h5>
                 <ul>
                     @foreach ($tiposIn as $ti)
-                    <li><a class="text-muted" href="/property/type/{{ strtolower($ti->descripcion) }}">{{ $ti->descripcion }}</a></li>
+                    <li>
+                        <a class="text-muted" href="/property/type/{{ strtolower($ti->descripcion) }}">
+                            {{ ucfirst($ti->descripcion) }}
+                        </a>
+                    </li>
                     @endforeach
                 </ul>
                 <h5 style="margin: 2rem 0 2rem;">Otros Inmuebles</h5>
@@ -86,9 +96,12 @@
                             </div>
                             <div class="card-content">
                                 <a href="/property/{{ $ot->id }}">
-                                    <span class="card-title title-primary"><b>{{ ucfirst($ot->nombre) }}</b></span></a>
+                                    <span class="card-title title-primary truncate">
+                                        <b>{{ ucfirst($ot->nombre) }}</b>
+                                    </span>
+                                </a>
                                 <p class="text-muted">{{ ucfirst($ot->descripcion)}}</p>
-                                <div class="desc">
+                                <div class="desc hide-on-med-only">
                                     @for ($j=0; $j<3; $j++)
                                     <div class="desc__box-icon">
                                         <h4>{{ $ot->caracteristicas[$j]->nombre }}</h4>

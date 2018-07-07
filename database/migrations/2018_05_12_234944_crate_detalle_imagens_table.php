@@ -16,7 +16,7 @@ class CrateDetalleImagensTable extends Migration
         Schema::create('imagens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('titulo', 30);
-            $table->string('nombre', 15);
+            $table->string('nombre', 100);
             $table->integer('inmueble_id')->unsigned();
             $table->foreign('inmueble_id')->references('id')->on('inmuebles');
             $table->timestamps();

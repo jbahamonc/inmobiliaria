@@ -7,21 +7,19 @@
 //  1. Colors
 //  2. Navigation Bar
 //  3. Global
-//  4. Cards
-//  5. Carousel
-//  6. Collapsible
-//  7. Chips
-//  8. Date + Time Picker
-//  9. Dropdown
-//  10. Forms
-//  11. Global
-//  12. Grid
-//  13. Navigation Bar
-//  14. Side Navigation
-//  15. Photo Slider
-
-// Typography
-
+//  4. Typography
+//  5. Footer
+//  6. Tables
+//  7. Grid
+//  8. Collections
+//  9. Progress Bar
+//  10. Side Navigation
+//  11. Dropdowns
+//  12. Cards
+//  13. Spinners | Loaders
+//  14. Toasts
+//  15. Tabs
+//  16. Collapsible
 
 // 1. Colors
 // ==========================================================================
@@ -85,7 +83,7 @@ $h6-fontsize: 1.15rem !default;
 // ==========================================================================
 
 $footer-font-color: #fff !default;
-$footer-bg-color: #303030 !default;
+$footer-bg-color: #1d1d1d !default;
 $footer-copyright-font-color: rgba(255,255,255,.8) !default;
 $footer-copyright-bg-color: darken($footer-bg-color, 2%) !default;
 
@@ -269,3 +267,10 @@ $toast-action-color: #eeff41;
 $tabs-underline-color: $primary-color-light !default;
 $tabs-text-color: $primary-color !default;
 $tabs-bg-color: #fff !default;
+
+// 6. Collapsible
+// ==========================================================================
+$collapsible-height: 3rem !default;
+$collapsible-line-height: $collapsible-height !default;
+$collapsible-header-color: #fff !default;
+$collapsible-border-color: #ddd !default;

@@ -20,5 +20,6 @@ require('./slider');
 require('./waves');
 require('./materialbox');
 require('./modal');
+require('./collapsible');
 
 require('./init');

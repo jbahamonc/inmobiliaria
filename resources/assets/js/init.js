@@ -7,6 +7,7 @@ $(function (){
     $('.materialboxed').materialbox();
     $(".dropdown-button").dropdown();
     $('#modal1').modal();
+    $('.collapsible').collapsible();
 
     $("#btn_request").on("click", function () {
         $(".preloader-content").removeClass('hide');

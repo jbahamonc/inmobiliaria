@@ -20,6 +20,8 @@ Route::prefix('property')->group( function () {
 	Route::post('request', 'propertyController@sendRequest');
 });
 
+Route::get('acerca', 'aboutController@index');
+
 Route::prefix('servicios')->group( function () {
 	Route::get('{type}', 'servicesController@index');
 });

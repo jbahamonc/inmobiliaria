@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Inmobiliaria - Home')
+@section('title', 'Inmobiliaria Purpura - Home')
 
 @section('landing')
     @if (!$no_landing)
@@ -34,24 +34,29 @@
     			      		<span class="badge">Oferta</span>
                             @endif
     			        	<div class="card-image">
-    			          		<img src="{{ ($i->imagen == 'default.jpg')? asset('storage/propertys/'. $i->imagen) : asset('storage/'. $i->imagen) }}">
+    			          		<img src="{{ ($i->imagen == 'default.jpg')? asset('images/'. $i->imagen) : asset('storage/'. $i->imagen) }}">
     			          		<a href="property/{{ $i->id }}" class="btn-floating pulse btn-large halfway-fab waves-effect waves-light red"><i class="material-icons">near_me</i></a>
     			        	</div>
     			        	<div class="card-content">
-    			        		<a href="property/{{ $i->id }}"><span class="card-title title-primary">
-                                    <b>{{ ucfirst($i->nombre) }}</b></span></a>
+    			        		<a href="property/{{ $i->id }}">
+                                    <span class="card-title title-primary truncate">
+                                        <b>{{ ucfirst($i->nombre) }}</b>
+                                    </span>
+                                </a>
     			          		<p class="text-muted">{{ $i->descripcion }}</p>
-    			          		<div class="desc">
-                                    @for ($j=0; $j<3; $j++)
-    			                    <div class="desc__box-icon">
-    			                        <h4>{{ $i->caracteristicas[$j]->nombre }}</h4>
-    			                        <div>
-    			                           <img src="{{ asset('images/'.$i->caracteristicas[$j]->icono) }}" alt="">
-    			                           <span>{{ $i->caracteristicas[$j]->pivot->cantidad }} {{ ($i->caracteristicas[$j]->nombre == 'Area')? 'Mts':'' }}</span>
-    			                        </div>
-    			                    </div>
-                                    @endfor
-    			                </div>
+                                @if ( $i->caracteristicas->count() > 0 )
+        			          		<div class="desc">
+                                        @for ($j=0; $j < 3; $j++)
+            			                    <div class="desc__box-icon">
+            			                        <h4>{{ $i->caracteristicas[$j]->nombre }}</h4>
+            			                        <div>
+            			                           <img src="{{ asset('images/'.$i->caracteristicas[$j]->icono) }}" alt="">
+            			                           <span>{{ $i->caracteristicas[$j]->pivot->cantidad }} {{ ($i->caracteristicas[$j]->nombre == 'Area')? 'Mts':'' }}</span>
+            			                        </div>
+            			                    </div>
+                                        @endfor
+        			                </div>
+                                @endif
     			                <div class="price">
     			                    <h4>Para {{ $i->tipo_servicio->descripcion }}</h4>
     			                    <span>$ {{ number_format($i->valor) }}</span>

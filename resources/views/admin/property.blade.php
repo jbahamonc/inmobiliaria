@@ -50,35 +50,35 @@
                             <select name="servicio" required>
                                 <option value="0" disabled selected>Seleccione</option>
                                 @foreach ($servicios as $s)
-                                    <option value="{{ $s->id }}" {{ ($s->id == $inmueble->tipo_servicio_id)? 'selected':'' }} >{{ $s->descripcion }}</option>
+                                    <option value="{{ $s->id }}" {{ ($s->id == $inmueble->tipo_servicio_id)? 'selected':'' }} > {{ ucfirst($s->descripcion) }}</option>
                                 @endforeach
                             </select>
-                            <label>Servicio</span></label>
+                            <label>Servicio</label>
                         </div>
                         <div class="input-field">
                             <select name="tipo" required>
                                 <option value="0" disabled selected>Seleccione</option>
                                 @foreach ($tipo as $t)
-                                    <option value="{{ $t->id }}" {{ ($t->id == $inmueble->tipo_inmueble_id)? 'selected':'' }} >{{ $t->descripcion }}</option>
+                                    <option value="{{ $t->id }}" {{ ($t->id == $inmueble->tipo_inmueble_id)? 'selected':'' }} >{{ ucfirst($t->descripcion) }}</option>
                                 @endforeach
                             </select>
                             <label>Tipo de Inmueble</label>
                         </div>
                         <div class="input-field">
                             <span>Promocionar </span>
-                            <div class="switch" style="display:inline-block">
+                            <div class="switch right" style="display:inline-block">
                                 <label>
                                   <input type="checkbox" name="promo" {{ ($inmueble->promocionar == 1)? 'checked':'' }}>
-                                  <span class="lever"></span>
+                                  <span class="lever" style="margin:0"></span>
                                 </label>
                             </div>
                         </div>
                         <div class="input-field">
                             <span>Ofertar </span>
-                            <div class="switch" style="display:inline-block">
+                            <div class="switch right" style="display:inline-block">
                                 <label>
                                   <input type="checkbox" name="oferta" {{ ($inmueble->oferta == 1)? 'checked':'' }}>
-                                  <span class="lever"></span>
+                                  <span class="lever" style="margin:0"></span>
                                 </label>
                             </div>
                         </div>
@@ -93,9 +93,9 @@
                     </div>
                     <div class="card-tabs">
                         <ul class="tabs tabs-fixed-width">
-                            <li class="tab"><a  href="#test4">caracteristicas</a></li>
+                            <li class="tab"><a class="active" href="#test4">caracteristicas</a></li>
                             <li class="tab"><a href="#test5">detalles</a></li>
-                            <li class="tab"><a class="active" href="#test6">imagenes</a></li>
+                            <li class="tab"><a href="#test6">imagenes</a></li>
                         </ul>
                     </div>
                     <div class="card-content">
@@ -161,7 +161,7 @@
                                                 <div class="content_img">
                                                     <div class="btn" style="position: relative;">
                                                         <span>imagen</span>
-                                                        <input type="file" name="images[]">
+                                                        <input type="file" class="file" name="images[]">
                                                     </div>
                                                     <div class="file-path-wrapper">
                                                         <input type="hidden" name="ids_img[]" value="{{ $img->id }}">
@@ -176,7 +176,9 @@
                                     @endforeach
                                     <div class="row-image">
                                         <div class="file-field input-field">
-                                            <img class="left" width="80" src="{{ asset('storage/propertys/default.jpg') }}" alt="">
+                                            <div>
+                                                <img class="left" width="80" src="{{ asset('images/default.jpg') }}" alt="">
+                                            </div>
                                             <div class="content_img">
                                                 <div class="btn" style="position: relative;">
                                                     <span>imagen</span>
@@ -194,7 +196,9 @@
                                 @else
                                     <div class="row-image">
                                         <div class="file-field input-field">
-                                            <img class="left" width="80" src="{{ asset('storage/propertys/default.jpg') }}" alt="">
+                                            <div>
+                                                <img class="left" width="80" src="{{ asset('storage/propertys/default.jpg') }}" alt="">
+                                            </div>
                                             <div class="content_img">
                                                 <div class="btn" style="position: relative;">
                                                     <span>imagen</span>

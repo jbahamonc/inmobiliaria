@@ -135,7 +135,7 @@ class propertyController extends Controller
         $inmueble->nombre = $request->input('titulo');
         $inmueble->descripcion = $request->input('info');
         $inmueble->ubicacion = $request->input('ubicacion');
-        $inmueble->propietario_id = 1116789304;
+        // $inmueble->propietario_id = 1116789304;
         $inmueble->valor = $request->input('valor');
         $inmueble->promocionar = ($request->input('promo') == 'on' ? 1 : 0);
         $inmueble->oferta = ($request->input('oferta') == 'on' ? 1 : 0);
@@ -243,8 +243,6 @@ class propertyController extends Controller
         $in->tipo_servicio_id = $request->input('servicio');
         $in->tipo_inmueble_id = $request->input('tipo');
         $img_name = $request->file('file_property');
-        // var_dump($img_name);
-        // exit();
         if ( $img_name ) {
             $img_property = $img_name->store('propertys', 'public');
             $in->imagen = $img_property;
@@ -302,7 +300,8 @@ class propertyController extends Controller
             $in->imagenes()->save($imagen);
         }
 
-        return redirect('/admin/inmuebles');
+        // return redirect('/admin/inmuebles');
+        return redirect()->route('showProperty', ['id' => $id]);
     }
 
     /**

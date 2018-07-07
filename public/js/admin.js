@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 54);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -32848,14 +32848,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /* 51 */,
 /* 52 */,
 /* 53 */,
-/* 54 */
+/* 54 */,
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(55);
+module.exports = __webpack_require__(56);
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(10);
@@ -32866,14 +32867,14 @@ __webpack_require__(40);
 __webpack_require__(35);
 __webpack_require__(36);
 __webpack_require__(37);
-__webpack_require__(56);
+__webpack_require__(57);
 __webpack_require__(34);
 __webpack_require__(39);
 
-__webpack_require__(57);
+__webpack_require__(58);
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -33124,7 +33125,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 })(jQuery);
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -33196,7 +33197,7 @@ $(document).ready(function () {
             btn.removeClass('add-image');
             btn.addClass('delete-img');
             btn.find('i').text('delete');
-            cont.append('\n                <div class="row-image">\n                    <div class="file-field input-field">\n                        <img class="left" width="80" src="/storage/propertys/default.jpg" alt="">\n                        <div class="content_img">\n                            <div class="btn" style="position: relative;">\n                                <span>imagen</span>\n                                <input type="file" class="file">\n                            </div>\n                            <div class="file-path-wrapper">\n                                <input class="truncate" type="text" placeholder="Nombre de la imagen">\n                            </div>\n                            <button class="btn btn-floating add-image" type="button">\n                                <i class="large material-icons">add</i>\n                            </button>\n                        </div>\n                    </div>\n                </div>\n                ');
+            cont.append('\n                <div class="row-image">\n                    <div class="file-field input-field">\n                        <div>\n                            <img class="left" width="80" src="/images/default.jpg" alt="">\n                        </div>\n                        <div class="content_img">\n                            <div class="btn" style="position: relative;">\n                                <span>imagen</span>\n                                <input type="file" class="file">\n                            </div>\n                            <div class="file-path-wrapper">\n                                <input class="truncate" type="text" placeholder="Nombre de la imagen">\n                            </div>\n                            <button class="btn btn-floating add-image" type="button">\n                                <i class="large material-icons">add</i>\n                            </button>\n                        </div>\n                    </div>\n                </div>\n                ');
         } else {
             Materialize.toast('Debe ingresar una imagen y un nombre', 4000);
         }
@@ -33281,7 +33282,7 @@ $(document).ready(function () {
         var file = $(e.currentTarget);
         var reader = new FileReader();
         reader.onload = function (e) {
-            file.parent().parent().prev().attr('src', e.target.result);
+            file.parent().parent().prev().children(':first-child').attr('src', e.target.result);
         };
         reader.readAsDataURL(file[0].files[0]);
     });

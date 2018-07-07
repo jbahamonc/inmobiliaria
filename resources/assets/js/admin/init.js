@@ -75,7 +75,9 @@ $(document).ready(function () {
             cont.append(`
                 <div class="row-image">
                     <div class="file-field input-field">
-                        <img class="left" width="80" src="/storage/propertys/default.jpg" alt="">
+                        <div>
+                            <img class="left" width="80" src="/images/default.jpg" alt="">
+                        </div>
                         <div class="content_img">
                             <div class="btn" style="position: relative;">
                                 <span>imagen</span>
@@ -174,9 +176,9 @@ $(document).ready(function () {
 
     $('body').on('change', '.file', function (e) {
         var file = $(e.currentTarget)
-        var reader = new FileReader();
+        var reader = new FileReader()
         reader.onload = function (e) {
-            file.parent().parent().prev().attr('src', e.target.result);
+            file.parent().parent().prev().children(':first-child').attr('src', e.target.result);
         }
         reader.readAsDataURL(file[0].files[0]);
     })

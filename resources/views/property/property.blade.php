@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title')
-{{ ucfirst($title) }} - Name company
+{{ ucfirst($title) }} - Inmobiliaria Purpura
 @endsection
 
 @section('landing')

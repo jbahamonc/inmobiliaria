@@ -16,10 +16,11 @@ class CreateSolicitudsTable extends Migration
         Schema::create('solicituds', function (Blueprint $table) {
             $table->increments('id');
             $table->string('fecha', 10);
+            $table->string('mensaje', 250);
             $table->integer('inmueble_id')->unsigned();
-            $table->string('cliente_id', 15);
+            $table->integer('cliente_id')->unsigned();
             $table->foreign('inmueble_id')->references('id')->on('inmuebles');
-            $table->foreign('cliente_id')->references('documento')->on('clientes');
+            $table->foreign('cliente_id')->references('id')->on('clientes');
             $table->timestamps();
         });
     }

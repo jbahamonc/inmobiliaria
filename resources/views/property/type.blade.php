@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title')
-{{ $title }} - Name company
+{{ $title }} - Inmobiliaria Purpura
 @endsection
 
 @section('landing')
@@ -20,9 +20,21 @@
 <section class="property section">
     <div class="container">
         <div class="row">
-            <div class="col s12 m8">
+            <div class="col s12 m4 push-m8">
+                <h5 style="margin: 0 0 2rem;">Tipo de Inmueble</h5>
+                <ul>
+                    @foreach ($tiposIn as $ti)
+                    <li>
+                        <a class="text-muted" href="/property/type/{{ strtolower($ti->descripcion) }}">
+                            {{ ucfirst($ti->descripcion) }}
+                        </a>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            <div class="col s12 m8 pull-m4">
                 <div class="row">
-                    <h1 style="margin-top:0;">{{ $title }}</h1>
+                    <h1 class="title-type" style="margin-top:0;">{{ $title }}</h1>
                         @if (!$inmuebles->isEmpty())
                             @foreach ($inmuebles as $i)
                             <div class="col s12">
@@ -53,7 +65,7 @@
                                                     @endfor
                                                 </div>
                                             </div>
-                                            <div class="price_property">
+                                            <div class="price_property hide-on-med-and-down">
                                                 <div class="price">
                     			                    <h4>Para {{ $i->tipo_servicio->descripcion }}</h4>
                     			                    <span>$ {{ number_format($i->valor) }}</span>
@@ -74,14 +86,6 @@
                 <div class="row center">
                     {{ $inmuebles->links() }}
                 </div>
-            </div>
-            <div class="col s12 m4">
-                <h5 style="margin: 0 0 2rem;">Tipo de Inmueble</h5>
-                <ul>
-                    @foreach ($tiposIn as $ti)
-                    <li><a class="text-muted" href="/property/type/{{ strtolower($ti->descripcion) }}">{{ $ti->descripcion }}</a></li> 
-                    @endforeach
-                </ul>
             </div>
         </div>
     </div>

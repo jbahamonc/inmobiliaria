@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title')
-{{ $title }} - Name company
+{{ $title }} - Inmobiliaria Purpura
 @endsection
 
 @section('landing')
@@ -41,12 +41,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col s12 m6">
+                            <div class="input-field col s12 l6">
                                 <input id="email" type="email" name="email_contact" class="validate" required>
                                 <label for="email">Correo <span style="color:red">*</span></label>
                                 <span class="helper-text" data-error="Debe ingresar un correo válido" data-success="ok"></span>
                             </div>
-                            <div class="input-field col s12 m6">
+                            <div class="input-field col s12 l6">
                                 <input id="tel" type="number" name="phone" class="validate" required>
                                 <label for="tel">Teléfono <span style="color:red">*</span></label>
                                 @if ($errors->has('phone'))
@@ -75,7 +75,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="col s12 m4 offset-m2">
+                <div class="col s12 m6">
                     <div class="box-info-contact">
                         <div class="icon title-secundary left">
                             <i class="material-icons">pin_drop</i>

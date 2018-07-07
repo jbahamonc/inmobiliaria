@@ -21,13 +21,14 @@ class CreateInmueblesTable extends Migration
             $table->char('promocionar', 1);
             $table->char('oferta', 1);
             $table->string('zona', 20);
-            $table->string('imagen', 20);
-            $table->string('id_propietario', 15);
-            $table->integer('id_tipo_inmueble')->unsigned();
-            $table->integer('id_tipo_servicio')->unsigned();
-            $table->foreign('id_propietario')->references('documento')->on('propietarios');
-            $table->foreign('id_tipo_inmueble')->references('id')->on('tipo_inmuebles');
-            $table->foreign('id_tipo_servicio')->references('id')->on('tipo_servicios');
+            $table->string('imagen', 100);
+            $table->string('ubicacion', 30);
+            $table->string('propietario_id', 15);
+            $table->integer('tipo_inmueble_id')->unsigned();
+            $table->integer('tipo_servicio_id')->unsigned();
+            $table->foreign('propietario_id')->references('documento')->on('propietarios');
+            $table->foreign('tipo_inmueble_id')->references('id')->on('tipo_inmuebles');
+            $table->foreign('tipo_servicio_id')->references('id')->on('tipo_servicios');
             $table->timestamps();
         });
     }

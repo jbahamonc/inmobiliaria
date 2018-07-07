@@ -115,9 +115,9 @@
         <div class="container">
             <div class="row">
                <div class="col l6 s12">
-                  <img src="{{ asset('images/logo.png') }}" alt="">
+                  <img width="150" src="{{ asset('images/logo.png') }}" alt="">
                   <h5 class="white-text">Inmobiliaria Púrpura</h5>
-                  <p class="grey-text text-lighten-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum autem, ad, quis ratione voluptatem perspiciatis. Reprehenderit voluptates explicabo velit quia. Laborum ratione fuga incidunt nihil. Molestiae beatae quae earum, voluptatem!</p>
+                  <p>Proporcionamos un servicio inmobiliario íntegro y profesional orientado a la construcción de buenas relaciones con nuestros clientes, beneficiando mutuamente cada uno de los intereses, superando siempre las expectativas, brindando calidad, seguridad y conformidad.</p>
                </div>
                <div class="col l4 offset-l2 s12">
                     <h5 class="white-text">Enlaces</h5>

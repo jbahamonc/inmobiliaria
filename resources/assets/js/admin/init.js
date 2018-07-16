@@ -14,9 +14,8 @@ $(document).ready(function () {
         var input = $(e.currentTarget)
         if (input.attr('data-id')) {
             axios ({
-                method  : 'POST',
-                url    : '/admin/delete_property/',
-                data   : { id : input.attr('data-id')}
+                method  : 'GET',
+                url    : `/admin/delete_property/${input.attr('data-id')}`
             }).then ( response => {
                 if ( response.status != 200 ) {
                     Materialize.toast("No se pudo eliminar el detalle", 4000)
@@ -103,9 +102,8 @@ $(document).ready(function () {
         var input = $(e.currentTarget)
         if (input.attr('data-id')) {
             axios ({
-                method  : 'POST',
-                url    : '/admin/delete_img/',
-                data   : { id : input.attr('data-id')}
+                method  : 'GET',
+                url    : `/admin/delete_img/${input.attr('data-id')}`
             }).then ( response => {
                 if ( response.status != 200 ) {
                     Materialize.toast("Ocurrio un error al eliminar la imagen", 4000)

@@ -102,19 +102,19 @@
 			        </li>
 					<li class="collection-item no-border">
 						<h4 class="title-secundary"><b>Imagenes del Inmueble</b></h4>
-						<div class="row gallery">
                             @if (!$property->imagenes->isEmpty())
-    							@foreach ($property->imagenes as $img)
-    							<div class="col s3">
-    								<div class="material-placeholder">
-    									<img class="materialboxed responsive-img" width="250" src="{{ asset('storage/'. $img->nombre) }}">
-    								</div>
-    							</div>
-                                @endforeach
+                                <div class="row gallery">
+            							@foreach ($property->imagenes as $img)
+            							<div class="col s3">
+            								<div class="material-placeholder">
+            									<img class="materialboxed responsive-img" width="250" src="{{ asset('storage/'. $img->nombre) }}">
+            								</div>
+            							</div>
+                                        @endforeach
+        						</div>
                             @else
                                 <span class="text-muted">No hay imagenes</span>
                             @endif
-						</div>
 					</li>
 			    </ul>
 				<section>
@@ -166,7 +166,7 @@
 						<h6 class="title-primary center">Información de Contacto</h6>
 						<ul class="collection contact">
 							<li class="collection-item">
-								<div>Correo<span class="secondary-content">contacto@gmail.com</span></div>
+								<div>Correo<span class="secondary-content">contacto@inmobiliariapurpura.com</span></div>
 							</li>
 							<li class="collection-item">
 								<div>Oficina<span class="secondary-content">333-333-333</span></div>

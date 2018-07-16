@@ -23,8 +23,8 @@
             <div class="row">
                 <div class="col s12 m6">
                     <h6>
-                        <p class="no-margin" style="margin-bottom:10px !important;">¿Quieres llevar a cabo un proyecto de inmueble..?</p>
-                        <p class="no-margin">Contáctanos y hagamos de ello, una realidad.</p>
+                        <p class="no-margin" style="margin-bottom:10px !important;">¿Quieres llevar a cabo un proyecto de inmueble?</p>
+                        <p style="margin-top: 0">Contáctanos y hagamos de ello, una realidad.</p>
                     </h6>
                     <p class="text-muted">Campos obligatorios <span style="color:red">*</span></p>
                     <form action="{{ url('send_email') }}" method="post">
@@ -81,10 +81,10 @@
                             <i class="material-icons">pin_drop</i>
                         </div>
                         <div class="description">
-                            <h5 class="info-title">Lorem Ipsum Dolor</h5>
-                            <p class="text-muted"> Bld Mihail Kogalniceanu, nr. 8,
-                                <br> 7652 Bucharest,
-                                <br> Romania
+                            <h5 class="info-title">Oficina Principal</h5>
+                            <p class="text-muted"> Av. 5 # 13 - 82.
+                                <br>Edf. Quinta Avenida, Oficina 306.
+                                <br> Centro - Cúcuta.
                             </p>
                         </div>
                     </div>
@@ -93,10 +93,9 @@
                             <i class="material-icons">phone</i>
                         </div>
                         <div class="description">
-                            <h5 class="info-title">Lorem Ipsum Dolor</h5>
-                            <p class="text-muted"> Michael Jordan
-                                <br> +40 762 321 762
-                                <br>Mon - Fri, 8:00-22:00
+                            <h5 class="info-title">Contactos</h5>
+                            <p class="text-muted" style="word-wrap: break-word;">
+                                contacto@inmobiliariapurpura.com
                             </p>
                         </div>
                     </div>

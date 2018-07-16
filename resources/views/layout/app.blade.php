@@ -133,13 +133,19 @@
             <div class="container">
                © 2018 Inmobiliaria Púrpura
                <div class="social-icon right">
-                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/facebook.png') }}" alt=""></a>
-                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/instagram.png') }}" alt=""></a>
-                  <a href="" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/youtube.png') }}" alt=""></a>
+                  <a href="https://www.facebook.com/Inmobiliaria-Purpura-608858469485980/" target="_blank" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/facebook.png') }}" alt=""></a>
+                  <a href="https://www.instagram.com/inmobiliariapurpura/" target="_blank" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/instagram.png') }}" alt=""></a>
+                  <a href="https://api.whatsapp.com/send?phone=573214849609" target="_blank" class="btn btn-floating waves-effect waves-light"><img src="{{ asset('images/whatsapp.png') }}" alt=""></a>
                </div>
             </div>
          </div>
-      </footer>
-      <script src="{{asset('/js/app.js')}}"></script>
-   </body>
+        </footer>
+        <script src="{{asset('/js/app.js')}}"></script>
+        @if (session('sendmail'))
+            <script>
+                var session = '{{ session('sendmail') }}';
+                Materialize.toast(session, 4000)
+            </script>
+        @endif
+    </body>
 </html>

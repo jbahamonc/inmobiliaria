@@ -23,7 +23,7 @@ class propertyController extends Controller
         $estrato = $req->input('estrato');
 
         $services = \App\Tipo_servicio::all();
-        $tipo = \App\tipo_inmueble::all();
+        $tipo = \App\Tipo_inmueble::all();
         $arr = [];
         if ($zona != 'Cualquiera') {
             array_push($arr, ['zona', '=', $zona]);
@@ -36,10 +36,10 @@ class propertyController extends Controller
         }
 
         if (!empty($arr)) {
-            $data = \App\inmueble::where($arr)->get();
+            $data = \App\Inmueble::where($arr)->get();
 
         } else {
-            $data = \App\inmueble::all();
+            $data = \App\Inmueble::all();
         }
 
         if ($habitaciones != 0) {

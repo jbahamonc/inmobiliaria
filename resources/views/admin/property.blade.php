@@ -8,7 +8,7 @@
             <div class="col s12 m4">
                 <div class="card">
                     <div class="card-image">
-                        <img id="view_img_property" src="{{ ($inmueble->imagen == 'default.jpg')? asset('storage/propertys/' . $inmueble->imagen) : asset('storage/' . $inmueble->imagen) }}">
+                        <img id="view_img_property" src="{{ ($inmueble->imagen == 'default.jpg')? asset('images/' . $inmueble->imagen) : asset('storage/' . $inmueble->imagen) }}">
                         <button type="button" class="btn-floating btn_file halfway-fab waves-effect waves-light"><i class="material-icons">attachment</i>
                             <label for="img_property"></label>
                             <input id="img_property" type="file" name="file_property" class="hide">
@@ -197,7 +197,7 @@
                                     <div class="row-image">
                                         <div class="file-field input-field">
                                             <div>
-                                                <img class="left" width="80" src="{{ asset('storage/propertys/default.jpg') }}" alt="">
+                                                <img class="left" width="80" src="{{ asset('images/default.jpg') }}" alt="">
                                             </div>
                                             <div class="content_img">
                                                 <div class="btn" style="position: relative;">

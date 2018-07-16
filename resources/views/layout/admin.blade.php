@@ -16,7 +16,7 @@
         <header class="admin-panel">
             <nav>
                 <div class="nav-wrapper">
-                    <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <a href="#" data-activates="mobile-demo" class="button-collapse hide"><i class="material-icons">menu</i></a>
                     <ul class="right">
                         <li>
                             <form action="/logout" method="post">

@@ -18,8 +18,6 @@ class mailController extends Controller
         // ]);
 
         Mail::to('sandres9011@gmail.com')->send(new \App\Mail\RuequestContact($request->all()));
-        Session::flash('email-info', 'Su mensaje ha sido enviado');
-        $services = \App\Tipo_servicio::all();
-        return redirect()->action('contactoController@showForm', ['ok' => 1]);
+        return redirect('contacto')->with('sendmail', 'Su mensaje ha sido enviado');
     }
 }

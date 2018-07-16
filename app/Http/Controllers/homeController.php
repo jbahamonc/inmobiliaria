@@ -33,7 +33,7 @@ class HomeController extends Controller
         }
 
         $services = \App\Tipo_servicio::all();
-        $tipo = \App\tipo_inmueble::all();
+        $tipo = \App\Tipo_inmueble::all();
         return view('home.home', [
                 'title' => 'Bienvenidos a Inmobiliaria Púrpura',
                 'no_landing' => false,

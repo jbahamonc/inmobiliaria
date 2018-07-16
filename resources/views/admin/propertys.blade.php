@@ -8,7 +8,7 @@
         <thead>
             <tr>
                 <th width="250">Nombre</th>
-                <th width="250">Dirección</th>
+                <th width="250">Descripción</th>
                 <th>En promoción</th>
                 <th>En oferta</th>
                 <th>Zona</th>
@@ -97,7 +97,7 @@
                     <select name="servicio" required>
                         <option value="0" disabled selected>Seleccione</option>
                         @foreach ($servicios as $s)
-                            <option value="{{ $s->id }}">{{ $s->descripcion }}</option>
+                            <option value="{{ $s->id }}">{{ ucfirst($s->descripcion) }}</option>
                         @endforeach
                     </select>
                     <label>Servicio <span style="color: red">*</span></label>
@@ -111,7 +111,7 @@
                     <select name="tipo" required>
                         <option value="0" disabled selected>Seleccione</option>
                         @foreach ($tipo as $t)
-                            <option value="{{ $t->id }}">{{ $t->descripcion }}</option>
+                            <option value="{{ $t->id }}">{{ ucfirst($t->descripcion) }}</option>
                         @endforeach
                     </select>
                     <label>Tipo de Inmueble <span style="color: red">*</span></label>
@@ -146,8 +146,8 @@
     </form>
 </div>
 <script>
-function redirect(id) {
-    document.location.href = `/admin/inmuebles/${id}`
-}
+    function redirect(id) {
+        document.location.href = `/admin/inmuebles/${id}`
+    }
 </script>
 @endsection

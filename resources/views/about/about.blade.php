@@ -17,6 +17,7 @@
 @section('content')
     <section class="contact-us section">
     	<div class="container">
+            <div id="bg"></div>
             <h1 class=" title-secundary center">Acerca de Nosotros</h1>
             <div class="row">
                 <h3 class="center title-secundary">Misión</h3>
@@ -35,7 +36,7 @@
                     <b>EMPATÍA</b><br> Comprender los sentimientos y emisiones de cada individuo, <br> brindando asi una mejor convivencia.
 
                 </p>
-            </div>
+            </div>            
         </div>
     </section>
 @endsection

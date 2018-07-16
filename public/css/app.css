@@ -5795,6 +5795,21 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
   -webkit-box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
           box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  position: relative;
+  z-index: 10;
+}
+
+.contact-us .container #bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: url(/images/inmobiliaria.jpg);
+  background-size: cover;
+  background-position: center;
+  opacity: .2;
 }
 
 .contact-us h1 {
